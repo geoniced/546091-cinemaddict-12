@@ -49,7 +49,7 @@ const getPoster = () => {
 
   const posterIndex = getRandomInteger(0, posterFiles.length - 1);
 
-  return `/public/images/posters/${posterFiles[posterIndex]}`;
+  return `./images/posters/${posterFiles[posterIndex]}`;
 };
 
 const getRating = () => {

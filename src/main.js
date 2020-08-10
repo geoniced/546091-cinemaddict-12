@@ -14,7 +14,11 @@ const CARDS_COUNT = 20;
 const EXTRA_CARDS_COUNT = 2;
 
 const filmCards = new Array(CARDS_COUNT).fill().map(generateFilmCard);
+const extraFilmCards = new Array(EXTRA_CARDS_COUNT).fill().map(generateFilmCard);
+
 console.log(filmCards);
+console.log(extraFilmCards);
+
 
 const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
@@ -48,7 +52,7 @@ for (let i = 0; i < extraFilmsElements.length; i++) {
   const extraFilmsContainer = extraFilmsElements[i].querySelector(`.films-list__container`);
 
   for (let j = 0; j < EXTRA_CARDS_COUNT; j++) {
-    render(extraFilmsContainer, createFilmCardTemplate(), `beforeend`);
+    render(extraFilmsContainer, createFilmCardTemplate(extraFilmCards[j]), `beforeend`);
   }
 }
 
