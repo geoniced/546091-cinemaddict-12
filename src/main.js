@@ -8,9 +8,13 @@ import {createFilmsListExtraTemplate} from './view/films-list-extra.js';
 import {createFilmCardTemplate} from './view/film-card.js';
 import {createFilmDetailsPopupTemplate} from './view/film-details-popup.js';
 import {createStatisticsTemplate} from './view/statistics.js';
+import {generateFilmCard} from './mock/film-card.js';
 
-const CARDS_COUNT = 5;
+const CARDS_COUNT = 20;
 const EXTRA_CARDS_COUNT = 2;
+
+const filmCards = new Array(CARDS_COUNT).fill().map(generateFilmCard);
+console.log(filmCards);
 
 const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
@@ -30,7 +34,7 @@ render(filmsPanelElement, createFilmsListTemplate(), `beforeend`);
 const filmsListContainer = filmsPanelElement.querySelector(`.films-list__container`);
 
 for (let i = 0; i < CARDS_COUNT; i++) {
-  render(filmsListContainer, createFilmCardTemplate(), `beforeend`);
+  render(filmsListContainer, createFilmCardTemplate(filmCards[i]), `beforeend`);
 }
 
 render(filmsListContainer, createShowMoreButtonTemplate(), `afterend`);
