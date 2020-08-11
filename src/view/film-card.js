@@ -1,3 +1,14 @@
+const formatDescription = (description) => {
+  const SYMBOLS_COUNT = 140;
+  let formattedDescription = description;
+
+  if (description.length > SYMBOLS_COUNT) {
+    formattedDescription = `${description.slice(0, SYMBOLS_COUNT - 1)}…`;
+  }
+
+  return formattedDescription;
+};
+
 export const createFilmCardTemplate = (film) => {
   const {
     name,
@@ -13,8 +24,20 @@ export const createFilmCardTemplate = (film) => {
     isFavorite,
   } = film;
 
-  const formattedDescription = description;
+  const formattedDescription = formatDescription(description);
   const commentsCount = comments.length;
+
+  const inWatchlistClassName = isInWatchlist
+    ? `film-card__controls-item--active`
+    : ``;
+
+  const isWatchedClassName = isWatched
+    ? `film-card__controls-item--active`
+    : ``;
+
+  const isFavoriteClassName = isFavorite
+    ? `film-card__controls-item--active`
+    : ``;
 
   return (
     `<article class="film-card">
@@ -29,9 +52,9 @@ export const createFilmCardTemplate = (film) => {
       <p class="film-card__description">${formattedDescription}</p>
       <a class="film-card__comments">${commentsCount} comments</a>
       <form class="film-card__controls">
-        <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist">Add to watchlist</button>
-        <button class="film-card__controls-item button film-card__controls-item--mark-as-watched">Mark as watched</button>
-        <button class="film-card__controls-item button film-card__controls-item--favorite">Mark as favorite</button>
+        <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist ${inWatchlistClassName}">Add to watchlist</button>
+        <button class="film-card__controls-item button film-card__controls-item--mark-as-watched ${isWatchedClassName}">Mark as watched</button>
+        <button class="film-card__controls-item button film-card__controls-item--favorite ${isFavoriteClassName}">Mark as favorite</button>
       </form>
     </article>`
   );

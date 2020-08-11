@@ -14,10 +14,12 @@ const CARDS_COUNT = 20;
 const EXTRA_CARDS_COUNT = 2;
 
 const filmCards = new Array(CARDS_COUNT).fill().map(generateFilmCard);
-const extraFilmCards = new Array(EXTRA_CARDS_COUNT).fill().map(generateFilmCard);
+const extraFilmCardsTopRated = new Array(EXTRA_CARDS_COUNT).fill().map(generateFilmCard);
+const extraFilmCardsMostCommented = new Array(EXTRA_CARDS_COUNT).fill().map(generateFilmCard);
 
 console.log(filmCards);
-console.log(extraFilmCards);
+console.log(extraFilmCardsTopRated);
+console.log(extraFilmCardsMostCommented);
 
 
 const render = (container, template, place) => {
@@ -48,12 +50,14 @@ render(filmsPanelElement, createFilmsListExtraTemplate(), `beforeend`);
 
 const extraFilmsElements = filmsPanelElement.querySelectorAll(`.films-list--extra`);
 
-for (let i = 0; i < extraFilmsElements.length; i++) {
-  const extraFilmsContainer = extraFilmsElements[i].querySelector(`.films-list__container`);
+const topRatedContainer = extraFilmsElements[0].querySelector(`.films-list__container`);
+for (let j = 0; j < EXTRA_CARDS_COUNT; j++) {
+  render(topRatedContainer, createFilmCardTemplate(extraFilmCardsTopRated[j]), `beforeend`);
+}
 
-  for (let j = 0; j < EXTRA_CARDS_COUNT; j++) {
-    render(extraFilmsContainer, createFilmCardTemplate(extraFilmCards[j]), `beforeend`);
-  }
+const mostCommentedContainer = extraFilmsElements[1].querySelector(`.films-list__container`);
+for (let j = 0; j < EXTRA_CARDS_COUNT; j++) {
+  render(mostCommentedContainer, createFilmCardTemplate(extraFilmCardsMostCommented[j]), `beforeend`);
 }
 
 const footerElement = document.querySelector(`.footer`);
