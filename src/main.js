@@ -73,4 +73,12 @@ const footerElement = document.querySelector(`.footer`);
 const footerStatisticsElement = footerElement.querySelector(`.footer__statistics`);
 render(footerStatisticsElement, createStatisticsTemplate(), `beforeend`);
 
-// render(footerElement, createFilmDetailsPopupTemplate(filmCards[0]), `afterend`);
+render(footerElement, createFilmDetailsPopupTemplate(filmCards[0]), `afterend`);
+
+const filmDetailsPopupElement = document.querySelector(`.film-details`);
+const popupCloseButton = filmDetailsPopupElement.querySelector(`.film-details__close-btn`);
+
+popupCloseButton.addEventListener(`click`, (evt) => {
+  evt.preventDefault();
+  filmDetailsPopupElement.remove();
+});
