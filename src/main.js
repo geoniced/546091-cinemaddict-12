@@ -63,3 +63,5 @@ for (let j = 0; j < EXTRA_CARDS_COUNT; j++) {
 const footerElement = document.querySelector(`.footer`);
 const footerStatisticsElement = footerElement.querySelector(`.footer__statistics`);
 render(footerStatisticsElement, createStatisticsTemplate(), `beforeend`);
+
+render(footerElement, createFilmDetailsPopupTemplate(filmCards[0]), `afterend`);

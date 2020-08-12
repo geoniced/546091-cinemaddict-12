@@ -15,7 +15,7 @@ export const createFilmCardTemplate = (film) => {
     rating,
     year,
     duration,
-    genre,
+    genres,
     poster,
     description,
     comments,
@@ -25,6 +25,7 @@ export const createFilmCardTemplate = (film) => {
   } = film;
 
   const formattedDescription = formatDescription(description);
+  const genre = genres[0];
   const commentsCount = comments.length;
 
   const inWatchlistClassName = isInWatchlist

@@ -5,6 +5,14 @@ const getRandomInteger = (a = 0, b = 1) => {
   return Math.floor(lower + Math.random() * (upper - lower + 1));
 };
 
+const getRandomItem = (collection) => {
+  return collection[getRandomInteger(0, collection.length - 1)];
+};
+
+const getUniqueArray = (array) => {
+  return [...new Set(array)];
+};
+
 const getRandomSentences = () => {
   return [
     `Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
@@ -33,7 +41,7 @@ const getFilmName = () => {
     `Made for Each Other`,
   ];
 
-  return films[getRandomInteger(0, films.length - 1)];
+  return getRandomItem(films);
 };
 
 const getPoster = () => {
@@ -47,9 +55,7 @@ const getPoster = () => {
     `the-man-with-the-golden-arm.jpg`,
   ];
 
-  const posterIndex = getRandomInteger(0, posterFiles.length - 1);
-
-  return `./images/posters/${posterFiles[posterIndex]}`;
+  return `./images/posters/${getRandomItem(posterFiles)}`;
 };
 
 const getRating = () => {
@@ -66,7 +72,7 @@ const generateText = (from = 1, to = 2) => {
 
   const text = new Array(sentencesCount)
     .fill()
-    .map(() => sentences[getRandomInteger(0, sentences.length - 1)])
+    .map(() => getRandomItem(sentences))
     .join(` `);
 
   return text;
@@ -100,27 +106,30 @@ const getGenre = () => {
     `Mystery`,
   ];
 
-  const genreIndex = getRandomInteger(0, genres.length - 1);
+  return getRandomItem(genres);
+};
 
-  return genres[genreIndex];
+const getGenres = () => {
+  const genresCount = getRandomInteger(1, 3);
+  const genres = new Array(genresCount).fill().map(getGenre);
+
+  return genres;
 };
 
 const getEmotion = () => {
   const emotions = [`smile`, `sleeping`, `puke`, `angry`];
-  const emotionIndex = getRandomInteger(0, emotions.length - 1);
 
-  return emotions[emotionIndex];
+  return getRandomItem(emotions);
 };
 
 const getAuthor = () => {
   const authors = [`John Doe`, `Tim Macoveev`, `Peter Parker`, `Tony Stark`];
-  const authorIndex = getRandomInteger(0, authors.length - 1);
 
-  return authors[authorIndex];
+  return getRandomItem(authors);
 };
 
 const generateDate = (gap = 7) => {
-  const daysGap = getRandomInteger(-gap, gap);
+  const daysGap = getRandomInteger(2 * -gap, 0);
   const currentDate = new Date();
 
   currentDate.setDate(currentDate.getDate() + daysGap);
@@ -151,6 +160,88 @@ const getComments = () => {
   return comments;
 };
 
+const getDirector = () => {
+  const directors = [
+    `Anthony Mann`,
+    `Alfred Hitchcock`,
+    `Stanley Kubrick`,
+    `Akira Kurosawa`,
+    `James Cameron`,
+  ];
+
+  return getRandomItem(directors);
+};
+
+const getWriters = () => {
+  const writers = [
+    `Ethan Coen`,
+    `Anne Wigton`,
+    `Heinz Herald`,
+    `Richard Weil`,
+    `Joel Coen`,
+    `Billy Wilder`,
+  ];
+
+  const writersCount = getRandomInteger(1, 3);
+  const writersArray = new Array(writersCount)
+    .fill()
+    .map(() => getRandomItem(writers));
+  const uniqueWriters = getUniqueArray(writersArray);
+
+  return uniqueWriters;
+};
+
+const getActors = () => {
+  const actors = [
+    `Erich von Stroheim`,
+    `Mary Beth Hughes`,
+    `Dan Duryea`,
+    `Tom Hanks`,
+    `Will Smith`,
+    `Tom Cruise`,
+  ];
+
+  const actorsCount = getRandomInteger(1, 3);
+  const actorsArray = new Array(actorsCount)
+    .fill()
+    .map(() => getRandomItem(actors));
+  const uniqueActors = getUniqueArray(actorsArray);
+
+  return uniqueActors;
+};
+
+const getReleaseDate = () => {
+  const releaseDate = new Date(getRandomInteger(1900, 2020), getRandomInteger(0, 11));
+  releaseDate.setDate(getRandomInteger(0, 30));
+
+  return releaseDate;
+};
+
+const getCountry = () => {
+  const countries = [
+    `USA`,
+    `Russia`,
+    `China`,
+    `South Korea`,
+    `Canada`,
+    `UK`,
+  ];
+
+  return getRandomItem(countries);
+};
+
+const getAgeLimit = () => {
+  const limits = [
+    `0+`,
+    `6+`,
+    `12+`,
+    `16+`,
+    `18+`,
+  ];
+
+  return getRandomItem(limits);
+};
+
 export const generateFilmCard = () => {
   const name = getFilmName();
   const poster = getPoster();
@@ -158,8 +249,18 @@ export const generateFilmCard = () => {
   const description = getDescription();
   const year = getYear();
   const duration = getDuration();
-  const genre = getGenre();
+  const genres = getGenres();
+  // const genre = genres[0];
   const comments = getComments();
+  // extended properties
+  const posterFullSize = poster; // They are already at full size
+  const originalName = name;
+  const director = getDirector();
+  const writers = getWriters();
+  const actors = getActors();
+  const releaseDate = getReleaseDate();
+  const country = getCountry();
+  const ageLimit = getAgeLimit();
 
   return {
     name,
@@ -168,10 +269,20 @@ export const generateFilmCard = () => {
     description,
     year,
     duration,
-    genre,
+    // genre,// Скорее всего он не нужен
+    genres,
     comments,
     isFavorite: Boolean(getRandomInteger(0, 1)),
     isWatched: Boolean(getRandomInteger(0, 1)),
     isInWatchlist: Boolean(getRandomInteger(0, 1)),
+
+    posterFullSize,
+    originalName,
+    director,
+    writers,
+    actors,
+    releaseDate,
+    country,
+    ageLimit,
   };
 };
