@@ -22,11 +22,6 @@ const extraFilmCardsMostCommented = new Array(EXTRA_CARDS_COUNT).fill().map(gene
 
 const filters = generateFilters(filmCards);
 
-console.log(filmCards);
-console.log(extraFilmCardsTopRated);
-console.log(extraFilmCardsMostCommented);
-console.log(filters);
-
 const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
 };
