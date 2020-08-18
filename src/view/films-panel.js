@@ -1,6 +1,6 @@
 import {createElement} from "../utils";
 
-export const createFilmsPanelTemplate = () => {
+const createFilmsPanelTemplate = () => {
   return (
     `<section class="films">
     </section>`

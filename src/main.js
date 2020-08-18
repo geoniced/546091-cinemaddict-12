@@ -1,14 +1,14 @@
 import UserScoreView from './view/user-score.js';
 import NavigationView from './view/navigation.js';
-import {createFilterTemplate} from './view/filter.js';
+import FilterView from './view/filter.js';
 import SortingView from './view/sorting.js';
 import FilmsPanelView from './view/films-panel.js';
-import FilmsList from './view/films-list.js';
-import {createShowMoreButtonTemplate} from './view/show-more-button.js';
+import FilmsListView from './view/films-list.js';
+import ShowMoreButtonView from './view/show-more-button.js';
 import {createFilmsListExtraTemplate} from './view/films-list-extra.js';
 import {createFilmCardTemplate} from './view/film-card.js';
 import {createFilmDetailsPopupTemplate} from './view/film-details-popup.js';
-import {createStatisticsTemplate} from './view/statistics.js';
+import StatisticsView from './view/statistics.js';
 import {generateFilmCard} from './mock/film-card.js';
 import {generateFilters} from './mock/filter.js';
 import {render, renderTemplate, RenderPosition} from './utils.js';
@@ -30,14 +30,14 @@ const mainElement = document.querySelector(`.main`);
 const navigationComponent = new NavigationView();
 render(mainElement, navigationComponent.getElement(), RenderPosition.BEFOREEND);
 
-renderTemplate(navigationComponent.getElement(), createFilterTemplate(filters), RenderPosition.AFTERBEGIN);
+render(navigationComponent.getElement(), new FilterView(filters).getElement(), RenderPosition.AFTERBEGIN);
 
 render(mainElement, new SortingView().getElement(), RenderPosition.BEFOREEND);
 
 const filmsPanelComponent = new FilmsPanelView();
 render(mainElement, filmsPanelComponent.getElement(), RenderPosition.BEFOREEND);
 
-render(filmsPanelComponent.getElement(), new FilmsList().getElement(), RenderPosition.BEFOREEND);
+render(filmsPanelComponent.getElement(), new FilmsListView().getElement(), RenderPosition.BEFOREEND);
 
 const filmsListContainer = filmsPanelComponent.getElement().querySelector(`.films-list__container`);
 
@@ -48,11 +48,10 @@ for (let i = 0; i < Math.min(filmCards.length, CARDS_PER_STEP); i++) {
 if (filmCards.length > CARDS_PER_STEP) {
   let renderedCardsCount = CARDS_PER_STEP;
 
-  renderTemplate(filmsListContainer, createShowMoreButtonTemplate(), `afterend`);
+  const showMoreButtonComponent = new ShowMoreButtonView();
+  render(filmsListContainer, showMoreButtonComponent.getElement(), RenderPosition.AFTEREND);
 
-  const showMoreButton = filmsPanelComponent.getElement().querySelector(`.films-list__show-more`);
-
-  showMoreButton.addEventListener(`click`, (evt) => {
+  showMoreButtonComponent.getElement().addEventListener(`click`, (evt) => {
     evt.preventDefault();
 
     filmCards
@@ -62,7 +61,8 @@ if (filmCards.length > CARDS_PER_STEP) {
     renderedCardsCount += CARDS_PER_STEP;
 
     if (renderedCardsCount >= filmCards.length) {
-      showMoreButton.remove();
+      showMoreButtonComponent.getElement().remove();
+      showMoreButtonComponent.removeElement();
     }
   });
 }
@@ -85,7 +85,7 @@ for (let j = 0; j < EXTRA_CARDS_COUNT; j++) {
 
 const footerElement = document.querySelector(`.footer`);
 const footerStatisticsElement = footerElement.querySelector(`.footer__statistics`);
-renderTemplate(footerStatisticsElement, createStatisticsTemplate(), `beforeend`);
+render(footerStatisticsElement, new StatisticsView().getElement(), RenderPosition.BEFOREEND);
 
 renderTemplate(footerElement, createFilmDetailsPopupTemplate(filmCards[0]), `afterend`);
 
