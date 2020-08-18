@@ -1,9 +1,9 @@
 import UserScoreView from './view/user-score.js';
 import NavigationView from './view/navigation.js';
 import {createFilterTemplate} from './view/filter.js';
-import {createSortingTemplate} from './view/sorting.js';
-import {createFilmsPanelTemplate} from './view/films-panel.js';
-import {createFilmsListTemplate} from './view/films-list.js';
+import SortingView from './view/sorting.js';
+import FilmsPanelView from './view/films-panel.js';
+import FilmsList from './view/films-list.js';
 import {createShowMoreButtonTemplate} from './view/show-more-button.js';
 import {createFilmsListExtraTemplate} from './view/films-list-extra.js';
 import {createFilmCardTemplate} from './view/film-card.js';
@@ -27,18 +27,19 @@ const headerElement = document.querySelector(`.header`);
 render(headerElement, new UserScoreView().getElement(), RenderPosition.BEFOREEND);
 
 const mainElement = document.querySelector(`.main`);
-render(mainElement, new NavigationView().getElement(), RenderPosition.BEFOREEND);
+const navigationComponent = new NavigationView();
+render(mainElement, navigationComponent.getElement(), RenderPosition.BEFOREEND);
 
-const mainNavigation = mainElement.querySelector(`.main-navigation`);
-renderTemplate(mainNavigation, createFilterTemplate(filters), `afterbegin`);
+renderTemplate(navigationComponent.getElement(), createFilterTemplate(filters), RenderPosition.AFTERBEGIN);
 
-renderTemplate(mainElement, createSortingTemplate(), `beforeend`);
-renderTemplate(mainElement, createFilmsPanelTemplate(), `beforeend`);
+render(mainElement, new SortingView().getElement(), RenderPosition.BEFOREEND);
 
-const filmsPanelElement = mainElement.querySelector(`.films`);
-renderTemplate(filmsPanelElement, createFilmsListTemplate(), `beforeend`);
+const filmsPanelComponent = new FilmsPanelView();
+render(mainElement, filmsPanelComponent.getElement(), RenderPosition.BEFOREEND);
 
-const filmsListContainer = filmsPanelElement.querySelector(`.films-list__container`);
+render(filmsPanelComponent.getElement(), new FilmsList().getElement(), RenderPosition.BEFOREEND);
+
+const filmsListContainer = filmsPanelComponent.getElement().querySelector(`.films-list__container`);
 
 for (let i = 0; i < Math.min(filmCards.length, CARDS_PER_STEP); i++) {
   renderTemplate(filmsListContainer, createFilmCardTemplate(filmCards[i]), `beforeend`);
@@ -49,7 +50,7 @@ if (filmCards.length > CARDS_PER_STEP) {
 
   renderTemplate(filmsListContainer, createShowMoreButtonTemplate(), `afterend`);
 
-  const showMoreButton = filmsPanelElement.querySelector(`.films-list__show-more`);
+  const showMoreButton = filmsPanelComponent.getElement().querySelector(`.films-list__show-more`);
 
   showMoreButton.addEventListener(`click`, (evt) => {
     evt.preventDefault();
@@ -67,10 +68,10 @@ if (filmCards.length > CARDS_PER_STEP) {
 }
 
 
-renderTemplate(filmsPanelElement, createFilmsListExtraTemplate(), `beforeend`);
-renderTemplate(filmsPanelElement, createFilmsListExtraTemplate(), `beforeend`);
+renderTemplate(filmsPanelComponent.getElement(), createFilmsListExtraTemplate(), `beforeend`);
+renderTemplate(filmsPanelComponent.getElement(), createFilmsListExtraTemplate(), `beforeend`);
 
-const extraFilmsElements = filmsPanelElement.querySelectorAll(`.films-list--extra`);
+const extraFilmsElements = filmsPanelComponent.getElement().querySelectorAll(`.films-list--extra`);
 
 const topRatedContainer = extraFilmsElements[0].querySelector(`.films-list__container`);
 for (let j = 0; j < EXTRA_CARDS_COUNT; j++) {
