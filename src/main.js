@@ -37,7 +37,8 @@ render(mainElement, new SortingView().getElement(), RenderPosition.BEFOREEND);
 const filmsPanelComponent = new FilmsPanelView();
 render(mainElement, filmsPanelComponent.getElement(), RenderPosition.BEFOREEND);
 
-render(filmsPanelComponent.getElement(), new FilmsListView().getElement(), RenderPosition.BEFOREEND);
+const filmsListComponent = new FilmsListView();
+render(filmsPanelComponent.getElement(), filmsListComponent.getElement(), RenderPosition.BEFOREEND);
 
 const filmsListContainer = filmsPanelComponent.getElement().querySelector(`.films-list__container`);
 
@@ -49,7 +50,7 @@ if (filmCards.length > CARDS_PER_STEP) {
   let renderedCardsCount = CARDS_PER_STEP;
 
   const showMoreButtonComponent = new ShowMoreButtonView();
-  render(filmsListContainer, showMoreButtonComponent.getElement(), RenderPosition.AFTEREND);
+  render(filmsListComponent.getElement(), showMoreButtonComponent.getElement(), RenderPosition.BEFOREEND);
 
   showMoreButtonComponent.getElement().addEventListener(`click`, (evt) => {
     evt.preventDefault();
@@ -87,12 +88,12 @@ const footerElement = document.querySelector(`.footer`);
 const footerStatisticsElement = footerElement.querySelector(`.footer__statistics`);
 render(footerStatisticsElement, new StatisticsView().getElement(), RenderPosition.BEFOREEND);
 
-renderTemplate(footerElement, createFilmDetailsPopupTemplate(filmCards[0]), `afterend`);
+// renderTemplate(footerElement, createFilmDetailsPopupTemplate(filmCards[0]), `afterend`);
 
-const filmDetailsPopupElement = document.querySelector(`.film-details`);
-const popupCloseButton = filmDetailsPopupElement.querySelector(`.film-details__close-btn`);
+// const filmDetailsPopupElement = document.querySelector(`.film-details`);
+// const popupCloseButton = filmDetailsPopupElement.querySelector(`.film-details__close-btn`);
 
-popupCloseButton.addEventListener(`click`, (evt) => {
-  evt.preventDefault();
-  filmDetailsPopupElement.remove();
-});
+// popupCloseButton.addEventListener(`click`, (evt) => {
+//   evt.preventDefault();
+//   filmDetailsPopupElement.remove();
+// });
