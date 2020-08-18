@@ -1,3 +1,5 @@
+import {createElement} from "../utils";
+
 const formatDescription = (description) => {
   const SYMBOLS_COUNT = 140;
   let formattedDescription = description;
@@ -9,7 +11,7 @@ const formatDescription = (description) => {
   return formattedDescription;
 };
 
-export const createFilmCardTemplate = (film) => {
+const createFilmCardTemplate = (film) => {
   const {
     name,
     rating,
@@ -60,3 +62,26 @@ export const createFilmCardTemplate = (film) => {
     </article>`
   );
 };
+
+export default class FilmCard {
+  constructor(film) {
+    this._element = null;
+    this._film = film;
+  }
+
+  getTemplate() {
+    return createFilmCardTemplate(this._film);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
