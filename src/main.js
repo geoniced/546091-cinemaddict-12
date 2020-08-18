@@ -4,8 +4,9 @@ import FilterView from './view/filter.js';
 import SortingView from './view/sorting.js';
 import FilmsPanelView from './view/films-panel.js';
 import FilmsListView from './view/films-list.js';
+import FilmsListContainerView from './view/films-list-container.js';
 import ShowMoreButtonView from './view/show-more-button.js';
-import {createFilmsListExtraTemplate} from './view/films-list-extra.js';
+import FilmsListExtraView from './view/films-list-extra.js';
 import FilmCardView from './view/film-card.js';
 import {createFilmDetailsPopupTemplate} from './view/film-details-popup.js';
 import StatisticsView from './view/statistics.js';
@@ -40,8 +41,9 @@ render(mainElement, filmsPanelComponent.getElement(), RenderPosition.BEFOREEND);
 const filmsListComponent = new FilmsListView();
 render(filmsPanelComponent.getElement(), filmsListComponent.getElement(), RenderPosition.BEFOREEND);
 
-// make a component
-const filmsListContainer = filmsPanelComponent.getElement().querySelector(`.films-list__container`);
+const filmsListContainerComponent = new FilmsListContainerView();
+render(filmsListComponent.getElement(), filmsListContainerComponent.getElement(), RenderPosition.BEFOREEND);
+const filmsListContainer = filmsListContainerComponent.getElement();
 
 for (let i = 0; i < Math.min(filmCards.length, CARDS_PER_STEP); i++) {
   render(filmsListContainer, new FilmCardView(filmCards[i]).getElement(), RenderPosition.BEFOREEND);
@@ -69,17 +71,22 @@ if (filmCards.length > CARDS_PER_STEP) {
   });
 }
 
-renderTemplate(filmsPanelComponent.getElement(), createFilmsListExtraTemplate(), `beforeend`);
-renderTemplate(filmsPanelComponent.getElement(), createFilmsListExtraTemplate(), `beforeend`);
+const topRatedExtraComponent = new FilmsListExtraView();
+const topRatedExtraElement = topRatedExtraComponent.getElement();
+render(filmsPanelComponent.getElement(), topRatedExtraElement, RenderPosition.BEFOREEND);
 
-const extraFilmsElements = filmsPanelComponent.getElement().querySelectorAll(`.films-list--extra`);
-
-const topRatedContainer = extraFilmsElements[0].querySelector(`.films-list__container`);
+const topRatedContainer = new FilmsListContainerView().getElement();
+render(topRatedExtraElement, topRatedContainer, RenderPosition.BEFOREEND);
 for (let j = 0; j < EXTRA_CARDS_COUNT; j++) {
   render(topRatedContainer, new FilmCardView(extraFilmCardsTopRated[j]).getElement(), RenderPosition.BEFOREEND);
 }
 
-const mostCommentedContainer = extraFilmsElements[1].querySelector(`.films-list__container`);
+const mostCommentedExtraComponent = new FilmsListExtraView();
+const mostCommentedExtraElement = mostCommentedExtraComponent.getElement();
+render(filmsPanelComponent.getElement(), mostCommentedExtraElement, RenderPosition.BEFOREEND);
+
+const mostCommentedContainer = new FilmsListContainerView().getElement();
+render(mostCommentedExtraElement, mostCommentedContainer, RenderPosition.BEFOREEND);
 for (let j = 0; j < EXTRA_CARDS_COUNT; j++) {
   render(mostCommentedContainer, new FilmCardView(extraFilmCardsMostCommented[j]).getElement(), RenderPosition.BEFOREEND);
 }
