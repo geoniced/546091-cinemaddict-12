@@ -1,5 +1,5 @@
 import UserScoreView from './view/user-score.js';
-import {createNavigationTemplate} from './view/navigation.js';
+import NavigationView from './view/navigation.js';
 import {createFilterTemplate} from './view/filter.js';
 import {createSortingTemplate} from './view/sorting.js';
 import {createFilmsPanelTemplate} from './view/films-panel.js';
@@ -27,7 +27,7 @@ const headerElement = document.querySelector(`.header`);
 render(headerElement, new UserScoreView().getElement(), RenderPosition.BEFOREEND);
 
 const mainElement = document.querySelector(`.main`);
-renderTemplate(mainElement, createNavigationTemplate(), `beforeend`);
+render(mainElement, new NavigationView().getElement(), RenderPosition.BEFOREEND);
 
 const mainNavigation = mainElement.querySelector(`.main-navigation`);
 renderTemplate(mainNavigation, createFilterTemplate(filters), `afterbegin`);
