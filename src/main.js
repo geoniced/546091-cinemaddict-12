@@ -8,7 +8,7 @@ import FilmsListContainerView from './view/films-list-container.js';
 import ShowMoreButtonView from './view/show-more-button.js';
 import FilmsListExtraView from './view/films-list-extra.js';
 import FilmCardView from './view/film-card.js';
-import {createFilmDetailsPopupTemplate} from './view/film-details-popup.js';
+import FilmDetailsPopupView from './view/film-details-popup.js';
 import StatisticsView from './view/statistics.js';
 import {generateFilmCard} from './mock/film-card.js';
 import {generateFilters} from './mock/filter.js';
@@ -95,12 +95,13 @@ const footerElement = document.querySelector(`.footer`);
 const footerStatisticsElement = footerElement.querySelector(`.footer__statistics`);
 render(footerStatisticsElement, new StatisticsView().getElement(), RenderPosition.BEFOREEND);
 
-// renderTemplate(footerElement, createFilmDetailsPopupTemplate(filmCards[0]), `afterend`);
+const filmDetailsPopupComponent = new FilmDetailsPopupView(filmCards[0]);
+render(footerElement, filmDetailsPopupComponent.getElement(), RenderPosition.AFTEREND);
 
-// const filmDetailsPopupElement = document.querySelector(`.film-details`);
-// const popupCloseButton = filmDetailsPopupElement.querySelector(`.film-details__close-btn`);
+const popupCloseButton = filmDetailsPopupComponent.getElement().querySelector(`.film-details__close-btn`);
 
-// popupCloseButton.addEventListener(`click`, (evt) => {
-//   evt.preventDefault();
-//   filmDetailsPopupElement.remove();
-// });
+popupCloseButton.addEventListener(`click`, (evt) => {
+  evt.preventDefault();
+  filmDetailsPopupComponent.getElement().remove();
+  filmDetailsPopupComponent.removeElement();
+});

@@ -1,6 +1,4 @@
-const humanizeDate = (date) => {
-  return date.toLocaleString(`en-US`, {day: `numeric`, month: `long`, year: `numeric`});
-};
+import {createElement, humanizeDate} from '../utils.js';
 
 const formatDate = (date) => {
   const year = date.getYear() + 1900;
@@ -59,7 +57,7 @@ const createCommentItemTemplate = (comment) => {
 };
 
 
-export const createFilmDetailsPopupTemplate = (film) => {
+const createFilmDetailsPopupTemplate = (film) => {
   const {
     posterFullSize,
     ageLimit,
@@ -207,3 +205,26 @@ export const createFilmDetailsPopupTemplate = (film) => {
     </section>`
   );
 };
+
+export default class FilmDetailsPopup {
+  constructor(filmDetails) {
+    this._element = null;
+    this._filmDetails = filmDetails;
+  }
+
+  getTemplate() {
+    return createFilmDetailsPopupTemplate(this._filmDetails);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

@@ -17,8 +17,12 @@ export const render = (container, element, place) => {
     case RenderPosition.AFTERBEGIN:
       container.prepend(element);
       break;
+    case RenderPosition.AFTEREND:
+      container.parentNode.append(element);
+      break;
     case RenderPosition.BEFOREEND:
       container.append(element);
+      break;
   }
 };
 
@@ -40,3 +44,6 @@ export const getRandomItem = (collection) => {
   return collection[getRandomInteger(0, collection.length - 1)];
 };
 
+export const humanizeDate = (date) => {
+  return date.toLocaleString(`en-US`, {day: `numeric`, month: `long`, year: `numeric`});
+};
