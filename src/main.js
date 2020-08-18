@@ -6,7 +6,7 @@ import FilmsPanelView from './view/films-panel.js';
 import FilmsListView from './view/films-list.js';
 import ShowMoreButtonView from './view/show-more-button.js';
 import {createFilmsListExtraTemplate} from './view/films-list-extra.js';
-import {createFilmCardTemplate} from './view/film-card.js';
+import FilmCardView from './view/film-card.js';
 import {createFilmDetailsPopupTemplate} from './view/film-details-popup.js';
 import StatisticsView from './view/statistics.js';
 import {generateFilmCard} from './mock/film-card.js';
@@ -40,10 +40,11 @@ render(mainElement, filmsPanelComponent.getElement(), RenderPosition.BEFOREEND);
 const filmsListComponent = new FilmsListView();
 render(filmsPanelComponent.getElement(), filmsListComponent.getElement(), RenderPosition.BEFOREEND);
 
+// make a component
 const filmsListContainer = filmsPanelComponent.getElement().querySelector(`.films-list__container`);
 
 for (let i = 0; i < Math.min(filmCards.length, CARDS_PER_STEP); i++) {
-  renderTemplate(filmsListContainer, createFilmCardTemplate(filmCards[i]), `beforeend`);
+  render(filmsListContainer, new FilmCardView(filmCards[i]).getElement(), RenderPosition.BEFOREEND);
 }
 
 if (filmCards.length > CARDS_PER_STEP) {
@@ -57,7 +58,7 @@ if (filmCards.length > CARDS_PER_STEP) {
 
     filmCards
       .slice(renderedCardsCount, renderedCardsCount + CARDS_PER_STEP)
-      .forEach((filmCard) => renderTemplate(filmsListContainer, createFilmCardTemplate(filmCard), `beforeend`));
+      .forEach((filmCard) => render(filmsListContainer, new FilmCardView(filmCard).getElement(), RenderPosition.BEFOREEND));
 
     renderedCardsCount += CARDS_PER_STEP;
 
@@ -68,7 +69,6 @@ if (filmCards.length > CARDS_PER_STEP) {
   });
 }
 
-
 renderTemplate(filmsPanelComponent.getElement(), createFilmsListExtraTemplate(), `beforeend`);
 renderTemplate(filmsPanelComponent.getElement(), createFilmsListExtraTemplate(), `beforeend`);
 
@@ -76,12 +76,12 @@ const extraFilmsElements = filmsPanelComponent.getElement().querySelectorAll(`.f
 
 const topRatedContainer = extraFilmsElements[0].querySelector(`.films-list__container`);
 for (let j = 0; j < EXTRA_CARDS_COUNT; j++) {
-  renderTemplate(topRatedContainer, createFilmCardTemplate(extraFilmCardsTopRated[j]), `beforeend`);
+  render(topRatedContainer, new FilmCardView(extraFilmCardsTopRated[j]).getElement(), RenderPosition.BEFOREEND);
 }
 
 const mostCommentedContainer = extraFilmsElements[1].querySelector(`.films-list__container`);
 for (let j = 0; j < EXTRA_CARDS_COUNT; j++) {
-  renderTemplate(mostCommentedContainer, createFilmCardTemplate(extraFilmCardsMostCommented[j]), `beforeend`);
+  render(mostCommentedContainer, new FilmCardView(extraFilmCardsMostCommented[j]).getElement(), RenderPosition.BEFOREEND);
 }
 
 const footerElement = document.querySelector(`.footer`);
