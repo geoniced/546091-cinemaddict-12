@@ -29,6 +29,7 @@ const renderFilmCard = (container, filmCard) => {
     const footerElement = document.querySelector(`.footer`);
     render(footerElement, filmDetailsPopupComponent.getElement(), RenderPosition.AFTEREND);
     popupCloseButton.addEventListener(`click`, onPopupCloseButtonClick);
+    document.addEventListener(`keydown`, onEscKeyDown);
   };
 
   const closeFilmDetailsPopup = () => {
@@ -36,7 +37,16 @@ const renderFilmCard = (container, filmCard) => {
     filmDetailsPopupComponent.removeElement();
   };
 
-  const onCardKeyDown = (evt) => {
+  const onEscKeyDown = (evt) => {
+    if (evt.key === `Escape` || evt.key === `Esc`) {
+      evt.preventDefault();
+      closeFilmDetailsPopup();
+      popupCloseButton.removeEventListener(`click`, onPopupCloseButtonClick);
+      document.removeEventListener(`keydown`, onEscKeyDown);
+    }
+  };
+
+  const onCardClick = (evt) => {
     if (popupOpenClasses.has(evt.target.className)) {
       evt.preventDefault();
       openFilmDetailsPopup();
@@ -47,9 +57,10 @@ const renderFilmCard = (container, filmCard) => {
     evt.preventDefault();
     closeFilmDetailsPopup();
     popupCloseButton.removeEventListener(`click`, onPopupCloseButtonClick);
+    document.removeEventListener(`keydown`, onEscKeyDown);
   };
 
-  filmCardComponent.getElement().addEventListener(`click`, onCardKeyDown);
+  filmCardComponent.getElement().addEventListener(`click`, onCardClick);
 
   render(container, filmCardComponent.getElement(), RenderPosition.BEFOREEND);
 };
