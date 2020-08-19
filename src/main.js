@@ -114,24 +114,19 @@ const renderFilmsPanel = (container, films) => {
     });
   }
 
-  const topRatedExtraComponent = new FilmsListExtraView();
-  const topRatedExtraElement = topRatedExtraComponent.getElement();
-  render(filmsPanelComponent.getElement(), topRatedExtraElement, RenderPosition.BEFOREEND);
+  renderExtraPanel(filmsPanelComponent.getElement(), topRatedFilms);
+  renderExtraPanel(filmsPanelComponent.getElement(), mostCommentedFilms);
+};
 
-  const topRatedContainer = new FilmsListContainerView().getElement();
-  render(topRatedExtraElement, topRatedContainer, RenderPosition.BEFOREEND);
+const renderExtraPanel = (container, extraFilms) => {
+  const extraPanelComponent = new FilmsListExtraView();
+  const extraPanelElement = extraPanelComponent.getElement();
+  render(container, extraPanelElement, RenderPosition.BEFOREEND);
+
+  const extraPanelContainer = new FilmsListContainerView().getElement();
+  render(extraPanelElement, extraPanelContainer, RenderPosition.BEFOREEND);
   for (let i = 0; i < EXTRA_CARDS_COUNT; i++) {
-    renderFilmCard(topRatedContainer, topRatedFilms[i]);
-  }
-
-  const mostCommentedExtraComponent = new FilmsListExtraView();
-  const mostCommentedExtraElement = mostCommentedExtraComponent.getElement();
-  render(filmsPanelComponent.getElement(), mostCommentedExtraElement, RenderPosition.BEFOREEND);
-
-  const mostCommentedContainer = new FilmsListContainerView().getElement();
-  render(mostCommentedExtraElement, mostCommentedContainer, RenderPosition.BEFOREEND);
-  for (let i = 0; i < EXTRA_CARDS_COUNT; i++) {
-    renderFilmCard(mostCommentedContainer, mostCommentedFilms[i]);
+    renderFilmCard(extraPanelContainer, extraFilms[i]);
   }
 };
 
