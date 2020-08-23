@@ -1,5 +1,5 @@
 import AbstractView from "../view/abstract.js";
-import {humanizeDate} from '../utils.js';
+import {humanizeDate} from '../utils/common.js';
 
 const formatDate = (date) => {
   const year = date.getYear() + 1900;
