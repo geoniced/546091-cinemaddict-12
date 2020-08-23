@@ -35,7 +35,6 @@ const renderFilmCard = (container, filmCard) => {
 
   const closeFilmDetailsPopup = () => {
     filmDetailsPopupComponent.getElement().remove();
-    filmDetailsPopupComponent.removeElement();
   };
 
   const onEscKeyDown = (evt) => {
