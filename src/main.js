@@ -48,7 +48,6 @@ const renderFilmCard = (container, filmCard) => {
 
   const onCardClick = (evt) => {
     if (popupOpenClasses.has(evt.target.className)) {
-      evt.preventDefault();
       openFilmDetailsPopup();
     }
   };
@@ -60,7 +59,7 @@ const renderFilmCard = (container, filmCard) => {
     document.removeEventListener(`keydown`, onEscKeyDown);
   };
 
-  filmCardComponent.getElement().addEventListener(`click`, onCardClick);
+  filmCardComponent.setClickHandler(onCardClick);
 
   render(container, filmCardComponent.getElement(), RenderPosition.BEFOREEND);
 };
