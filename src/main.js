@@ -113,12 +113,12 @@ const renderFilmsPanel = (container, films) => {
     });
   }
 
-  renderExtraPanel(filmsPanelComponent.getElement(), topRatedFilms);
-  renderExtraPanel(filmsPanelComponent.getElement(), mostCommentedFilms);
+  renderExtraPanel(filmsPanelComponent.getElement(), topRatedFilms, `Top rated`);
+  renderExtraPanel(filmsPanelComponent.getElement(), mostCommentedFilms, `Most commented`);
 };
 
-const renderExtraPanel = (container, extraFilms) => {
-  const extraPanelComponent = new FilmsListExtraView();
+const renderExtraPanel = (container, extraFilms, panelTitle) => {
+  const extraPanelComponent = new FilmsListExtraView(panelTitle);
   const extraPanelElement = extraPanelComponent.getElement();
   render(container, extraPanelElement, RenderPosition.BEFOREEND);
 
