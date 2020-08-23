@@ -13,7 +13,7 @@ import StatisticsView from './view/statistics.js';
 import NoFilmsView from './view/no-films.js';
 import {generateFilmCard} from './mock/film-card.js';
 import {generateFilters} from './mock/filter.js';
-import {render, RenderPosition} from './utils/render.js';
+import {render, RenderPosition, remove} from './utils/render.js';
 
 const CARDS_COUNT = 20;
 const EXTRA_CARDS_COUNT = 2;
@@ -24,12 +24,11 @@ const renderFilmCard = (container, filmCard) => {
   const filmDetailsPopupComponent = new FilmDetailsPopupView(filmCard);
 
   const popupOpenClasses = new Set([`film-card__poster`, `film-card__title`, `film-card__comments`]);
-  const popupCloseButton = filmDetailsPopupComponent.getElement().querySelector(`.film-details__close-btn`);
 
   const openFilmDetailsPopup = () => {
     const footerElement = document.querySelector(`.footer`);
     render(footerElement, filmDetailsPopupComponent, RenderPosition.AFTEREND);
-    popupCloseButton.addEventListener(`click`, onPopupCloseButtonClick);
+    filmDetailsPopupComponent.setPopupCloseButtonClickHandler(onPopupCloseButtonClick);
     document.addEventListener(`keydown`, onEscKeyDown);
   };
 
@@ -41,7 +40,7 @@ const renderFilmCard = (container, filmCard) => {
     if (evt.key === `Escape` || evt.key === `Esc`) {
       evt.preventDefault();
       closeFilmDetailsPopup();
-      popupCloseButton.removeEventListener(`click`, onPopupCloseButtonClick);
+      filmDetailsPopupComponent.deletePopupCloseButtonClickHandler();
       document.removeEventListener(`keydown`, onEscKeyDown);
     }
   };
@@ -52,10 +51,9 @@ const renderFilmCard = (container, filmCard) => {
     }
   };
 
-  const onPopupCloseButtonClick = (evt) => {
-    evt.preventDefault();
+  const onPopupCloseButtonClick = () => {
     closeFilmDetailsPopup();
-    popupCloseButton.removeEventListener(`click`, onPopupCloseButtonClick);
+    filmDetailsPopupComponent.deletePopupCloseButtonClickHandler();
     document.removeEventListener(`keydown`, onEscKeyDown);
   };
 
@@ -95,9 +93,7 @@ const renderFilmsPanel = (container, films) => {
     const showMoreButtonComponent = new ShowMoreButtonView();
     render(filmsListComponent, showMoreButtonComponent, RenderPosition.BEFOREEND);
 
-    showMoreButtonComponent.getElement().addEventListener(`click`, (evt) => {
-      evt.preventDefault();
-
+    showMoreButtonComponent.setClickHandler(() => {
       allFilms
         .slice(renderedCardsCount, renderedCardsCount + CARDS_PER_STEP)
         .forEach((filmCard) => renderFilmCard(filmsListContainerComponent, filmCard));
@@ -105,8 +101,7 @@ const renderFilmsPanel = (container, films) => {
       renderedCardsCount += CARDS_PER_STEP;
 
       if (renderedCardsCount >= filmCards.length) {
-        showMoreButtonComponent.getElement().remove();
-        showMoreButtonComponent.removeElement();
+        remove(showMoreButtonComponent);
       }
     });
   }
