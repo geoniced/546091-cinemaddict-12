@@ -62,7 +62,7 @@ const renderFilmCard = (container, filmCard) => {
   render(container, filmCardComponent, RenderPosition.BEFOREEND);
 };
 
-const renderFilmsPanel = (container, films) => {
+const renderFilmsList = (container, films) => {
   const {
     allFilms,
     topRatedFilms,
@@ -143,7 +143,7 @@ render(mainElement, navigationComponent, RenderPosition.BEFOREEND);
 render(navigationComponent, new FilterView(filters), RenderPosition.AFTERBEGIN);
 render(mainElement, new SortingView(), RenderPosition.BEFOREEND);
 
-renderFilmsPanel(mainElement, films);
+renderFilmsList(mainElement, films);
 
 const footerElement = document.querySelector(`.footer`);
 const footerStatisticsElement = footerElement.querySelector(`.footer__statistics`);
