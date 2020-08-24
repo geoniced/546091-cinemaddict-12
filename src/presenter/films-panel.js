@@ -14,12 +14,15 @@ const EXTRA_CARDS_COUNT = 2;
 export default class FilmsPanel {
   constructor(mainElement) {
     this._mainElement = mainElement;
+    this._renderedCardsCount = CARDS_PER_STEP;
 
     this._filmsPanelComponent = new FilmsPanelView();
     this._noFilmsComponent = new NoFilmsView();
     this._filmsListComponent = new FilmsListView();
     this._filmsListContainerComponent = new FilmsListContainerView();
     this._showMoreButtonComponent = new ShowMoreButtonView();
+
+    this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
   }
 
   init(films) {
@@ -123,23 +126,20 @@ export default class FilmsPanel {
     render(this._filmsListContainerComponent, filmCardComponent, RenderPosition.BEFOREEND);
   }
 
+  _handleShowMoreButtonClick() {
+    this._renderFilmCards(this._renderedCardsCount, this._renderedCardsCount + CARDS_PER_STEP);
+    this._renderedCardsCount += CARDS_PER_STEP;
+
+    if (this._renderedCardsCount >= this._allFilms.length) {
+      remove(this._showMoreButtonComponent);
+    }
+  }
+
   _renderShowMoreButton() {
     // Рисует кнопку допоказа
-    let renderedCardsCount = CARDS_PER_STEP;
-
     render(this._filmsListComponent, this._showMoreButtonComponent, RenderPosition.BEFOREEND);
 
-    this._showMoreButtonComponent.setClickHandler(() => {
-      this._allFilms
-        .slice(renderedCardsCount, renderedCardsCount + CARDS_PER_STEP)
-        .forEach((filmCard) => this._renderFilmCard(filmCard));
-
-      renderedCardsCount += CARDS_PER_STEP;
-
-      if (renderedCardsCount >= this._allFilms.length) {
-        remove(this._showMoreButtonComponent);
-      }
-    });
+    this._showMoreButtonComponent.setClickHandler(this._handleShowMoreButtonClick);
   }
 
   _renderExtraPanel(panelTitle, films) {
