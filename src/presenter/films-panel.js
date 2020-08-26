@@ -97,14 +97,13 @@ export default class FilmsPanel {
     };
 
     const closeFilmDetailsPopup = () => {
-      filmDetailsPopupComponent.getElement().remove();
+      remove(filmDetailsPopupComponent);
     };
 
     const onEscKeyDown = (evt) => {
       if (evt.key === `Escape` || evt.key === `Esc`) {
         evt.preventDefault();
         closeFilmDetailsPopup();
-        filmDetailsPopupComponent.deletePopupCloseButtonClickHandler();
         document.removeEventListener(`keydown`, onEscKeyDown);
       }
     };
@@ -117,7 +116,6 @@ export default class FilmsPanel {
 
     const onPopupCloseButtonClick = () => {
       closeFilmDetailsPopup();
-      filmDetailsPopupComponent.deletePopupCloseButtonClickHandler();
       document.removeEventListener(`keydown`, onEscKeyDown);
     };
 
