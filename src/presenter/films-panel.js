@@ -51,8 +51,8 @@ export default class FilmsPanel {
 
     this._renderSorting();
 
-    this._renderFilmsList();
-    this._renderFilmsListContainer();
+    this._renderFilmsListComponent();
+    this._renderFilmsListContainerComponent();
 
     this._renderFilmCardsList();
 
@@ -96,13 +96,13 @@ export default class FilmsPanel {
     render(this._filmsPanelComponent, this._noFilmsComponent, RenderPosition.BEFOREEND);
   }
 
-  _renderFilmsList() {
+  _renderFilmsListComponent() {
     // Рисуем компонент списка фильмов
     // Возможно это всё объединится где-то выше в FilmsPanel?
     render(this._filmsPanelComponent, this._filmsListComponent, RenderPosition.BEFOREEND);
   }
 
-  _renderFilmsListContainer() {
+  _renderFilmsListContainerComponent() {
     // Рисуем контейнер под задачи
     // Возможно это всё объединится где-то выше в FilmsPanel?
     render(this._filmsListComponent, this._filmsListContainerComponent, RenderPosition.BEFOREEND);
