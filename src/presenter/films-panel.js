@@ -76,14 +76,13 @@ export default class FilmsPanel {
   }
 
   _handleSortTypeChange(sortType) {
-    // Сортируем фильмы в структуре allFilms
     if (this._currentSortType === sortType) {
       return;
     }
 
     this._sortFilms(sortType);
-    // Очищаем список
-    // Рисуем список заново
+    this._clearFilmCardsList();
+    this._renderFilmCardsList();
   }
 
   _renderSorting() {
@@ -98,14 +97,19 @@ export default class FilmsPanel {
 
   _renderFilmsListComponent() {
     // Рисуем компонент списка фильмов
-    // Возможно это всё объединится где-то выше в FilmsPanel?
     render(this._filmsPanelComponent, this._filmsListComponent, RenderPosition.BEFOREEND);
   }
 
   _renderFilmsListContainerComponent() {
     // Рисуем контейнер под задачи
-    // Возможно это всё объединится где-то выше в FilmsPanel?
     render(this._filmsListComponent, this._filmsListContainerComponent, RenderPosition.BEFOREEND);
+  }
+
+  _clearFilmCardsList() {
+    this._filmsListContainerComponent.getElement().innerHTML = ``;
+    remove(this._showMoreButtonComponent);
+
+    this._renderedCardsCount = CARDS_PER_STEP;
   }
 
   _renderFilmCardsList() {
