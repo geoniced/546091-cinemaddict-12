@@ -47,8 +47,8 @@ export default class FilmsPanel {
 
     this._renderFilmCardsList();
 
-    // this._renderExtraPanel(`Top rated`, this._topRatedFilms);
-    // this._renderExtraPanel(`Most commented`, this._mostCommentedFilms);
+    this._renderExtraPanel(`Top rated`, this._topRatedFilms);
+    this._renderExtraPanel(`Most commented`, this._mostCommentedFilms);
   }
 
   _renderNoFilms() {
@@ -83,7 +83,7 @@ export default class FilmsPanel {
       .forEach((filmCard) => this._renderFilmCard(filmCard));
   }
 
-  _renderFilmCard(card) {
+  _renderFilmCard(card, container = this._filmsListContainerComponent) {
     const filmCardComponent = new FilmCardView(card);
     const filmDetailsPopupComponent = new FilmDetailsPopupView(card);
 
@@ -121,7 +121,7 @@ export default class FilmsPanel {
 
     filmCardComponent.setClickHandler(onCardClick);
 
-    render(this._filmsListContainerComponent, filmCardComponent, RenderPosition.BEFOREEND);
+    render(container, filmCardComponent, RenderPosition.BEFOREEND);
   }
 
   _handleShowMoreButtonClick() {
@@ -142,14 +142,13 @@ export default class FilmsPanel {
 
   _renderExtraPanel(panelTitle, films) {
     // Рисует экстра панель
-    // Отдельный презентер?
     const extraPanelComponent = new FilmsListExtraView(panelTitle);
     render(this._filmsPanelComponent, extraPanelComponent, RenderPosition.BEFOREEND);
 
     const extraPanelContainerComponent = new FilmsListContainerView();
     render(extraPanelComponent, extraPanelContainerComponent, RenderPosition.BEFOREEND);
     for (let i = 0; i < EXTRA_CARDS_COUNT; i++) {
-      this._renderFilmCard(films[i]);
+      this._renderFilmCard(films[i], extraPanelContainerComponent);
     }
   }
 }
