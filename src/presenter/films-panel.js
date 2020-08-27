@@ -8,6 +8,8 @@ import FilmCardView from '../view/film-card.js';
 import FilmDetailsPopupView from '../view/film-details-popup.js';
 import FilmsListExtraView from '../view/films-list-extra.js';
 import {render, RenderPosition, remove} from '../utils/render.js';
+import {sortByDate, sortByRating} from '../utils/film.js';
+import {SortType} from '../const.js';
 
 const CARDS_PER_STEP = 5;
 const EXTRA_CARDS_COUNT = 2;
@@ -16,6 +18,7 @@ export default class FilmsPanel {
   constructor(mainElement) {
     this._mainElement = mainElement;
     this._renderedCardsCount = CARDS_PER_STEP;
+    this._currentSortType = SortType.DEFAULT;
 
     this._sortingComponent = new SortingView();
     this._filmsPanelComponent = new FilmsPanelView();
@@ -25,13 +28,15 @@ export default class FilmsPanel {
     this._showMoreButtonComponent = new ShowMoreButtonView();
 
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
+    this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
   }
 
   init(films) {
     this._films = Object.assign(films);
-    this._allFilms = this._films.allFilms;
-    this._topRatedFilms = this._films.topRatedFilms;
-    this._mostCommentedFilms = this._films.mostCommentedFilms;
+    this._allFilms = this._films.allFilms.slice();
+    this._topRatedFilms = this._films.topRatedFilms.slice();
+    this._mostCommentedFilms = this._films.mostCommentedFilms.slice();
+    this._sourcedAllFilms = this._films.allFilms.slice();
 
     render(this._mainElement, this._filmsPanelComponent, RenderPosition.BEFOREEND);
 
@@ -55,8 +60,35 @@ export default class FilmsPanel {
     this._renderExtraPanel(`Most commented`, this._mostCommentedFilms);
   }
 
+  _sortFilms(sortType) {
+    switch (sortType) {
+      case SortType.BY_DATE:
+        this._allFilms.sort(sortByDate);
+        break;
+      case SortType.BY_RATING:
+        this._allFilms.sort(sortByRating);
+        break;
+      default:
+        this._allFilms = this._sourcedAllFilms.slice();
+    }
+
+    this._currentSortType = sortType;
+  }
+
+  _handleSortTypeChange(sortType) {
+    // Сортируем фильмы в структуре allFilms
+    if (this._currentSortType === sortType) {
+      return;
+    }
+
+    this._sortFilms(sortType);
+    // Очищаем список
+    // Рисуем список заново
+  }
+
   _renderSorting() {
     render(this._filmsPanelComponent, this._sortingComponent, RenderPosition.BEFOREBEGIN);
+    this._sortingComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
   }
 
   _renderNoFilms() {
