@@ -1,3 +1,4 @@
+import SortingView from '../view/sorting.js';
 import FilmsPanelView from '../view/films-panel.js';
 import NoFilmsView from '../view/no-films.js';
 import FilmsListView from '../view/films-list.js';
@@ -7,6 +8,8 @@ import FilmCardView from '../view/film-card.js';
 import FilmDetailsPopupView from '../view/film-details-popup.js';
 import FilmsListExtraView from '../view/films-list-extra.js';
 import {render, RenderPosition, remove} from '../utils/render.js';
+import {sortByDate, sortByRating} from '../utils/film.js';
+import {SortType} from '../const.js';
 
 const CARDS_PER_STEP = 5;
 const EXTRA_CARDS_COUNT = 2;
@@ -15,7 +18,9 @@ export default class FilmsPanel {
   constructor(mainElement) {
     this._mainElement = mainElement;
     this._renderedCardsCount = CARDS_PER_STEP;
+    this._currentSortType = SortType.DEFAULT;
 
+    this._sortingComponent = new SortingView();
     this._filmsPanelComponent = new FilmsPanelView();
     this._noFilmsComponent = new NoFilmsView();
     this._filmsListComponent = new FilmsListView();
@@ -23,13 +28,15 @@ export default class FilmsPanel {
     this._showMoreButtonComponent = new ShowMoreButtonView();
 
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
+    this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
   }
 
   init(films) {
     this._films = Object.assign(films);
-    this._allFilms = this._films.allFilms;
-    this._topRatedFilms = this._films.topRatedFilms;
-    this._mostCommentedFilms = this._films.mostCommentedFilms;
+    this._allFilms = this._films.allFilms.slice();
+    this._topRatedFilms = this._films.topRatedFilms.slice();
+    this._mostCommentedFilms = this._films.mostCommentedFilms.slice();
+    this._sourcedAllFilms = this._films.allFilms.slice();
 
     render(this._mainElement, this._filmsPanelComponent, RenderPosition.BEFOREEND);
 
@@ -42,8 +49,10 @@ export default class FilmsPanel {
       return;
     }
 
-    this._renderFilmsList();
-    this._renderFilmsListContainer();
+    this._renderSorting();
+
+    this._renderFilmsListComponent();
+    this._renderFilmsListContainerComponent();
 
     this._renderFilmCardsList();
 
@@ -51,21 +60,56 @@ export default class FilmsPanel {
     this._renderExtraPanel(`Most commented`, this._mostCommentedFilms);
   }
 
+  _sortFilms(sortType) {
+    switch (sortType) {
+      case SortType.BY_DATE:
+        this._allFilms.sort(sortByDate);
+        break;
+      case SortType.BY_RATING:
+        this._allFilms.sort(sortByRating);
+        break;
+      default:
+        this._allFilms = this._sourcedAllFilms.slice();
+    }
+
+    this._currentSortType = sortType;
+  }
+
+  _handleSortTypeChange(sortType) {
+    if (this._currentSortType === sortType) {
+      return;
+    }
+
+    this._sortFilms(sortType);
+    this._clearFilmCardsList();
+    this._renderFilmCardsList();
+  }
+
+  _renderSorting() {
+    render(this._filmsPanelComponent, this._sortingComponent, RenderPosition.BEFOREBEGIN);
+    this._sortingComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
+  }
+
   _renderNoFilms() {
     // Рисуем компонент без фильмов
     render(this._filmsPanelComponent, this._noFilmsComponent, RenderPosition.BEFOREEND);
   }
 
-  _renderFilmsList() {
+  _renderFilmsListComponent() {
     // Рисуем компонент списка фильмов
-    // Возможно это всё объединится где-то выше в FilmsPanel?
     render(this._filmsPanelComponent, this._filmsListComponent, RenderPosition.BEFOREEND);
   }
 
-  _renderFilmsListContainer() {
+  _renderFilmsListContainerComponent() {
     // Рисуем контейнер под задачи
-    // Возможно это всё объединится где-то выше в FilmsPanel?
     render(this._filmsListComponent, this._filmsListContainerComponent, RenderPosition.BEFOREEND);
+  }
+
+  _clearFilmCardsList() {
+    this._filmsListContainerComponent.getElement().innerHTML = ``;
+    remove(this._showMoreButtonComponent);
+
+    this._renderedCardsCount = CARDS_PER_STEP;
   }
 
   _renderFilmCardsList() {
