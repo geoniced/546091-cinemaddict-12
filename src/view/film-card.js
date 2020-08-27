@@ -1,4 +1,4 @@
-import {createElement} from "../utils";
+import AbstractView from "../view/abstract.js";
 
 const formatDescription = (description) => {
   const SYMBOLS_COUNT = 140;
@@ -63,25 +63,25 @@ const createFilmCardTemplate = (film) => {
   );
 };
 
-export default class FilmCard {
+export default class FilmCard extends AbstractView {
   constructor(film) {
-    this._element = null;
+    super();
     this._film = film;
+
+    this._handleCardClick = this._handleCardClick.bind(this);
   }
 
   getTemplate() {
     return createFilmCardTemplate(this._film);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
+  _handleCardClick(evt) {
+    evt.preventDefault();
+    this._callback.cardClick(evt);
   }
 
-  removeElement() {
-    this._element = null;
+  setClickHandler(callback) {
+    this._callback.cardClick = callback;
+    this.getElement().addEventListener(`click`, this._handleCardClick);
   }
 }

@@ -1,4 +1,4 @@
-import {getRandomInteger, getRandomItem, getUniqueArray} from '../utils.js';
+import {getRandomInteger, getRandomItem, getUniqueArray} from '../utils/common.js';
 
 const getRandomSentences = () => {
   return [

@@ -1,4 +1,5 @@
-import {createElement, humanizeDate} from '../utils.js';
+import AbstractView from "../view/abstract.js";
+import {humanizeDate} from '../utils/common.js';
 
 const formatDate = (date) => {
   const year = date.getYear() + 1900;
@@ -206,25 +207,29 @@ const createFilmDetailsPopupTemplate = (film) => {
   );
 };
 
-export default class FilmDetailsPopup {
+export default class FilmDetailsPopup extends AbstractView {
   constructor(filmDetails) {
-    this._element = null;
+    super();
     this._filmDetails = filmDetails;
+
+    this._popupCloseButtonClickHandler = this._popupCloseButtonClickHandler.bind(this);
   }
 
   getTemplate() {
     return createFilmDetailsPopupTemplate(this._filmDetails);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
+  _getPopupCloseButton() {
+    return this.getElement().querySelector(`.film-details__close-btn`);
   }
 
-  removeElement() {
-    this._element = null;
+  _popupCloseButtonClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.popupCloseClick();
+  }
+
+  setPopupCloseButtonClickHandler(callback) {
+    this._callback.popupCloseClick = callback;
+    this._getPopupCloseButton().addEventListener(`click`, this._popupCloseButtonClickHandler);
   }
 }
