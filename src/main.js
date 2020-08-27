@@ -1,7 +1,6 @@
 import UserScoreView from './view/user-score.js';
 import NavigationView from './view/navigation.js';
 import FilterView from './view/filter.js';
-import SortingView from './view/sorting.js';
 import FilmsPanelPresenter from './presenter/films-panel.js';
 import StatisticsView from './view/statistics.js';
 import {generateFilmCard} from './mock/film-card.js';
@@ -31,7 +30,6 @@ const navigationComponent = new NavigationView();
 render(mainElement, navigationComponent, RenderPosition.BEFOREEND);
 
 render(navigationComponent, new FilterView(filters), RenderPosition.AFTERBEGIN);
-render(mainElement, new SortingView(), RenderPosition.BEFOREEND);
 
 const filmsPanelPresenter = new FilmsPanelPresenter(mainElement);
 filmsPanelPresenter.init(films);

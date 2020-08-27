@@ -1,3 +1,4 @@
+import SortingView from '../view/sorting.js';
 import FilmsPanelView from '../view/films-panel.js';
 import NoFilmsView from '../view/no-films.js';
 import FilmsListView from '../view/films-list.js';
@@ -16,6 +17,7 @@ export default class FilmsPanel {
     this._mainElement = mainElement;
     this._renderedCardsCount = CARDS_PER_STEP;
 
+    this._sortingComponent = new SortingView();
     this._filmsPanelComponent = new FilmsPanelView();
     this._noFilmsComponent = new NoFilmsView();
     this._filmsListComponent = new FilmsListView();
@@ -42,6 +44,8 @@ export default class FilmsPanel {
       return;
     }
 
+    this._renderSorting();
+
     this._renderFilmsList();
     this._renderFilmsListContainer();
 
@@ -49,6 +53,10 @@ export default class FilmsPanel {
 
     this._renderExtraPanel(`Top rated`, this._topRatedFilms);
     this._renderExtraPanel(`Most commented`, this._mostCommentedFilms);
+  }
+
+  _renderSorting() {
+    render(this._filmsPanelComponent, this._sortingComponent, RenderPosition.BEFOREBEGIN);
   }
 
   _renderNoFilms() {
