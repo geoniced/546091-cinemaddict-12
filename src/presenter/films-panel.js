@@ -18,6 +18,7 @@ export default class FilmsPanel {
     this._mainElement = mainElement;
     this._renderedCardsCount = CARDS_PER_STEP;
     this._currentSortType = SortType.DEFAULT;
+    this._filmPresenter = {};
 
     this._sortingComponent = new SortingView();
     this._filmsPanelComponent = new FilmsPanelView();
@@ -105,7 +106,11 @@ export default class FilmsPanel {
   }
 
   _clearFilmCardsList() {
-    this._filmsListContainerComponent.getElement().innerHTML = ``;
+    Object
+      .values(this._filmPresenter)
+      .forEach((presenter) => presenter.destroy());
+    this._filmPresenter = {};
+
     remove(this._showMoreButtonComponent);
 
     this._renderedCardsCount = CARDS_PER_STEP;
@@ -129,6 +134,7 @@ export default class FilmsPanel {
   _renderFilmCard(card, container = this._filmsListContainerComponent) {
     const filmCardPresenter = new FilmCardPresenter(container);
     filmCardPresenter.init(card);
+    this._filmPresenter[card.id] = filmCardPresenter;
   }
 
   _handleShowMoreButtonClick() {
