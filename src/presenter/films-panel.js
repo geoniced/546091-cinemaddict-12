@@ -4,9 +4,8 @@ import NoFilmsView from '../view/no-films.js';
 import FilmsListView from '../view/films-list.js';
 import FilmsListContainerView from '../view/films-list-container.js';
 import ShowMoreButtonView from '../view/show-more-button.js';
-import FilmCardView from '../view/film-card.js';
-import FilmDetailsPopupView from '../view/film-details-popup.js';
 import FilmsListExtraView from '../view/films-list-extra.js';
+import FilmCardPresenter from './film-card.js';
 import {render, RenderPosition, remove} from '../utils/render.js';
 import {sortByDate, sortByRating} from '../utils/film.js';
 import {SortType} from '../const.js';
@@ -128,44 +127,8 @@ export default class FilmsPanel {
   }
 
   _renderFilmCard(card, container = this._filmsListContainerComponent) {
-    const filmCardComponent = new FilmCardView(card);
-    const filmDetailsPopupComponent = new FilmDetailsPopupView(card);
-
-    const popupOpenClasses = new Set([`film-card__poster`, `film-card__title`, `film-card__comments`]);
-
-    const openFilmDetailsPopup = () => {
-      const footerElement = document.querySelector(`.footer`);
-      render(footerElement, filmDetailsPopupComponent, RenderPosition.AFTEREND);
-      filmDetailsPopupComponent.setPopupCloseButtonClickHandler(onPopupCloseButtonClick);
-      document.addEventListener(`keydown`, onEscKeyDown);
-    };
-
-    const closeFilmDetailsPopup = () => {
-      remove(filmDetailsPopupComponent);
-    };
-
-    const onEscKeyDown = (evt) => {
-      if (evt.key === `Escape` || evt.key === `Esc`) {
-        evt.preventDefault();
-        closeFilmDetailsPopup();
-        document.removeEventListener(`keydown`, onEscKeyDown);
-      }
-    };
-
-    const onCardClick = (evt) => {
-      if (popupOpenClasses.has(evt.target.className)) {
-        openFilmDetailsPopup();
-      }
-    };
-
-    const onPopupCloseButtonClick = () => {
-      closeFilmDetailsPopup();
-      document.removeEventListener(`keydown`, onEscKeyDown);
-    };
-
-    filmCardComponent.setClickHandler(onCardClick);
-
-    render(container, filmCardComponent, RenderPosition.BEFOREEND);
+    const filmCardPresenter = new FilmCardPresenter(container);
+    filmCardPresenter.init(card);
   }
 
   _handleShowMoreButtonClick() {
