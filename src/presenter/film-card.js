@@ -1,6 +1,6 @@
 import FilmCardView from '../view/film-card.js';
 import FilmDetailsPopupView from '../view/film-details-popup.js';
-import {render, RenderPosition, remove} from '../utils/render.js';
+import {render, RenderPosition, remove, replace} from '../utils/render.js';
 
 const POPUP_OPEN_CLASSES = new Set([`film-card__poster`, `film-card__title`, `film-card__comments`]);
 
@@ -9,6 +9,7 @@ export default class FilmCard {
     this._filmCardsContainer = container;
     this._filmCardComponent = null;
     this._filmDetailsPopupComponent = null;
+    this._footerElement = document.querySelector(`.footer`);
 
     this._handlePopupCloseButtonClick = this._handlePopupCloseButtonClick.bind(this);
     this._handleCardClick = this._handleCardClick.bind(this);
@@ -16,17 +17,36 @@ export default class FilmCard {
   }
 
   init(card) {
+    const prevFilmCardComponent = this._filmCardComponent;
+    const prevFilmDetailsPopupComponent = this._filmDetailsPopupComponent;
+
     this._filmCardComponent = new FilmCardView(card);
     this._filmDetailsPopupComponent = new FilmDetailsPopupView(card);
 
     this._filmCardComponent.setClickHandler(this._handleCardClick);
 
-    render(this._filmCardsContainer, this._filmCardComponent, RenderPosition.BEFOREEND);
+    if (prevFilmCardComponent === null || prevFilmDetailsPopupComponent === null) {
+      render(this._filmCardsContainer, this._filmCardComponent, RenderPosition.BEFOREEND);
+      return;
+    }
+
+    replace(this._filmCardComponent, prevFilmCardComponent);
+
+    if (this._footerElement.contains(this._filmDetailsPopupComponent.getElement())) {
+      replace(this._filmDetailsPopupComponent, prevFilmDetailsPopupComponent);
+    }
+
+    remove(prevFilmCardComponent);
+    remove(prevFilmDetailsPopupComponent);
+  }
+
+  destroy() {
+    remove(this._filmCardComponent);
+    remove(this._filmDetailsPopupComponent);
   }
 
   _openFilmDetailsPopup() {
-    const footerElement = document.querySelector(`.footer`);
-    render(footerElement, this._filmDetailsPopupComponent, RenderPosition.AFTEREND);
+    render(this._footerElement, this._filmDetailsPopupComponent, RenderPosition.AFTEREND);
     this._filmDetailsPopupComponent.setPopupCloseButtonClickHandler(this._handlePopupCloseButtonClick);
     document.addEventListener(`keydown`, this._escKeyDownHandler);
   }
