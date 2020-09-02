@@ -19,6 +19,9 @@ export default class FilmsPanel {
     this._renderedCardsCount = CARDS_PER_STEP;
     this._currentSortType = SortType.DEFAULT;
     this._filmPresenter = {};
+    // TBD
+    // this._topRatedPresenter = {};
+    // this._mostCommentedPresenter = {};
 
     this._sortingComponent = new SortingView();
     this._filmsPanelComponent = new FilmsPanelView();
@@ -134,7 +137,11 @@ export default class FilmsPanel {
   _renderFilmCard(card, container = this._filmsListContainerComponent) {
     const filmCardPresenter = new FilmCardPresenter(container);
     filmCardPresenter.init(card);
-    this._filmPresenter[card.id] = filmCardPresenter;
+
+    // It is to have only a list of films that are not included in sorts/filtering
+    if (container === this._filmsListContainerComponent) {
+      this._filmPresenter[card.id] = filmCardPresenter;
+    }
   }
 
   _handleShowMoreButtonClick() {
