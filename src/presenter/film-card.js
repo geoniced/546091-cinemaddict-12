@@ -92,8 +92,15 @@ export default class FilmCard {
 
   _openFilmDetailsPopup() {
     render(this._footerElement, this._filmDetailsPopupComponent, RenderPosition.AFTEREND);
+
+    // popup events
     this._filmDetailsPopupComponent.setPopupCloseButtonClickHandler(this._handlePopupCloseButtonClick);
+    this._filmDetailsPopupComponent.setAddToWatchListClickHandler(this._handleAddToWatchlistClick);
+    this._filmDetailsPopupComponent.setAlreadyWatchedClickHandler(this._handleAlreadyWatchedClick);
+    this._filmDetailsPopupComponent.setFavoriteClickHandler(this._handleFavoriteClick);
+
     document.addEventListener(`keydown`, this._escKeyDownHandler);
+    // end //
   }
 
   _closeFilmDetailsPopup() {
