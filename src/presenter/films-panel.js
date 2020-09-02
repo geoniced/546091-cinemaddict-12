@@ -6,12 +6,28 @@ import FilmsListContainerView from '../view/films-list-container.js';
 import ShowMoreButtonView from '../view/show-more-button.js';
 import FilmsListExtraView from '../view/films-list-extra.js';
 import FilmCardPresenter from './film-card.js';
+import {updateItem} from '../utils/common.js';
 import {render, RenderPosition, remove} from '../utils/render.js';
 import {sortByDate, sortByRating} from '../utils/film.js';
 import {SortType} from '../const.js';
 
 const CARDS_PER_STEP = 5;
 const EXTRA_CARDS_COUNT = 2;
+
+const CardTypeBindings = {
+  [`all-films`]: {
+    presenter: null,
+    cards: null,
+  },
+  [`top-rated`]: {
+    presenter: null,
+    cards: null,
+  },
+  [`most-commented`]: {
+    presenter: null,
+    cards: null,
+  },
+};
 
 export default class FilmsPanel {
   constructor(mainElement) {
@@ -20,8 +36,12 @@ export default class FilmsPanel {
     this._currentSortType = SortType.DEFAULT;
     this._filmPresenter = {};
     // TBD
-    // this._topRatedPresenter = {};
-    // this._mostCommentedPresenter = {};
+    this._topRatedPresenter = {};
+    this._mostCommentedPresenter = {};
+
+    CardTypeBindings[`all-films`].presenter = this._filmPresenter;
+    CardTypeBindings[`top-rated`].presenter = this._topRatedPresenter;
+    CardTypeBindings[`most-commented`].presenter = this._mostCommentedPresenter;
 
     this._sortingComponent = new SortingView();
     this._filmsPanelComponent = new FilmsPanelView();
@@ -30,6 +50,7 @@ export default class FilmsPanel {
     this._filmsListContainerComponent = new FilmsListContainerView();
     this._showMoreButtonComponent = new ShowMoreButtonView();
 
+    this._handleFilmCardChange = this._handleFilmCardChange.bind(this);
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
   }
@@ -40,6 +61,10 @@ export default class FilmsPanel {
     this._topRatedFilms = this._films.topRatedFilms.slice();
     this._mostCommentedFilms = this._films.mostCommentedFilms.slice();
     this._sourcedAllFilms = this._films.allFilms.slice();
+
+    CardTypeBindings[`all-films`].cards = this._allFilms;
+    CardTypeBindings[`top-rated`].cards = this._topRatedFilms;
+    CardTypeBindings[`most-commented`].cards = this._mostCommentedFilms;
 
     render(this._mainElement, this._filmsPanelComponent, RenderPosition.BEFOREEND);
 
@@ -132,16 +157,29 @@ export default class FilmsPanel {
     this._allFilms
       .slice(from, to)
       .forEach((filmCard) => this._renderFilmCard(filmCard));
+
+    console.log(CardTypeBindings);
   }
 
   _renderFilmCard(card, container = this._filmsListContainerComponent) {
     const filmCardPresenter = new FilmCardPresenter(container);
     filmCardPresenter.init(card);
 
-    // It is to have only a list of films that are not included in sorts/filtering
-    if (container === this._filmsListContainerComponent) {
-      this._filmPresenter[card.id] = filmCardPresenter;
+    const cardType = card.type ? card.type : `all-films`;
+    const filmPresenter = CardTypeBindings[cardType].presenter;
+    filmPresenter[card.id] = filmCardPresenter;
+  }
+
+  _handleFilmCardChange(updatedFilmCard) {
+    // получить список фильмов
+    const cardInfo = CardTypeBindings[updatedFilmCard.type];
+    cardInfo.cards = updateItem(cardInfo.cards, updatedFilmCard);
+
+    if (!updatedFilmCard.type) {
+      this._sourcedAllFilms = updateItem(this._sourcedAllFilms, updatedFilmCard);
     }
+    // заинициализировать снова этот компонент соответствующего презентера
+    cardInfo.presenter[updatedFilmCard.id].init(updatedFilmCard);
   }
 
   _handleShowMoreButtonClick() {

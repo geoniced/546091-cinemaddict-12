@@ -11,8 +11,27 @@ const CARDS_COUNT = 20;
 const EXTRA_CARDS_COUNT = 2;
 
 const filmCards = new Array(CARDS_COUNT).fill().map(generateFilmCard);
-const extraFilmCardsTopRated = new Array(EXTRA_CARDS_COUNT).fill().map(generateFilmCard);
-const extraFilmCardsMostCommented = new Array(EXTRA_CARDS_COUNT).fill().map(generateFilmCard);
+// Mixing in types of film cards
+const extraFilmCardsTopRated = new Array(EXTRA_CARDS_COUNT)
+  .fill()
+  .map(generateFilmCard)
+  .map((card) => Object.assign(
+      {},
+      card,
+      {
+        type: `top-rated`,
+      }
+  ));
+const extraFilmCardsMostCommented = new Array(EXTRA_CARDS_COUNT)
+  .fill()
+  .map(generateFilmCard)
+  .map((card) => Object.assign(
+      {},
+      card,
+      {
+        type: `most-commented`,
+      }
+  ));
 
 const films = {
   allFilms: filmCards,
