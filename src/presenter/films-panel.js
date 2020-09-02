@@ -157,12 +157,10 @@ export default class FilmsPanel {
     this._allFilms
       .slice(from, to)
       .forEach((filmCard) => this._renderFilmCard(filmCard));
-
-    console.log(CardTypeBindings);
   }
 
   _renderFilmCard(card, container = this._filmsListContainerComponent) {
-    const filmCardPresenter = new FilmCardPresenter(container);
+    const filmCardPresenter = new FilmCardPresenter(container, this._handleFilmCardChange);
     filmCardPresenter.init(card);
 
     const cardType = card.type ? card.type : `all-films`;
@@ -172,10 +170,11 @@ export default class FilmsPanel {
 
   _handleFilmCardChange(updatedFilmCard) {
     // получить список фильмов
-    const cardInfo = CardTypeBindings[updatedFilmCard.type];
+    const type = updatedFilmCard.type ? updatedFilmCard.type : `all-films`;
+    const cardInfo = CardTypeBindings[type];
     cardInfo.cards = updateItem(cardInfo.cards, updatedFilmCard);
 
-    if (!updatedFilmCard.type) {
+    if (!type) {
       this._sourcedAllFilms = updateItem(this._sourcedAllFilms, updatedFilmCard);
     }
     // заинициализировать снова этот компонент соответствующего презентера
