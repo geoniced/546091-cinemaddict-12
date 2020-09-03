@@ -41,7 +41,7 @@ export default class FilmCard {
 
     replace(this._filmCardComponent, prevFilmCardComponent);
 
-    if (this._footerElement.contains(this._filmDetailsPopupComponent.getElement())) {
+    if (document.contains(prevFilmDetailsPopupComponent.getElement())) {
       replace(this._filmDetailsPopupComponent, prevFilmDetailsPopupComponent);
     }
 
