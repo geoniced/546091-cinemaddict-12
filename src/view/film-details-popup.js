@@ -1,4 +1,4 @@
-import AbstractView from "../view/abstract.js";
+import SmartView from "../view/smart.js";
 import {humanizeDate} from '../utils/common.js';
 import {EMOTIONS} from "../const.js";
 
@@ -227,7 +227,7 @@ const createFilmDetailsPopupTemplate = (data) => {
   );
 };
 
-export default class FilmDetailsPopup extends AbstractView {
+export default class FilmDetailsPopup extends SmartView {
   constructor(filmDetails) {
     super();
     // this._filmDetails = filmDetails;
@@ -244,33 +244,6 @@ export default class FilmDetailsPopup extends AbstractView {
 
   getTemplate() {
     return createFilmDetailsPopupTemplate(this._data);
-  }
-
-  updateData(update) {
-    if (!update) {
-      return;
-    }
-
-    this._data = Object.assign(
-        {},
-        this._data,
-        update
-    );
-
-    this.updateElement();
-  }
-
-  updateElement() {
-    let prevElement = this.getElement();
-    const parent = prevElement.parentElement;
-    this.removeElement();
-
-    const newElement = this.getElement();
-
-    parent.replaceChild(newElement, prevElement);
-    prevElement = null;
-
-    this.restoreHandlers();
   }
 
   restoreHandlers() {
