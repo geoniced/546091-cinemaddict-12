@@ -80,7 +80,7 @@ const createCurrentEmojiTemplate = (emotion) => {
   return `<img src="images/emoji/${emotion}.png" width="55" height="55" alt="emoji-${emotion}">`;
 };
 
-const createNewCommentTemplate = (emotion) => {
+const createNewCommentTemplate = (emotion, comment) => {
   const emotionsListTemplate = createEmotionsListTemplate(emotion);
   const currentEmojiTemplate = createCurrentEmojiTemplate(emotion);
 
@@ -88,7 +88,7 @@ const createNewCommentTemplate = (emotion) => {
     `<div for="add-emoji" class="film-details__add-emoji-label">${currentEmojiTemplate}</div>
 
       <label class="film-details__comment-label">
-        <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
+        <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${comment}</textarea>
       </label>
 
       <div class="film-details__emoji-list">
@@ -118,6 +118,7 @@ const createFilmDetailsPopupTemplate = (data) => {
     isWatched,
     isInWatchlist,
     emotion,
+    comment,
   } = data;
 
   const writersText = writers.join(`, `);
@@ -131,7 +132,7 @@ const createFilmDetailsPopupTemplate = (data) => {
   const commentsCount = comments.length;
   const commentItems = comments.map(createCommentItemTemplate).join(``);
 
-  const newCommentTemplate = createNewCommentTemplate(emotion);
+  const newCommentTemplate = createNewCommentTemplate(emotion, comment);
 
   return (
     `<section class="film-details">
@@ -233,11 +234,15 @@ export default class FilmDetailsPopup extends SmartView {
     // this._filmDetails = filmDetails;
     this._data = FilmDetailsPopup.parseFilmCardToData(filmDetails);
 
+    // outside
     this._popupCloseButtonClickHandler = this._popupCloseButtonClickHandler.bind(this);
     this._addToWatchlistClickHandler = this._addToWatchlistClickHandler.bind(this);
     this._alreadyWatchedClickHandler = this._alreadyWatchedClickHandler.bind(this);
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
+
+    // inside
     this._emotionChangeHandler = this._emotionChangeHandler.bind(this);
+    this._commentInputHandler = this._commentInputHandler.bind(this);
 
     this._setInnerHandlers();
   }
@@ -248,6 +253,7 @@ export default class FilmDetailsPopup extends SmartView {
 
   restoreHandlers() {
     this._setInnerHandlers();
+
     this.setPopupCloseButtonClickHandler(this._callback.popupCloseClick);
     this.setAddToWatchListClickHandler(this._callback.addToWatchlistClick);
     this.setAlreadyWatchedClickHandler(this._callback.alreadyWatchedClick);
@@ -286,10 +292,21 @@ export default class FilmDetailsPopup extends SmartView {
     });
   }
 
+  _commentInputHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      comment: evt.target.value
+    }, true);
+  }
+
   _setInnerHandlers() {
     this.getElement()
       .querySelector(`.film-details__emoji-list`)
       .addEventListener(`change`, this._emotionChangeHandler);
+
+    this.getElement()
+      .querySelector(`.film-details__comment-input`)
+      .addEventListener(`input`, this._commentInputHandler);
   }
 
   setPopupCloseButtonClickHandler(callback) {
@@ -317,7 +334,8 @@ export default class FilmDetailsPopup extends SmartView {
         {},
         filmCard,
         {
-          emotion: ``
+          emotion: ``,
+          comment: ``,
         }
     );
   }
