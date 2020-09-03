@@ -4,13 +4,20 @@ import {render, RenderPosition, remove, replace} from '../utils/render.js';
 
 const POPUP_OPEN_CLASSES = new Set([`film-card__poster`, `film-card__title`, `film-card__comments`]);
 
+const Mode = {
+  DEFAULT: `DEFAULT`,
+  OPENED: `OPENED`
+};
+
 export default class FilmCard {
-  constructor(container, changeData) {
+  constructor(container, changeData, changeMode) {
     this._filmCardsContainer = container;
     this._changeData = changeData;
+    this._changeMode = changeMode;
 
     this._filmCardComponent = null;
     this._filmDetailsPopupComponent = null;
+    this._mode = Mode.DEFAULT;
     this._footerElement = document.querySelector(`.footer`);
 
     this._handlePopupCloseButtonClick = this._handlePopupCloseButtonClick.bind(this);
@@ -41,7 +48,7 @@ export default class FilmCard {
 
     replace(this._filmCardComponent, prevFilmCardComponent);
 
-    if (document.contains(prevFilmDetailsPopupComponent.getElement())) {
+    if (this._mode === Mode.OPENED) {
       replace(this._filmDetailsPopupComponent, prevFilmDetailsPopupComponent);
       this._setPopupHandlers();
     }
@@ -53,6 +60,12 @@ export default class FilmCard {
   destroy() {
     remove(this._filmCardComponent);
     remove(this._filmDetailsPopupComponent);
+  }
+
+  resetView() {
+    if (this._mode !== Mode.DEFAULT) {
+      this._closeFilmDetailsPopup();
+    }
   }
 
   _handleFavoriteClick() {
@@ -96,14 +109,16 @@ export default class FilmCard {
 
     // popup events
     this._setPopupHandlers();
-
     document.addEventListener(`keydown`, this._escKeyDownHandler);
     // end //
+    this._changeMode();
+    this._mode = Mode.OPENED;
   }
 
   _closeFilmDetailsPopup() {
     remove(this._filmDetailsPopupComponent);
     document.removeEventListener(`keydown`, this._escKeyDownHandler);
+    this._mode = Mode.DEFAULT;
   }
 
   _handlePopupCloseButtonClick() {

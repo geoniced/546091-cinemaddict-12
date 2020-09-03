@@ -51,6 +51,7 @@ export default class FilmsPanel {
     this._showMoreButtonComponent = new ShowMoreButtonView();
 
     this._handleFilmCardChange = this._handleFilmCardChange.bind(this);
+    this._handleModeChange = this._handleModeChange.bind(this);
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
   }
@@ -160,7 +161,7 @@ export default class FilmsPanel {
   }
 
   _renderFilmCard(card, container = this._filmsListContainerComponent) {
-    const filmCardPresenter = new FilmCardPresenter(container, this._handleFilmCardChange);
+    const filmCardPresenter = new FilmCardPresenter(container, this._handleFilmCardChange, this._handleModeChange);
     filmCardPresenter.init(card);
 
     const cardType = card.type ? card.type : `all-films`;
@@ -179,6 +180,21 @@ export default class FilmsPanel {
     }
     // заинициализировать снова этот компонент соответствующего презентера
     cardInfo.presenter[updatedFilmCard.id].init(updatedFilmCard);
+  }
+
+  _handleModeChange() {
+    // Здесь нужно пробежаться по абсолютно всем презентерам, потому
+    // уже здесь понятно, что иметь несколько презентеров – плохая идея ;)
+    const allPresenters = Object.assign( // Решение временное – TODO: переделать на 1 презентер фильмов
+        {},
+        this._filmPresenter,
+        this._topRatedPresenter,
+        this._mostCommentedPresenter
+    );
+
+    Object
+      .values(allPresenters)
+      .forEach((presenter) => presenter.resetView());
   }
 
   _handleShowMoreButtonClick() {
