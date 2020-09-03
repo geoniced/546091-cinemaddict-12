@@ -43,6 +43,7 @@ export default class FilmCard {
 
     if (document.contains(prevFilmDetailsPopupComponent.getElement())) {
       replace(this._filmDetailsPopupComponent, prevFilmDetailsPopupComponent);
+      this._setPopupHandlers();
     }
 
     remove(prevFilmCardComponent);
@@ -94,10 +95,7 @@ export default class FilmCard {
     render(this._footerElement, this._filmDetailsPopupComponent, RenderPosition.AFTEREND);
 
     // popup events
-    this._filmDetailsPopupComponent.setPopupCloseButtonClickHandler(this._handlePopupCloseButtonClick);
-    this._filmDetailsPopupComponent.setAddToWatchListClickHandler(this._handleAddToWatchlistClick);
-    this._filmDetailsPopupComponent.setAlreadyWatchedClickHandler(this._handleAlreadyWatchedClick);
-    this._filmDetailsPopupComponent.setFavoriteClickHandler(this._handleFavoriteClick);
+    this._setPopupHandlers();
 
     document.addEventListener(`keydown`, this._escKeyDownHandler);
     // end //
@@ -123,5 +121,12 @@ export default class FilmCard {
       evt.preventDefault();
       this._closeFilmDetailsPopup();
     }
+  }
+
+  _setPopupHandlers() {
+    this._filmDetailsPopupComponent.setPopupCloseButtonClickHandler(this._handlePopupCloseButtonClick);
+    this._filmDetailsPopupComponent.setAddToWatchListClickHandler(this._handleAddToWatchlistClick);
+    this._filmDetailsPopupComponent.setAlreadyWatchedClickHandler(this._handleAlreadyWatchedClick);
+    this._filmDetailsPopupComponent.setFavoriteClickHandler(this._handleFavoriteClick);
   }
 }
