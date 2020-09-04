@@ -35,7 +35,7 @@ export default class FilmsPanel {
     this._renderedCardsCount = CARDS_PER_STEP;
     this._currentSortType = SortType.DEFAULT;
     this._filmPresenter = {};
-    // TBD
+
     this._topRatedPresenter = {};
     this._mostCommentedPresenter = {};
 
@@ -120,17 +120,14 @@ export default class FilmsPanel {
   }
 
   _renderNoFilms() {
-    // Рисуем компонент без фильмов
     render(this._filmsPanelComponent, this._noFilmsComponent, RenderPosition.BEFOREEND);
   }
 
   _renderFilmsListComponent() {
-    // Рисуем компонент списка фильмов
     render(this._filmsPanelComponent, this._filmsListComponent, RenderPosition.BEFOREEND);
   }
 
   _renderFilmsListContainerComponent() {
-    // Рисуем контейнер под задачи
     render(this._filmsListComponent, this._filmsListContainerComponent, RenderPosition.BEFOREEND);
   }
 
@@ -154,7 +151,6 @@ export default class FilmsPanel {
   }
 
   _renderFilmCards(from, to) {
-    // Рисует множество карточек
     this._allFilms
       .slice(from, to)
       .forEach((filmCard) => this._renderFilmCard(filmCard));
@@ -170,7 +166,7 @@ export default class FilmsPanel {
   }
 
   _handleFilmCardChange(updatedFilmCard) {
-    // получить список фильмов
+    // Получаем тип фильма: карточка может быть в разных презентерах
     const type = updatedFilmCard.type ? updatedFilmCard.type : `all-films`;
     const cardInfo = CardTypeBindings[type];
     cardInfo.cards = updateItem(cardInfo.cards, updatedFilmCard);
@@ -178,7 +174,7 @@ export default class FilmsPanel {
     if (!type) {
       this._sourcedAllFilms = updateItem(this._sourcedAllFilms, updatedFilmCard);
     }
-    // заинициализировать снова этот компонент соответствующего презентера
+
     cardInfo.presenter[updatedFilmCard.id].init(updatedFilmCard);
   }
 

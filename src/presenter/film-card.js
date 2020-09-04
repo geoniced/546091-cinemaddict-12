@@ -110,7 +110,7 @@ export default class FilmCard {
     // popup events
     this._setPopupHandlers();
     document.addEventListener(`keydown`, this._escKeyDownHandler);
-    // end //
+
     this._changeMode();
     this._mode = Mode.OPENED;
   }

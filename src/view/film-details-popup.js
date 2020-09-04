@@ -231,7 +231,6 @@ const createFilmDetailsPopupTemplate = (data) => {
 export default class FilmDetailsPopup extends SmartView {
   constructor(filmDetails) {
     super();
-    // this._filmDetails = filmDetails;
     this._data = FilmDetailsPopup.parseFilmCardToData(filmDetails);
 
     // outside
@@ -286,7 +285,7 @@ export default class FilmDetailsPopup extends SmartView {
 
   _emotionChangeHandler(evt) {
     evt.preventDefault();
-    // console.log(evt.target.value);
+
     this.updateData({
       emotion: evt.target.value
     });
