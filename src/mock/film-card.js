@@ -1,5 +1,8 @@
 import {getRandomInteger, getRandomItem, getUniqueArray} from '../utils/common.js';
 
+// in production, I should use something better, i.e https://github.com/ai/nanoid
+const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
+
 const getRandomSentences = () => {
   return [
     `Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
@@ -230,6 +233,7 @@ const getAgeLimit = () => {
 };
 
 export const generateFilmCard = () => {
+  const id = generateId();
   const name = getFilmName();
   const poster = getPoster();
   const rating = getRating();
@@ -250,6 +254,7 @@ export const generateFilmCard = () => {
   const ageLimit = getAgeLimit();
 
   return {
+    id,
     name,
     poster,
     rating,
