@@ -1,5 +1,5 @@
 import AbstractView from "../view/abstract.js";
-import {getDuration} from "../utils/film.js";
+import {getDuration} from "../utils/common.js";
 
 const formatDescription = (description) => {
   const SYMBOLS_COUNT = 140;

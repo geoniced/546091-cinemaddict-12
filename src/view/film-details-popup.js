@@ -1,6 +1,5 @@
 import SmartView from "../view/smart.js";
-import {humanizeDate} from '../utils/common.js';
-import {getDuration} from "../utils/film.js";
+import {humanizeDate, getDuration} from '../utils/common.js';
 import {EMOTIONS} from "../const.js";
 
 const formatDate = (date) => {
