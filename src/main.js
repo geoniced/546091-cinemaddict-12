@@ -6,13 +6,17 @@ import StatisticsView from './view/statistics.js';
 import {generateFilmCard} from './mock/film-card.js';
 import {generateFilters} from './mock/filter.js';
 import {render, RenderPosition} from './utils/render.js';
+import {sortByRating, sortByComments} from './utils/film.js';
 
 const CARDS_COUNT = 20;
 const EXTRA_CARDS_COUNT = 2;
 
 const filmCards = new Array(CARDS_COUNT).fill().map(generateFilmCard);
+
 // Mixing in types of film cards
-const extraFilmCardsTopRated = filmCards.slice(0, 2)
+const sortedByRatingFilms = filmCards.slice().sort(sortByRating);
+const extraFilmCardsTopRated = sortedByRatingFilms
+  .slice(0, EXTRA_CARDS_COUNT)
   .map((card) => Object.assign(
       {},
       card,
@@ -20,7 +24,9 @@ const extraFilmCardsTopRated = filmCards.slice(0, 2)
         type: `top-rated`,
       }
   ));
-const extraFilmCardsMostCommented = filmCards.slice(2, 4)
+
+const sortedByCommentsFilms = filmCards.slice().sort(sortByComments);
+const extraFilmCardsMostCommented = sortedByCommentsFilms
   .map((card) => Object.assign(
       {},
       card,

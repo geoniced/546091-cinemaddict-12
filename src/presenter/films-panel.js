@@ -135,7 +135,6 @@ export default class FilmsPanel {
     Object
       .values(this._filmPresenter)
       .forEach((presenter) => presenter.destroy());
-    // this._filmPresenter = {};
 
     remove(this._showMoreButtonComponent);
 
