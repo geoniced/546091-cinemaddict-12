@@ -135,7 +135,7 @@ export default class FilmsPanel {
     Object
       .values(this._filmPresenter)
       .forEach((presenter) => presenter.destroy());
-    this._filmPresenter = {};
+    // this._filmPresenter = {};
 
     remove(this._showMoreButtonComponent);
 
@@ -171,7 +171,7 @@ export default class FilmsPanel {
     const cardInfo = CardTypeBindings[type];
     cardInfo.cards = updateItem(cardInfo.cards, updatedFilmCard);
 
-    if (!type) {
+    if (type === `all-films`) {
       this._sourcedAllFilms = updateItem(this._sourcedAllFilms, updatedFilmCard);
     }
 
