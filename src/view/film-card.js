@@ -1,4 +1,5 @@
 import AbstractView from "../view/abstract.js";
+import {getDuration} from "../utils/film.js";
 
 const formatDescription = (description) => {
   const SYMBOLS_COUNT = 140;
@@ -27,6 +28,7 @@ const createFilmCardTemplate = (film) => {
   } = film;
 
   const formattedDescription = formatDescription(description);
+  const durationFormatted = getDuration(duration);
   const genre = genres[0];
   const commentsCount = comments.length;
 
@@ -48,7 +50,7 @@ const createFilmCardTemplate = (film) => {
       <p class="film-card__rating">${rating}</p>
       <p class="film-card__info">
         <span class="film-card__year">${year}</span>
-        <span class="film-card__duration">${duration}</span>
+        <span class="film-card__duration">${durationFormatted}</span>
         <span class="film-card__genre">${genre}</span>
       </p>
       <img src="${poster}" alt="" class="film-card__poster">

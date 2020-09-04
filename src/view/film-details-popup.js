@@ -1,5 +1,6 @@
 import SmartView from "../view/smart.js";
 import {humanizeDate} from '../utils/common.js';
+import {getDuration} from "../utils/film.js";
 import {EMOTIONS} from "../const.js";
 
 const formatDate = (date) => {
@@ -124,6 +125,8 @@ const createFilmDetailsPopupTemplate = (data) => {
   const writersText = writers.join(`, `);
   const actorsText = actors.join(`, `);
 
+  const durationFormatted = getDuration(duration);
+
   const titleGenre = genres.length > 1
     ? `Genres`
     : `Genre`;
@@ -179,7 +182,7 @@ const createFilmDetailsPopupTemplate = (data) => {
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Runtime</td>
-                  <td class="film-details__cell">${duration}</td>
+                  <td class="film-details__cell">${durationFormatted}</td>
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Country</td>

@@ -79,11 +79,7 @@ const getYear = () => {
 };
 
 const getDuration = () => {
-  const timeInMinutes = getRandomInteger(60, 200);
-  const hours = Math.floor(timeInMinutes / 60);
-  const minutes = timeInMinutes % 60;
-
-  return `${hours > 0 ? `${hours}h ` : ``}${minutes}m`;
+  return getRandomInteger(60, 200);
 };
 
 const getGenre = () => {
