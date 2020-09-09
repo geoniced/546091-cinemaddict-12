@@ -8,7 +8,7 @@ import FilmsListExtraView from '../view/films-list-extra.js';
 import FilmCardPresenter from './film-card.js';
 import {updateItem} from '../utils/common.js';
 import {render, RenderPosition, remove} from '../utils/render.js';
-import {sortByDate, sortByRating} from '../utils/film.js';
+import {sortByDate, sortByRating, sortByComments} from '../utils/film.js';
 import {SortType} from '../const.js';
 
 const CARDS_PER_STEP = 5;
@@ -58,12 +58,11 @@ export default class FilmsPanel {
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
   }
 
-  init(films) {
-    this._films = Object.assign(films);
-    this._allFilms = this._films.allFilms.slice();
-    this._topRatedFilms = this._films.topRatedFilms.slice();
-    this._mostCommentedFilms = this._films.mostCommentedFilms.slice();
-    this._sourcedAllFilms = this._films.allFilms.slice();
+  init() {
+    this._allFilms = this._getFilms().slice();
+    this._topRatedFilms = this._getExtraFilms(`top-rated`, sortByRating);
+    this._mostCommentedFilms = this._getExtraFilms(`most-commented`, sortByComments);
+    this._sourcedAllFilms = this._allFilms.slice();
 
     CardTypeBindings[`all-films`].cards = this._allFilms;
     CardTypeBindings[`top-rated`].cards = this._topRatedFilms;
@@ -76,6 +75,19 @@ export default class FilmsPanel {
 
   _getFilms() {
     return this._filmsModel.getFilms();
+  }
+
+  _getExtraFilms(type, sortingFunction) {
+    return this._allFilms
+      .slice().sort(sortingFunction)
+      .slice(0, EXTRA_CARDS_COUNT)
+      .map((card) => Object.assign(
+          {},
+          card,
+          {
+            type,
+          }
+      ));
   }
 
   _renderFilmsPanel() {

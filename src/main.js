@@ -57,7 +57,7 @@ render(mainElement, navigationComponent, RenderPosition.BEFOREEND);
 render(navigationComponent, new FilterView(filters), RenderPosition.AFTERBEGIN);
 
 const filmsPanelPresenter = new FilmsPanelPresenter(mainElement, filmsModel);
-filmsPanelPresenter.init(films);
+filmsPanelPresenter.init();
 
 const footerElement = document.querySelector(`.footer`);
 const footerStatisticsElement = footerElement.querySelector(`.footer__statistics`);
