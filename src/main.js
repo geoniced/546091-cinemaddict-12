@@ -2,6 +2,7 @@ import UserScoreView from './view/user-score.js';
 import NavigationView from './view/navigation.js';
 import FilterView from './view/filter.js';
 import FilmsPanelPresenter from './presenter/films-panel.js';
+import FilmsModel from './model/films.js';
 import StatisticsView from './view/statistics.js';
 import {generateFilmCard} from './mock/film-card.js';
 import {generateFilters} from './mock/filter.js';
@@ -35,6 +36,9 @@ const extraFilmCardsMostCommented = sortedByCommentsFilms
       }
   ));
 
+const filmsModel = new FilmsModel();
+filmsModel.setFilms(filmCards);
+
 const films = {
   allFilms: filmCards,
   topRatedFilms: extraFilmCardsTopRated,
@@ -52,7 +56,7 @@ render(mainElement, navigationComponent, RenderPosition.BEFOREEND);
 
 render(navigationComponent, new FilterView(filters), RenderPosition.AFTERBEGIN);
 
-const filmsPanelPresenter = new FilmsPanelPresenter(mainElement);
+const filmsPanelPresenter = new FilmsPanelPresenter(mainElement, filmsModel);
 filmsPanelPresenter.init(films);
 
 const footerElement = document.querySelector(`.footer`);

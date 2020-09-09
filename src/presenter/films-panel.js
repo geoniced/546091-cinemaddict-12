@@ -30,8 +30,10 @@ const CardTypeBindings = {
 };
 
 export default class FilmsPanel {
-  constructor(mainElement) {
+  constructor(mainElement, filmsModel) {
     this._mainElement = mainElement;
+    this._filmsModel = filmsModel;
+
     this._renderedCardsCount = CARDS_PER_STEP;
     this._currentSortType = SortType.DEFAULT;
     this._filmPresenter = {};
@@ -70,6 +72,10 @@ export default class FilmsPanel {
     render(this._mainElement, this._filmsPanelComponent, RenderPosition.BEFOREEND);
 
     this._renderFilmsPanel();
+  }
+
+  _getFilms() {
+    return this._filmsModel.getFilms();
   }
 
   _renderFilmsPanel() {
