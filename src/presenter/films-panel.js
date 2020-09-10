@@ -178,13 +178,11 @@ export default class FilmsPanel {
     // Получаем тип фильма: карточка может быть в разных презентерах
     const type = updatedFilmCard.type ? updatedFilmCard.type : `all-films`;
     const cardInfo = CardTypeBindings[type];
-    cardInfo.cards = updateItem(cardInfo.cards, updatedFilmCard);
 
-    if (type === `all-films`) {
-      this._sourcedAllFilms = updateItem(this._sourcedAllFilms, updatedFilmCard);
-    }
-
+    // Обновление модели будет здесь
     cardInfo.presenter[updatedFilmCard.id].init(updatedFilmCard);
+
+    // this._filmPresenter[updatedFilmCard.id].init(updatedFilmCard);
   }
 
   _handleModeChange() {
