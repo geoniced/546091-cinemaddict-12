@@ -17,15 +17,12 @@ const EXTRA_CARDS_COUNT = 2;
 const CardTypeBindings = {
   [`all-films`]: {
     presenter: null,
-    cards: null,
   },
   [`top-rated`]: {
     presenter: null,
-    cards: null,
   },
   [`most-commented`]: {
     presenter: null,
-    cards: null,
   },
 };
 
@@ -59,13 +56,8 @@ export default class FilmsPanel {
   }
 
   init() {
-    this._allFilms = this._getFilms().slice();
     this._topRatedFilms = this._getExtraFilms(`top-rated`, sortByRating);
     this._mostCommentedFilms = this._getExtraFilms(`most-commented`, sortByComments);
-
-    CardTypeBindings[`all-films`].cards = this._allFilms;
-    CardTypeBindings[`top-rated`].cards = this._topRatedFilms;
-    CardTypeBindings[`most-commented`].cards = this._mostCommentedFilms;
 
     render(this._mainElement, this._filmsPanelComponent, RenderPosition.BEFOREEND);
 
