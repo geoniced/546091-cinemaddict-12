@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 export const getUniqueArray = (array) => {
   return [...new Set(array)];
 };
@@ -14,8 +16,17 @@ export const getRandomItem = (collection) => {
 };
 
 export const humanizeDate = (date) => {
-  return date.toLocaleString(`en-US`, {day: `numeric`, month: `long`, year: `numeric`});
+  return moment(date).format(`DD MMMM YYYY`);
 };
+
+export const getDuration = (timeInMinutes) => {
+  const duration = moment.duration(timeInMinutes, `m`);
+  const hours = duration.hours();
+  const minutes = duration.minutes();
+
+  return `${hours > 0 ? `${hours}h ` : ``}${minutes}m`;
+};
+
 
 export const updateItem = (items, update) => {
   const index = items.findIndex((item) => item.id === update.id);

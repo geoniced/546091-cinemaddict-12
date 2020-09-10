@@ -1,25 +1,16 @@
 import SmartView from "../view/smart.js";
-import {humanizeDate} from '../utils/common.js';
+import {humanizeDate, getDuration} from '../utils/common.js';
 import {EMOTIONS} from "../const.js";
+import moment from "moment";
 
 const formatDate = (date) => {
-  const year = date.getYear() + 1900;
-  const month = date.getMonth() + 1;
-  const day = date.getDate();
-  const hours = date.getHours();
-  const minutes = date.getMinutes();
-
-  let resultDate = `${year}/${month}/${day} ${hours}:${minutes}`;
+  let resultDate = moment(date).format(`YYYY/M/D H:mm`);
 
   const currentDate = new Date();
-  const dateDifference = Math.round((currentDate - date) / 1000 / 60 / 60 / 24);
+  const dateDifference = moment.duration(moment(currentDate).diff(moment(date))).days();
 
-  if (dateDifference <= 1) {
-    resultDate = `Today`;
-  } else if (dateDifference <= 2) {
-    resultDate = `1 day ago`;
-  } else if (dateDifference <= 3) {
-    resultDate = `2 days ago`;
+  if (dateDifference <= 4) {
+    resultDate = moment(date).fromNow();
   }
 
   return resultDate;
@@ -124,6 +115,8 @@ const createFilmDetailsPopupTemplate = (data) => {
   const writersText = writers.join(`, `);
   const actorsText = actors.join(`, `);
 
+  const durationFormatted = getDuration(duration);
+
   const titleGenre = genres.length > 1
     ? `Genres`
     : `Genre`;
@@ -179,7 +172,7 @@ const createFilmDetailsPopupTemplate = (data) => {
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Runtime</td>
-                  <td class="film-details__cell">${duration}</td>
+                  <td class="film-details__cell">${durationFormatted}</td>
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Country</td>
