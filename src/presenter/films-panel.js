@@ -6,7 +6,6 @@ import FilmsListContainerView from '../view/films-list-container.js';
 import ShowMoreButtonView from '../view/show-more-button.js';
 import FilmsListExtraView from '../view/films-list-extra.js';
 import FilmCardPresenter from './film-card.js';
-import {updateItem} from '../utils/common.js';
 import {render, RenderPosition, remove} from '../utils/render.js';
 import {sortByDate, sortByRating, sortByComments} from '../utils/film.js';
 import {SortType} from '../const.js';
