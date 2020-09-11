@@ -38,16 +38,17 @@ export default class FilmsPanel {
     this._topRatedPresenter = {};
     this._mostCommentedPresenter = {};
 
+    this._sortingComponent = null;
+    this._showMoreButtonComponent = null;
+
     CardTypeBindings[`all-films`].presenter = this._filmPresenter;
     CardTypeBindings[`top-rated`].presenter = this._topRatedPresenter;
     CardTypeBindings[`most-commented`].presenter = this._mostCommentedPresenter;
 
-    this._sortingComponent = new SortingView();
     this._filmsPanelComponent = new FilmsPanelView();
     this._noFilmsComponent = new NoFilmsView();
     this._filmsListComponent = new FilmsListView();
     this._filmsListContainerComponent = new FilmsListContainerView();
-    this._showMoreButtonComponent = new ShowMoreButtonView();
 
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
@@ -94,8 +95,33 @@ export default class FilmsPanel {
       ));
   }
 
+  _clearFilmsPanel({resetRenderedCardsCount = false, resetSortType = false}) {
+    const filmCount = this._getFilms().length;
+
+    Object
+      .values(this._filmPresenter)
+      .forEach((presenter) => presenter.destroy());
+
+    remove(this._sortingComponent);
+    remove(this._noFilmsComponent);
+    remove(this._showMoreButtonComponent);
+
+    if (resetRenderedCardsCount) {
+      this._renderedCardsCount = CARDS_PER_STEP;
+    } else {
+      this._renderedCardsCount = Math.min(filmCount, this._renderedCardsCount);
+    }
+
+    if (resetSortType) {
+      this._currentSortType = SortType.DEFAULT;
+    }
+  }
+
   _renderFilmsPanel() {
-    if (this._getFilms().length === 0) {
+    const films = this._getFilms();
+    const filmCount = films.length;
+
+    if (filmCount === 0) {
       this._renderNoFilms();
       return;
     }
@@ -105,7 +131,11 @@ export default class FilmsPanel {
     this._renderFilmsListComponent();
     this._renderFilmsListContainerComponent();
 
-    this._renderFilmCardsList();
+    this._renderFilmCards(films.slice(0, Math.min(filmCount, this._renderedCardsCount)));
+
+    if (filmCount > this._renderedCardsCount) {
+      this._renderShowMoreButton();
+    }
 
     this._renderExtraPanel(`Top rated`, this._topRatedFilms);
     this._renderExtraPanel(`Most commented`, this._mostCommentedFilms);
@@ -117,13 +147,20 @@ export default class FilmsPanel {
     }
 
     this._currentSortType = sortType;
-    this._clearFilmCardsList();
-    this._renderFilmCardsList();
+
+    this._clearFilmsPanel({resetRenderedCardsCount: true});
+    this._renderFilmsPanel();
   }
 
   _renderSorting() {
-    render(this._filmsPanelComponent, this._sortingComponent, RenderPosition.BEFOREBEGIN);
+    if (this._sortingComponent !== null) {
+      this._sortingComponent = null;
+    }
+
+    this._sortingComponent = new SortingView();
     this._sortingComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
+
+    render(this._filmsPanelComponent, this._sortingComponent, RenderPosition.BEFOREBEGIN);
   }
 
   _renderNoFilms() {
@@ -191,14 +228,17 @@ export default class FilmsPanel {
   }
 
   _handleModelEvent(updateType, data) {
-    console.log(updateType, data);
     // В зависимости от типа изменений updateType делаем: -обновляем список фильмов, или целую панель (со списком)
     switch (updateType) {
       case UpdateType.MINOR:
         // Обновить список фильмов
+        this._clearFilmsPanel();
+        this._renderFilmsPanel();
         break;
       case UpdateType.MAJOR:
         // Обновить список фильмов + экстра
+        this._clearFilmsPanel({resetRenderedCardsCount: true, resetSortType: true});
+        this._renderFilmsPanel();
         break;
     }
   }
@@ -232,10 +272,14 @@ export default class FilmsPanel {
   }
 
   _renderShowMoreButton() {
-    // Рисует кнопку допоказа
-    render(this._filmsListComponent, this._showMoreButtonComponent, RenderPosition.BEFOREEND);
+    if (this._showMoreButtonComponent !== null) {
+      this._showMoreButtonComponent = null;
+    }
 
+    this._showMoreButtonComponent = new ShowMoreButtonView();
     this._showMoreButtonComponent.setClickHandler(this._handleShowMoreButtonClick);
+
+    render(this._filmsListComponent, this._showMoreButtonComponent, RenderPosition.BEFOREEND);
   }
 
   _renderExtraPanel(panelTitle, films) {
