@@ -3,17 +3,22 @@ import NavigationView from './view/navigation.js';
 import FilterView from './view/filter.js';
 import FilmsPanelPresenter from './presenter/films-panel.js';
 import FilmsModel from './model/films.js';
+import CommentsModel from './model/comments.js';
 import StatisticsView from './view/statistics.js';
-import {generateFilmCard} from './mock/film-card.js';
+import {generateFilmCard, generateComments} from './mock/film-card.js';
 import {generateFilters} from './mock/filter.js';
 import {render, RenderPosition} from './utils/render.js';
 
 const CARDS_COUNT = 20;
 
 const filmCards = new Array(CARDS_COUNT).fill().map(generateFilmCard);
+const comments = generateComments(filmCards);
 
 const filmsModel = new FilmsModel();
 filmsModel.setFilms(filmCards);
+
+const commentsModel = new CommentsModel();
+commentsModel.setComments(comments);
 
 const filters = generateFilters(filmCards);
 
@@ -26,7 +31,7 @@ render(mainElement, navigationComponent, RenderPosition.BEFOREEND);
 
 render(navigationComponent, new FilterView(filters), RenderPosition.AFTERBEGIN);
 
-const filmsPanelPresenter = new FilmsPanelPresenter(mainElement, filmsModel);
+const filmsPanelPresenter = new FilmsPanelPresenter(mainElement, filmsModel, commentsModel);
 filmsPanelPresenter.init();
 
 const footerElement = document.querySelector(`.footer`);

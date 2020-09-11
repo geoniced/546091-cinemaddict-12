@@ -26,9 +26,10 @@ const CardTypeBindings = {
 };
 
 export default class FilmsPanel {
-  constructor(mainElement, filmsModel) {
+  constructor(mainElement, filmsModel, commentsModel) {
     this._mainElement = mainElement;
     this._filmsModel = filmsModel;
+    this._commentsModel = commentsModel;
 
     this._renderedCardsCount = CARDS_PER_STEP;
     this._currentSortType = SortType.DEFAULT;
@@ -72,6 +73,10 @@ export default class FilmsPanel {
     }
 
     return this._filmsModel.getFilms();
+  }
+
+  _getFilmComments(film) {
+    return this._commentsModel.getCommentsByFilmId(film.id);
   }
 
   _getExtraFilms(type, sortingFunction) {

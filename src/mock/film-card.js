@@ -124,12 +124,14 @@ const generateDate = (gap = 7) => {
 };
 
 const getComment = () => {
+  const id = generateId();
   const text = generateText();
   const emotion = getEmotion();
   const author = getAuthor();
   const date = generateDate();
 
   return {
+    id,
     text,
     emotion,
     author,
@@ -142,6 +144,15 @@ const getComments = () => {
   const comments = new Array(commentsCount)
     .fill()
     .map(getComment);
+
+  return comments;
+};
+
+export const generateComments = (films) => {
+  let comments = [];
+  films.forEach((film) => {
+    comments = comments.concat(getComments(film.id));
+  });
 
   return comments;
 };
