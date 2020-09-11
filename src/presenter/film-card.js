@@ -1,6 +1,7 @@
 import FilmCardView from '../view/film-card.js';
 import FilmDetailsPopupView from '../view/film-details-popup.js';
 import {render, RenderPosition, remove, replace} from '../utils/render.js';
+import {UserAction, UpdateType} from '../const.js';
 
 const POPUP_OPEN_CLASSES = new Set([`film-card__poster`, `film-card__title`, `film-card__comments`]);
 
@@ -67,6 +68,8 @@ export default class FilmCard {
 
   _handleFavoriteClick() {
     this._changeData(
+        UserAction.UPDATE_FILM,
+        UpdateType.MINOR,
         Object.assign(
             {},
             this._card,
@@ -79,6 +82,8 @@ export default class FilmCard {
 
   _handleAlreadyWatchedClick() {
     this._changeData(
+        UserAction.UPDATE_FILM,
+        UpdateType.MINOR,
         Object.assign(
             {},
             this._card,
@@ -91,6 +96,8 @@ export default class FilmCard {
 
   _handleAddToWatchlistClick() {
     this._changeData(
+        UserAction.UPDATE_FILM,
+        UpdateType.MINOR,
         Object.assign(
             {},
             this._card,

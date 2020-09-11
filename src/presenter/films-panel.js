@@ -49,7 +49,9 @@ export default class FilmsPanel {
     this._filmsListContainerComponent = new FilmsListContainerView();
     this._showMoreButtonComponent = new ShowMoreButtonView();
 
-    this._handleFilmCardChange = this._handleFilmCardChange.bind(this);
+    this._handleViewAction = this._handleViewAction.bind(this);
+    this._handleModelEvent = this._handleModelEvent.bind(this);
+
     this._handleModeChange = this._handleModeChange.bind(this);
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
@@ -162,7 +164,7 @@ export default class FilmsPanel {
   }
 
   _renderFilmCard(card, container = this._filmsListContainerComponent) {
-    const filmCardPresenter = new FilmCardPresenter(container, this._handleFilmCardChange, this._handleModeChange);
+    const filmCardPresenter = new FilmCardPresenter(container, this._handleViewAction, this._handleModeChange);
     filmCardPresenter.init(card);
 
     const cardType = card.type ? card.type : `all-films`;
@@ -170,15 +172,24 @@ export default class FilmsPanel {
     filmPresenter[card.id] = filmCardPresenter;
   }
 
-  _handleFilmCardChange(updatedFilmCard) {
-    // Получаем тип фильма: карточка может быть в разных презентерах
-    const type = updatedFilmCard.type ? updatedFilmCard.type : `all-films`;
-    const cardInfo = CardTypeBindings[type];
+  // _handleFilmCardChange(updatedFilmCard) {
+  //   // Получаем тип фильма: карточка может быть в разных презентерах
+  //   const type = updatedFilmCard.type ? updatedFilmCard.type : `all-films`;
+  //   const cardInfo = CardTypeBindings[type];
 
-    // Обновление модели будет здесь
-    cardInfo.presenter[updatedFilmCard.id].init(updatedFilmCard);
+  //   // Обновление модели будет здесь
+  //   cardInfo.presenter[updatedFilmCard.id].init(updatedFilmCard);
 
-    // this._filmPresenter[updatedFilmCard.id].init(updatedFilmCard);
+  //   // this._filmPresenter[updatedFilmCard.id].init(updatedFilmCard);
+  // }
+
+  _handleViewAction(actionType, updateType, update) {
+    console.log(actionType, updateType, update);
+  }
+
+  _handleModelEvent(updateType, data) {
+    console.log(updateType, data);
+    // В зависимости от типа изменений updateType делаем: -обновляем список фильмов, или целую панель (со списком)
   }
 
   _handleModeChange() {
