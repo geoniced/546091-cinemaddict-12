@@ -8,7 +8,7 @@ import FilmsListExtraView from '../view/films-list-extra.js';
 import FilmCardPresenter from './film-card.js';
 import {render, RenderPosition, remove} from '../utils/render.js';
 import {sortByDate, sortByRating, sortByComments} from '../utils/film.js';
-import {SortType} from '../const.js';
+import {SortType, UserAction, UpdateType} from '../const.js';
 
 const CARDS_PER_STEP = 5;
 const EXTRA_CARDS_COUNT = 2;
@@ -172,24 +172,35 @@ export default class FilmsPanel {
     filmPresenter[card.id] = filmCardPresenter;
   }
 
-  // _handleFilmCardChange(updatedFilmCard) {
-  //   // Получаем тип фильма: карточка может быть в разных презентерах
-  //   const type = updatedFilmCard.type ? updatedFilmCard.type : `all-films`;
-  //   const cardInfo = CardTypeBindings[type];
-
-  //   // Обновление модели будет здесь
-  //   cardInfo.presenter[updatedFilmCard.id].init(updatedFilmCard);
-
-  //   // this._filmPresenter[updatedFilmCard.id].init(updatedFilmCard);
-  // }
-
   _handleViewAction(actionType, updateType, update) {
     console.log(actionType, updateType, update);
+    switch (actionType) {
+      case UserAction.UPDATE_FILM:
+        this._filmsModel.updateFilm(updateType, update);
+        break;
+      case UserAction.UPDATE_COMMENT:
+        this._commentsModel.updateComment(updateType, update);
+        break;
+      case UserAction.ADD_COMMENT:
+        this._commentsModel.addComment(updateType, update);
+        break;
+      case UserAction.DELETE_COMMENT:
+        this._commentsModel.deleteComment(updateType, update);
+        break;
+    }
   }
 
   _handleModelEvent(updateType, data) {
     console.log(updateType, data);
     // В зависимости от типа изменений updateType делаем: -обновляем список фильмов, или целую панель (со списком)
+    switch (updateType) {
+      case UpdateType.MINOR:
+        // Обновить список фильмов
+        break;
+      case UpdateType.MAJOR:
+        // Обновить список фильмов + экстра
+        break;
+    }
   }
 
   _handleModeChange() {
