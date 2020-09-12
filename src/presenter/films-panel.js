@@ -61,6 +61,7 @@ export default class FilmsPanel {
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
 
     this._filmsModel.addObserver(this._handleModelEvent);
+    this._commentsModel.addObserver(this._handleModelEvent);
   }
 
   init() {
@@ -190,6 +191,11 @@ export default class FilmsPanel {
 
   _renderFilmCard(card, container = this._filmsListContainerComponent) {
     const filmCardPresenter = new FilmCardPresenter(container, this._handleViewAction, this._handleModeChange);
+
+    // Берем комментарии из модели
+    // На самом деле это не особо надо, я переделал алгоритм получения моков, но на будущее придется делать так
+    card.comments = this._commentsModel.getCommentsByFilmId(card.id);
+
     filmCardPresenter.init(card);
 
     const cardType = card.type ? card.type : FilmType.ALL_FILMS;

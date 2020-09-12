@@ -5,14 +5,14 @@ import FilmsPanelPresenter from './presenter/films-panel.js';
 import FilmsModel from './model/films.js';
 import CommentsModel from './model/comments.js';
 import StatisticsView from './view/statistics.js';
-import {generateFilmCard, generateComments} from './mock/film-card.js';
+import {generateFilmCard, exportFilmComments} from './mock/film-card.js';
 import {generateFilters} from './mock/filter.js';
 import {render, RenderPosition} from './utils/render.js';
 
 const CARDS_COUNT = 20;
 
 const filmCards = new Array(CARDS_COUNT).fill().map(generateFilmCard);
-const comments = generateComments(filmCards);
+const comments = exportFilmComments(filmCards);
 
 const filmsModel = new FilmsModel();
 filmsModel.setFilms(filmCards);

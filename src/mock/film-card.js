@@ -132,6 +132,7 @@ const getComment = () => {
 
   return {
     id,
+    filmId: null,
     text,
     emotion,
     author,
@@ -144,6 +145,19 @@ const getComments = () => {
   const comments = new Array(commentsCount)
     .fill()
     .map(getComment);
+
+  return comments;
+};
+
+export const exportFilmComments = (films) => {
+  let comments = [];
+  films.forEach((film) => {
+    film.comments.forEach((comment) => {
+      comment.filmId = film.id;
+    });
+
+    comments = comments.concat(film.comments);
+  });
 
   return comments;
 };

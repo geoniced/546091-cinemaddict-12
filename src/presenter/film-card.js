@@ -110,7 +110,11 @@ export default class FilmCard {
   }
 
   _handleDeleteCommentClick(commentId) {
-    console.log(commentId);
+    this._changeData(
+        UserAction.DELETE_COMMENT,
+        UpdateType.MINOR,
+        commentId
+    );
   }
 
   _openFilmDetailsPopup() {
