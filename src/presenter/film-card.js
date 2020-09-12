@@ -25,6 +25,7 @@ export default class FilmCard {
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
     this._handleAlreadyWatchedClick = this._handleAlreadyWatchedClick.bind(this);
     this._handleAddToWatchlistClick = this._handleAddToWatchlistClick.bind(this);
+    this._handleDeleteCommentClick = this._handleDeleteCommentClick.bind(this);
     this._handleCardClick = this._handleCardClick.bind(this);
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
   }
@@ -108,6 +109,10 @@ export default class FilmCard {
     );
   }
 
+  _handleDeleteCommentClick(commentId) {
+    console.log(commentId);
+  }
+
   _openFilmDetailsPopup() {
     render(this._footerElement, this._filmDetailsPopupComponent, RenderPosition.AFTEREND);
 
@@ -153,6 +158,7 @@ export default class FilmCard {
     this._filmDetailsPopupComponent.setAddToWatchListClickHandler(this._handleAddToWatchlistClick);
     this._filmDetailsPopupComponent.setAlreadyWatchedClickHandler(this._handleAlreadyWatchedClick);
     this._filmDetailsPopupComponent.setFavoriteClickHandler(this._handleFavoriteClick);
+    this._filmDetailsPopupComponent.setDeleteCommentClickHandler(this._handleDeleteCommentClick);
 
     document.addEventListener(`keydown`, this._escKeyDownHandler);
   }

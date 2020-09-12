@@ -184,27 +184,6 @@ export default class FilmsPanel {
     render(this._filmsListComponent, this._filmsListContainerComponent, RenderPosition.BEFOREEND);
   }
 
-  _clearFilmCardsList() {
-    Object
-      .values(this._filmPresenter)
-      .forEach((presenter) => presenter.destroy());
-
-    remove(this._showMoreButtonComponent);
-
-    this._renderedCardsCount = CARDS_PER_STEP;
-  }
-
-  _renderFilmCardsList() {
-    const filmCount = this._getFilms().length;
-    const films = this._getFilms().slice(0, Math.min(filmCount, CARDS_PER_STEP));
-
-    this._renderFilmCards(films);
-
-    if (filmCount > CARDS_PER_STEP) {
-      this._renderShowMoreButton();
-    }
-  }
-
   _renderFilmCards(cards) {
     cards.forEach((filmCard) => this._renderFilmCard(filmCard));
   }

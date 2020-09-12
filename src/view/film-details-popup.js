@@ -24,6 +24,7 @@ const createGenreItemTemplate = (genre) => {
 
 const createCommentItemTemplate = (comment) => {
   const {
+    id,
     emotion,
     text,
     author,
@@ -33,7 +34,7 @@ const createCommentItemTemplate = (comment) => {
   const dateFormatted = formatDate(date);
 
   return (
-    `<li class="film-details__comment">
+    `<li class="film-details__comment" data-comment-id="${id}">
       <span class="film-details__comment-emoji">
         <img src="./images/emoji/${emotion}.png" width="55" height="55" alt="emoji-${emotion}">
       </span>
@@ -231,6 +232,7 @@ export default class FilmDetailsPopup extends SmartView {
     this._addToWatchlistClickHandler = this._addToWatchlistClickHandler.bind(this);
     this._alreadyWatchedClickHandler = this._alreadyWatchedClickHandler.bind(this);
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
+    this._deleteCommentClickHandler = this._deleteCommentClickHandler.bind(this);
 
     // inside
     this._emotionChangeHandler = this._emotionChangeHandler.bind(this);
@@ -276,6 +278,14 @@ export default class FilmDetailsPopup extends SmartView {
     this._callback.favoriteClick();
   }
 
+  _deleteCommentClickHandler(evt) {
+    if (evt.target.classList.contains(`film-details__comment-delete`)) {
+      evt.preventDefault();
+      const commentListElement = evt.target.closest(`.film-details__comment`);
+      this._callback.deleteCommentClick(commentListElement.dataset.commentId);
+    }
+  }
+
   _emotionChangeHandler(evt) {
     evt.preventDefault();
 
@@ -319,6 +329,11 @@ export default class FilmDetailsPopup extends SmartView {
   setFavoriteClickHandler(callback) {
     this._callback.favoriteClick = callback;
     this.getElement().querySelector(`.film-details__control-label--favorite`).addEventListener(`click`, this._favoriteClickHandler);
+  }
+
+  setDeleteCommentClickHandler(callback) {
+    this._callback.deleteCommentClick = callback;
+    this.getElement().querySelector(`.film-details__comments-list`).addEventListener(`click`, this._deleteCommentClickHandler);
   }
 
   static parseFilmCardToData(filmCard) {
