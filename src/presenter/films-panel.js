@@ -8,20 +8,23 @@ import FilmsListExtraView from '../view/films-list-extra.js';
 import FilmCardPresenter from './film-card.js';
 import {render, RenderPosition, remove} from '../utils/render.js';
 import {sortByDate, sortByRating, sortByComments} from '../utils/film.js';
-import {SortType, UserAction, UpdateType} from '../const.js';
+import {SortType, UserAction, UpdateType, FilmType} from '../const.js';
 
 const CARDS_PER_STEP = 5;
 const EXTRA_CARDS_COUNT = 2;
 
 const CardTypeBindings = {
-  [`all-films`]: {
+  [FilmType.ALL_FILMS]: {
     presenter: null,
+    panelComponent: null,
   },
-  [`top-rated`]: {
+  [FilmType.TOP_RATED]: {
     presenter: null,
+    panelComponent: null,
   },
-  [`most-commented`]: {
+  [FilmType.MOST_COMMENTED]: {
     presenter: null,
+    panelComponent: null,
   },
 };
 
@@ -41,9 +44,9 @@ export default class FilmsPanel {
     this._sortingComponent = null;
     this._showMoreButtonComponent = null;
 
-    CardTypeBindings[`all-films`].presenter = this._filmPresenter;
-    CardTypeBindings[`top-rated`].presenter = this._topRatedPresenter;
-    CardTypeBindings[`most-commented`].presenter = this._mostCommentedPresenter;
+    CardTypeBindings[FilmType.ALL_FILMS].presenter = this._filmPresenter;
+    CardTypeBindings[FilmType.TOP_RATED].presenter = this._topRatedPresenter;
+    CardTypeBindings[FilmType.MOST_COMMENTED].presenter = this._mostCommentedPresenter;
 
     this._filmsPanelComponent = new FilmsPanelView();
     this._noFilmsComponent = new NoFilmsView();
@@ -59,8 +62,8 @@ export default class FilmsPanel {
   }
 
   init() {
-    this._topRatedFilms = this._getExtraFilms(`top-rated`, sortByRating);
-    this._mostCommentedFilms = this._getExtraFilms(`most-commented`, sortByComments);
+    this._topRatedFilms = this._getExtraFilms(FilmType.TOP_RATED, sortByRating);
+    this._mostCommentedFilms = this._getExtraFilms(FilmType.MOST_COMMENTED, sortByComments);
 
     render(this._mainElement, this._filmsPanelComponent, RenderPosition.BEFOREEND);
 
@@ -106,6 +109,10 @@ export default class FilmsPanel {
     remove(this._noFilmsComponent);
     remove(this._showMoreButtonComponent);
 
+    // remove extra panels
+    this._clearExtraPanels(FilmType.TOP_RATED);
+    this._clearExtraPanels(FilmType.MOST_COMMENTED);
+
     if (resetRenderedCardsCount) {
       this._renderedCardsCount = CARDS_PER_STEP;
     } else {
@@ -137,8 +144,8 @@ export default class FilmsPanel {
       this._renderShowMoreButton();
     }
 
-    this._renderExtraPanel(`Top rated`, this._topRatedFilms);
-    this._renderExtraPanel(`Most commented`, this._mostCommentedFilms);
+    this._renderExtraPanel(FilmType.TOP_RATED, `Top rated`, this._topRatedFilms);
+    this._renderExtraPanel(FilmType.MOST_COMMENTED, `Most commented`, this._mostCommentedFilms);
   }
 
   _handleSortTypeChange(sortType) {
@@ -204,7 +211,7 @@ export default class FilmsPanel {
     const filmCardPresenter = new FilmCardPresenter(container, this._handleViewAction, this._handleModeChange);
     filmCardPresenter.init(card);
 
-    const cardType = card.type ? card.type : `all-films`;
+    const cardType = card.type ? card.type : FilmType.ALL_FILMS;
     const filmPresenter = CardTypeBindings[cardType].presenter;
     filmPresenter[card.id] = filmCardPresenter;
   }
@@ -282,9 +289,17 @@ export default class FilmsPanel {
     render(this._filmsListComponent, this._showMoreButtonComponent, RenderPosition.BEFOREEND);
   }
 
-  _renderExtraPanel(panelTitle, films) {
-    // Рисует экстра панель
+  _clearExtraPanels(type) {
+    Object
+      .values(CardTypeBindings[type].presenter)
+      .forEach((presenter) => presenter.destroy());
+
+    remove(CardTypeBindings[type].panelComponent);
+  }
+
+  _renderExtraPanel(type, panelTitle, films) {
     const extraPanelComponent = new FilmsListExtraView(panelTitle);
+    CardTypeBindings[type].panelComponent = extraPanelComponent;
     render(this._filmsPanelComponent, extraPanelComponent, RenderPosition.BEFOREEND);
 
     const extraPanelContainerComponent = new FilmsListContainerView();
