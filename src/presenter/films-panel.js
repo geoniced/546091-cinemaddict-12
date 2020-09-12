@@ -59,6 +59,8 @@ export default class FilmsPanel {
     this._handleModeChange = this._handleModeChange.bind(this);
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
+
+    this._filmsModel.addObserver(this._handleModelEvent);
   }
 
   init() {
@@ -98,7 +100,7 @@ export default class FilmsPanel {
       ));
   }
 
-  _clearFilmsPanel({resetRenderedCardsCount = false, resetSortType = false}) {
+  _clearFilmsPanel({resetRenderedCardsCount = false, resetSortType = false} = {}) {
     const filmCount = this._getFilms().length;
 
     Object
@@ -164,7 +166,7 @@ export default class FilmsPanel {
       this._sortingComponent = null;
     }
 
-    this._sortingComponent = new SortingView();
+    this._sortingComponent = new SortingView(this._currentSortType);
     this._sortingComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
 
     render(this._filmsPanelComponent, this._sortingComponent, RenderPosition.BEFOREBEGIN);
