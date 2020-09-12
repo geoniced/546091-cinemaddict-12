@@ -101,12 +101,14 @@ export default class FilmsPanel {
       ));
   }
 
+  // TODO: Restore popup!!
   _clearFilmsPanel({resetRenderedCardsCount = false, resetSortType = false} = {}) {
     const filmCount = this._getFilms().length;
 
     Object
       .values(this._filmPresenter)
       .forEach((presenter) => presenter.destroy());
+    this._filmPresenter = {};
 
     remove(this._sortingComponent);
     remove(this._noFilmsComponent);
@@ -199,8 +201,16 @@ export default class FilmsPanel {
     filmCardPresenter.init(card);
 
     const cardType = card.type ? card.type : FilmType.ALL_FILMS;
-    const filmPresenter = CardTypeBindings[cardType].presenter;
-    filmPresenter[card.id] = filmCardPresenter;
+
+    // Решение не лучшее? Иначе теряется ссылка на этот презентере при очищении
+    // используя мои CardTypeBindings. Здесь надо всё же подумать что делать с экстра
+    // карточками, ибо нужно от CardTypeBindings отказаться и оставить одну структуру this._filmPresenter
+    if (cardType === FilmType.ALL_FILMS) {
+      this._filmPresenter[card.id] = filmCardPresenter;
+    } else {
+      const filmPresenter = CardTypeBindings[cardType].presenter;
+      filmPresenter[card.id] = filmCardPresenter;
+    }
   }
 
   _handleViewAction(actionType, updateType, update) {
