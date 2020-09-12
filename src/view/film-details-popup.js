@@ -252,6 +252,7 @@ export default class FilmDetailsPopup extends SmartView {
     this.setAddToWatchListClickHandler(this._callback.addToWatchlistClick);
     this.setAlreadyWatchedClickHandler(this._callback.alreadyWatchedClick);
     this.setFavoriteClickHandler(this._callback.favoriteClick);
+    this.setDeleteCommentClickHandler(this._callback.deleteCommentClick);
   }
 
   _getPopupCloseButton() {
