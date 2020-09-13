@@ -42,6 +42,10 @@ export default class FilmCard {
 
     if (prevFilmCardComponent === null || prevFilmDetailsPopupComponent === null) {
       render(this._filmCardsContainer, this._filmCardComponent, RenderPosition.BEFOREEND);
+
+      if (this._card.wasOpened) {
+        this._openFilmDetailsPopup();
+      }
       return;
     }
 
@@ -65,6 +69,14 @@ export default class FilmCard {
     if (this._mode !== Mode.DEFAULT) {
       this._closeFilmDetailsPopup();
     }
+  }
+
+  isOpened() {
+    return this._mode === Mode.OPENED;
+  }
+
+  getId() {
+    return this._card.id;
   }
 
   _handleFavoriteClick() {

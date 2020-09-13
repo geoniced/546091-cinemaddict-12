@@ -37,6 +37,7 @@ export default class FilmsPanel {
     this._renderedCardsCount = CARDS_PER_STEP;
     this._currentSortType = SortType.DEFAULT;
     this._filmPresenter = {};
+    this._openedPopup = null;
 
     this._topRatedPresenter = {};
     this._mostCommentedPresenter = {};
@@ -107,7 +108,13 @@ export default class FilmsPanel {
 
     Object
       .values(this._filmPresenter)
-      .forEach((presenter) => presenter.destroy());
+      .forEach((presenter) => {
+        if (presenter.isOpened()) {
+          this._openedPopup = presenter.getId();
+        }
+
+        presenter.destroy();
+      });
     this._filmPresenter = {};
 
     remove(this._sortingComponent);
@@ -197,6 +204,12 @@ export default class FilmsPanel {
     // Берем комментарии из модели
     // На самом деле это не особо надо, я переделал алгоритм получения моков, но на будущее придется делать так
     card.comments = this._commentsModel.getCommentsByFilmId(card.id);
+
+    // Примешиваю флаг того что карточка была открыта до перерисовки
+    if (card.id === this._openedPopup) {
+      card.wasOpened = true;
+      this._openedPopup = null;
+    }
 
     filmCardPresenter.init(card);
 
