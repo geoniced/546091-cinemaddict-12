@@ -5,8 +5,8 @@ const isFilmWatched = (film) => film.isWatched;
 const isFilmFavorite = (film) => film.isFavorite;
 
 export const filter = {
-  all: (films) => films,
-  watchlist: (films) => films.filter(isFilmInWatchlist),
-  history: (films) => films.filter(isFilmWatched),
-  favorites: (films) => films.filter(isFilmFavorite),
+  [FilterType.ALL]: (films) => films,
+  [FilterType.WATCHLIST]: (films) => films.filter(isFilmInWatchlist),
+  [FilterType.HISTORY]: (films) => films.filter(isFilmWatched),
+  [FilterType.FAVORITES]: (films) => films.filter(isFilmFavorite),
 };

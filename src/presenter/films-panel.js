@@ -9,6 +9,7 @@ import FilmCardPresenter from './film-card.js';
 import {render, RenderPosition, remove} from '../utils/render.js';
 import {sortByDate, sortByRating, sortByComments} from '../utils/film.js';
 import {SortType, UserAction, UpdateType, FilmType} from '../const.js';
+import {filter} from '../utils/filter.js';
 
 const CARDS_PER_STEP = 5;
 const EXTRA_CARDS_COUNT = 2;
@@ -29,10 +30,11 @@ const CardTypeBindings = {
 };
 
 export default class FilmsPanel {
-  constructor(mainElement, filmsModel, commentsModel) {
+  constructor(mainElement, filmsModel, commentsModel, filterModel) {
     this._mainElement = mainElement;
     this._filmsModel = filmsModel;
     this._commentsModel = commentsModel;
+    this._filterModel = filterModel;
 
     this._renderedCardsCount = CARDS_PER_STEP;
     this._currentSortType = SortType.DEFAULT;
@@ -63,6 +65,7 @@ export default class FilmsPanel {
 
     this._filmsModel.addObserver(this._handleModelEvent);
     this._commentsModel.addObserver(this._handleModelEvent);
+    this._filterModel.addObserver(this._handleModelEvent);
   }
 
   init() {
@@ -75,14 +78,18 @@ export default class FilmsPanel {
   }
 
   _getFilms() {
+    const filterType = this._filterModel.getFilter();
+    const films = this._filmsModel.getFilms();
+    const filteredFilms = filter[filterType](films);
+
     switch (this._currentSortType) {
       case SortType.BY_DATE:
-        return this._filmsModel.getFilms().slice().sort(sortByDate);
+        return filteredFilms.sort(sortByDate);
       case SortType.BY_RATING:
-        return this._filmsModel.getFilms().slice().sort(sortByRating);
+        return filteredFilms.sort(sortByRating);
     }
 
-    return this._filmsModel.getFilms();
+    return filteredFilms;
   }
 
   _getFilmComments(film) {
@@ -227,7 +234,6 @@ export default class FilmsPanel {
   }
 
   _handleViewAction(actionType, updateType, update) {
-    console.log(actionType, updateType, update);
     switch (actionType) {
       case UserAction.UPDATE_FILM:
         this._filmsModel.updateFilm(updateType, update);
@@ -244,7 +250,7 @@ export default class FilmsPanel {
     }
   }
 
-  _handleModelEvent(updateType, data) {
+  _handleModelEvent(updateType) {
     // В зависимости от типа изменений updateType делаем: -обновляем список фильмов, или целую панель (со списком)
     switch (updateType) {
       case UpdateType.MINOR:

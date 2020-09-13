@@ -29,7 +29,7 @@ const mainElement = document.querySelector(`.main`);
 const navigationComponent = new NavigationView();
 render(mainElement, navigationComponent, RenderPosition.BEFOREEND);
 
-const filmsPanelPresenter = new FilmsPanelPresenter(mainElement, filmsModel, commentsModel);
+const filmsPanelPresenter = new FilmsPanelPresenter(mainElement, filmsModel, commentsModel, filterModel);
 const filterPresenter = new FilterPresenter(navigationComponent, filterModel, filmsModel);
 
 filmsPanelPresenter.init();

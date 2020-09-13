@@ -46,7 +46,7 @@ export default class Filter {
     if (this._currentFilter === filterType) {
       return;
     }
-    console.log(filterType);
+
     this._filterModel.setFilter(UpdateType.MAJOR, filterType);
   }
 
@@ -74,6 +74,6 @@ export default class Filter {
         name: `Favorites`,
         count: filter[FilterType.FAVORITES](films).length,
       },
-    ]
+    ];
   }
 }
