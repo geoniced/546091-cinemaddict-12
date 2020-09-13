@@ -179,6 +179,7 @@ export default class FilmCard {
   _escKeyDownHandler(evt) {
     if (evt.key === `Escape` || evt.key === `Esc`) {
       evt.preventDefault();
+      this._filmDetailsPopupComponent.reset(this._card);
       this._closeFilmDetailsPopup();
     }
   }
