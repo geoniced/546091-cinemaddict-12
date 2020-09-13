@@ -1,7 +1,4 @@
-import {getRandomInteger, getRandomItem, getUniqueArray} from '../utils/common.js';
-
-// in production, I should use something better, i.e https://github.com/ai/nanoid
-const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
+import {getRandomInteger, getRandomItem, getUniqueArray, generateId} from '../utils/common.js';
 
 const getRandomSentences = () => {
   return [
@@ -108,7 +105,7 @@ const getEmotion = () => {
   return getRandomItem(emotions);
 };
 
-const getAuthor = () => {
+export const getAuthor = () => {
   const authors = [`John Doe`, `Tim Macoveev`, `Peter Parker`, `Tony Stark`];
 
   return getRandomItem(authors);

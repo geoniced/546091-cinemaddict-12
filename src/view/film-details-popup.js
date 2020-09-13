@@ -237,6 +237,7 @@ export default class FilmDetailsPopup extends SmartView {
     // inside
     this._emotionChangeHandler = this._emotionChangeHandler.bind(this);
     this._commentInputHandler = this._commentInputHandler.bind(this);
+    this._commentAddHandler = this._commentAddHandler.bind(this);
 
     this._setInnerHandlers();
   }
@@ -253,6 +254,7 @@ export default class FilmDetailsPopup extends SmartView {
     this.setAlreadyWatchedClickHandler(this._callback.alreadyWatchedClick);
     this.setFavoriteClickHandler(this._callback.favoriteClick);
     this.setDeleteCommentClickHandler(this._callback.deleteCommentClick);
+    this.setCommentAddSubmitHandler(this._callback.commentAdd);
   }
 
   _getPopupCloseButton() {
@@ -302,6 +304,12 @@ export default class FilmDetailsPopup extends SmartView {
     }, true);
   }
 
+  _commentAddHandler(evt) {
+    if (evt.ctrlKey && evt.key === `Enter` || evt.metaKey && evt.key === `Enter`) {
+      this._callback.commentAdd(this._data);
+    }
+  }
+
   _setInnerHandlers() {
     this.getElement()
       .querySelector(`.film-details__emoji-list`)
@@ -335,6 +343,11 @@ export default class FilmDetailsPopup extends SmartView {
   setDeleteCommentClickHandler(callback) {
     this._callback.deleteCommentClick = callback;
     this.getElement().querySelector(`.film-details__comments-list`).addEventListener(`click`, this._deleteCommentClickHandler);
+  }
+
+  setCommentAddSubmitHandler(callback) {
+    this._callback.commentAdd = callback;
+    this.getElement().querySelector(`form.film-details__inner`).addEventListener(`keydown`, this._commentAddHandler);
   }
 
   static parseFilmCardToData(filmCard) {

@@ -2,6 +2,8 @@ import FilmCardView from '../view/film-card.js';
 import FilmDetailsPopupView from '../view/film-details-popup.js';
 import {render, RenderPosition, remove, replace} from '../utils/render.js';
 import {UserAction, UpdateType} from '../const.js';
+import {generateId} from '../utils/common.js';
+import {getAuthor} from '../mock/film-card.js';
 
 const POPUP_OPEN_CLASSES = new Set([`film-card__poster`, `film-card__title`, `film-card__comments`]);
 
@@ -26,6 +28,7 @@ export default class FilmCard {
     this._handleAlreadyWatchedClick = this._handleAlreadyWatchedClick.bind(this);
     this._handleAddToWatchlistClick = this._handleAddToWatchlistClick.bind(this);
     this._handleDeleteCommentClick = this._handleDeleteCommentClick.bind(this);
+    this._handleCommentAddSubmitHandler = this._handleCommentAddSubmitHandler.bind(this);
     this._handleCardClick = this._handleCardClick.bind(this);
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
   }
@@ -129,6 +132,24 @@ export default class FilmCard {
     );
   }
 
+  _handleCommentAddSubmitHandler(commentData) {
+    const {emotion, comment: text, id: filmId} = commentData;
+    const newComment = {
+      id: generateId(),
+      filmId,
+      text,
+      emotion,
+      author: getAuthor(), // ТЗ: генерируется на сервере, временное решение
+      date: Date.now(),
+    };
+
+    this._changeData(
+        UserAction.ADD_COMMENT,
+        UpdateType.MINOR,
+        newComment
+    );
+  }
+
   _openFilmDetailsPopup() {
     render(this._footerElement, this._filmDetailsPopupComponent, RenderPosition.AFTEREND);
 
@@ -175,6 +196,7 @@ export default class FilmCard {
     this._filmDetailsPopupComponent.setAlreadyWatchedClickHandler(this._handleAlreadyWatchedClick);
     this._filmDetailsPopupComponent.setFavoriteClickHandler(this._handleFavoriteClick);
     this._filmDetailsPopupComponent.setDeleteCommentClickHandler(this._handleDeleteCommentClick);
+    this._filmDetailsPopupComponent.setCommentAddSubmitHandler(this._handleCommentAddSubmitHandler);
 
     document.addEventListener(`keydown`, this._escKeyDownHandler);
   }
