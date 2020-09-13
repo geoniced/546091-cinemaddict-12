@@ -2,6 +2,7 @@ import SmartView from "../view/smart.js";
 import {humanizeDate, getDuration} from '../utils/common.js';
 import {EMOTIONS} from "../const.js";
 import moment from "moment";
+import he from "he";
 
 const formatDate = (date) => {
   let resultDate = moment(date).format(`YYYY/M/D H:mm`);
@@ -39,7 +40,7 @@ const createCommentItemTemplate = (comment) => {
         <img src="./images/emoji/${emotion}.png" width="55" height="55" alt="emoji-${emotion}">
       </span>
       <div>
-        <p class="film-details__comment-text">${text}</p>
+        <p class="film-details__comment-text">${he.encode(text)}</p>
         <p class="film-details__comment-info">
           <span class="film-details__comment-author">${author}</span>
           <span class="film-details__comment-day">${dateFormatted}</span>
