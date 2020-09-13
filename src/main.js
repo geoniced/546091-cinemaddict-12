@@ -4,6 +4,7 @@ import FilterView from './view/filter.js';
 import FilmsPanelPresenter from './presenter/films-panel.js';
 import FilmsModel from './model/films.js';
 import CommentsModel from './model/comments.js';
+import FilterModel from './model/filter.js';
 import StatisticsView from './view/statistics.js';
 import {generateFilmCard, exportFilmComments} from './mock/film-card.js';
 import {generateFilters} from './mock/filter.js';
@@ -20,6 +21,7 @@ filmsModel.setFilms(filmCards);
 const commentsModel = new CommentsModel();
 commentsModel.setComments(comments);
 
+const filterModel = new FilterModel();
 const filters = generateFilters(filmCards);
 
 const headerElement = document.querySelector(`.header`);
