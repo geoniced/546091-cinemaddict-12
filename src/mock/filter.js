@@ -3,6 +3,7 @@ const isFilmWatched = (film) => film.isWatched;
 const isFilmFavorite = (film) => film.isFavorite;
 
 const filmsToFilterMap = {
+  all: (films) => films.length,
   watchlist: (films) => films.filter(isFilmInWatchlist).length,
   history: (films) => films.filter(isFilmWatched).length,
   favorites: (films) => films.filter(isFilmFavorite).length,

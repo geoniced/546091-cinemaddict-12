@@ -3,10 +3,14 @@ import AbstractView from "../view/abstract.js";
 const createFilterItemTemplate = (filter) => {
   const {name, count} = filter;
 
-  const capitalizedName = `${name[0].toUpperCase()}${name.slice(1)}`;
+  const isAllMovies = name === `all`;
+  const capitalizedName = isAllMovies ? `All movies` : `${name[0].toUpperCase()}${name.slice(1)}`;
+  const isActive = isAllMovies;
 
   return (
-    `<a href="#${name}" class="main-navigation__item">${capitalizedName} <span class="main-navigation__item-count">${count}</span></a>`
+    `<a href="#${name}" class="main-navigation__item ${isActive ? `main-navigation__item--active` : ``}">${capitalizedName}
+      ${!isAllMovies ? `<span class="main-navigation__item-count">${count}</span>` : ``}
+    </a>`
   );
 };
 
@@ -17,7 +21,6 @@ const createFilterTemplate = (filters) => {
 
   return (
     `<div class="main-navigation__items">
-      <a href="#all" class="main-navigation__item main-navigation__item--active">All movies</a>
       ${filterItemsTemplate}
     </div>`
   );
