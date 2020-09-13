@@ -1,7 +1,7 @@
 import UserScoreView from './view/user-score.js';
 import NavigationView from './view/navigation.js';
-import FilterView from './view/filter.js';
 import FilmsPanelPresenter from './presenter/films-panel.js';
+import FilterPresenter from './presenter/filter.js';
 import FilmsModel from './model/films.js';
 import CommentsModel from './model/comments.js';
 import FilterModel from './model/filter.js';
@@ -21,13 +21,6 @@ const commentsModel = new CommentsModel();
 commentsModel.setComments(comments);
 
 const filterModel = new FilterModel();
-const filters = [
-  {
-    type: `all`,
-    name: `All movies`,
-    count: 0
-  }
-];
 
 const headerElement = document.querySelector(`.header`);
 render(headerElement, new UserScoreView(), RenderPosition.BEFOREEND);
@@ -36,10 +29,11 @@ const mainElement = document.querySelector(`.main`);
 const navigationComponent = new NavigationView();
 render(mainElement, navigationComponent, RenderPosition.BEFOREEND);
 
-render(navigationComponent, new FilterView(filters, `all`), RenderPosition.AFTERBEGIN);
-
 const filmsPanelPresenter = new FilmsPanelPresenter(mainElement, filmsModel, commentsModel);
+const filterPresenter = new FilterPresenter(navigationComponent, filterModel, filmsModel);
+
 filmsPanelPresenter.init();
+filterPresenter.init();
 
 const footerElement = document.querySelector(`.footer`);
 const footerStatisticsElement = footerElement.querySelector(`.footer__statistics`);

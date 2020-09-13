@@ -8,12 +8,12 @@ export default class Filter extends Observer {
     this._activeFilter = FilterType.ALL;
   }
 
-  setFilms(updateType, filterType) {
+  setFilter(updateType, filterType) {
     this._activeFilter = filterType;
     this._notify(updateType, filterType);
   }
 
-  getFilms() {
+  getFilter() {
     return this._activeFilter;
   }
 }
