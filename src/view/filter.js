@@ -1,22 +1,24 @@
 import AbstractView from "../view/abstract.js";
 
-const createFilterItemTemplate = (filter) => {
-  const {name, count} = filter;
+const createFilterItemTemplate = (filter, currentFilterType) => {
+  const {type, name, count} = filter;
 
-  const isAllMovies = name === `all`;
-  const capitalizedName = isAllMovies ? `All movies` : `${name[0].toUpperCase()}${name.slice(1)}`;
-  const isActive = isAllMovies;
+  const isAllMovies = type === `all`;
+  const isActive = type === currentFilterType;
 
   return (
-    `<a href="#${name}" class="main-navigation__item ${isActive ? `main-navigation__item--active` : ``}">${capitalizedName}
+    `<a href="#${type}"
+        class="main-navigation__item ${isActive ? `main-navigation__item--active` : ``}"
+        data-filter-type="${type}">
+      ${name}
       ${!isAllMovies ? `<span class="main-navigation__item-count">${count}</span>` : ``}
     </a>`
   );
 };
 
-const createFilterTemplate = (filters) => {
+const createFilterTemplate = (filters, currentFilterType) => {
   const filterItemsTemplate = filters
-    .map(createFilterItemTemplate)
+    .map((filter) => createFilterItemTemplate(filter, currentFilterType))
     .join(``);
 
   return (
@@ -27,12 +29,26 @@ const createFilterTemplate = (filters) => {
 };
 
 export default class Filter extends AbstractView {
-  constructor(filters) {
+  constructor(filters, currentFilterType) {
     super();
     this._filters = filters;
+    this._currentFilterType = currentFilterType;
+
+    this._filterTypeChangeHandler = this._filterTypeChangeHandler.bind(this);
   }
 
   getTemplate() {
-    return createFilterTemplate(this._filters);
+    return createFilterTemplate(this._filters, this._currentFilterType);
+  }
+
+  _filterTypeChangeHandler(evt) {
+    if (evt.target.tagName === `A`) {
+      this._callback.filterTypeChange(evt.target.dataset.filterType);
+    }
+  }
+
+  setFilterTypeChangeHandler(callback) {
+    this._callback.filterTypeChange = callback;
+    this.getElement().addEventListener(`click`, this._filterTypeChangeHandler);
   }
 }

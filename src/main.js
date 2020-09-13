@@ -7,7 +7,6 @@ import CommentsModel from './model/comments.js';
 import FilterModel from './model/filter.js';
 import StatisticsView from './view/statistics.js';
 import {generateFilmCard, exportFilmComments} from './mock/film-card.js';
-import {generateFilters} from './mock/filter.js';
 import {render, RenderPosition} from './utils/render.js';
 
 const CARDS_COUNT = 20;
@@ -22,7 +21,13 @@ const commentsModel = new CommentsModel();
 commentsModel.setComments(comments);
 
 const filterModel = new FilterModel();
-const filters = generateFilters(filmCards);
+const filters = [
+  {
+    type: `all`,
+    name: `All movies`,
+    count: 0
+  }
+];
 
 const headerElement = document.querySelector(`.header`);
 render(headerElement, new UserScoreView(), RenderPosition.BEFOREEND);
@@ -31,7 +36,7 @@ const mainElement = document.querySelector(`.main`);
 const navigationComponent = new NavigationView();
 render(mainElement, navigationComponent, RenderPosition.BEFOREEND);
 
-render(navigationComponent, new FilterView(filters), RenderPosition.AFTERBEGIN);
+render(navigationComponent, new FilterView(filters, `all`), RenderPosition.AFTERBEGIN);
 
 const filmsPanelPresenter = new FilmsPanelPresenter(mainElement, filmsModel, commentsModel);
 filmsPanelPresenter.init();
