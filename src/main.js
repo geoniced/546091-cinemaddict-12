@@ -14,14 +14,14 @@ const CARDS_COUNT = 20;
 
 const handleNavigationMenuItemClick = (menuItem) => {
   console.log(menuItem);
+  // Сбросить активный пункт меню
   switch (menuItem) {
     case MenuItem.FILMS:
-      // Сбросить активный пункт меню
       // Скрыть статистику
       // Показать панель фильмов
       break;
     case MenuItem.STATS:
-      // Сбросить активный пункт меню
+      // Поставить активный
       // Скрыть панель фильмов
       // Показать статистику
       break;

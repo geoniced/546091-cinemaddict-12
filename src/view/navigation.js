@@ -1,3 +1,4 @@
+import {MenuItem} from "../const.js";
 import AbstractView from "../view/abstract.js";
 
 const createNavigationTemplate = () => {
@@ -30,10 +31,8 @@ export default class Navigation extends AbstractView {
   }
 
   setMenuItem(menuItem) {
-    const item = this.getElement().querySelector(`[data-page="STATS"]`);
-
-    if (item !== null) {
-      item.classList.add();
+    if (menuItem === MenuItem.STATS) {
+      this.getElement().querySelector(`[data-page="STATS"]`).classList.add(`main-navigation__item--active`);
     }
   }
 }
