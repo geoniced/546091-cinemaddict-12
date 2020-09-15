@@ -66,9 +66,17 @@ export default class Stats extends SmartView {
     super();
 
     this._data = films;
+
+    this._periodChangeHandler = this._periodChangeHandler.bind(this);
   }
 
   getTemplate() {
     return createStatsTemplate(this._data);
+  }
+
+  _periodChangeHandler(evt) {
+    if (evt.target.classList.contains(`statistic__filters-label`)) {
+      evt.preventDefault();
+    }
   }
 }
