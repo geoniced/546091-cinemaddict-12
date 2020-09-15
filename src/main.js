@@ -18,11 +18,11 @@ const handleNavigationMenuItemClick = (menuItem) => {
   switch (menuItem) {
     case MenuItem.FILMS:
       // Скрыть статистику
-      // Показать панель фильмов
+      filmsPanelPresenter.init(); // Показать панель фильмов
       break;
     case MenuItem.STATS:
       // Поставить активный
-      // Скрыть панель фильмов
+      filmsPanelPresenter.destroy(); // Скрыть панель фильмов
       // Показать статистику
       break;
   }

@@ -62,10 +62,6 @@ export default class FilmsPanel {
     this._handleModeChange = this._handleModeChange.bind(this);
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
-
-    this._filmsModel.addObserver(this._handleModelEvent);
-    this._commentsModel.addObserver(this._handleModelEvent);
-    this._filterModel.addObserver(this._handleModelEvent);
   }
 
   init() {
@@ -74,7 +70,21 @@ export default class FilmsPanel {
 
     render(this._mainElement, this._filmsPanelComponent, RenderPosition.BEFOREEND);
 
+    this._filmsModel.addObserver(this._handleModelEvent);
+    this._commentsModel.addObserver(this._handleModelEvent);
+    this._filterModel.addObserver(this._handleModelEvent);
+
     this._renderFilmsPanel();
+  }
+
+  destroy() {
+    this._clearFilmsPanel({resetRenderedCardsCount: true, resetSortType: true});
+
+    remove(this._filmsPanelComponent);
+
+    this._filmsModel.removeObserver(this._handleModelEvent);
+    this._commentsModel.removeObserver(this._handleModelEvent);
+    this._filterModel.removeObserver(this._handleModelEvent);
   }
 
   _getFilms() {
