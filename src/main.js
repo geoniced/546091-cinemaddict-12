@@ -18,6 +18,7 @@ const handleNavigationMenuItemClick = (menuItem) => {
   switch (menuItem) {
     case MenuItem.FILMS:
       // Скрыть статистику
+      filmsPanelPresenter.destroy();
       filmsPanelPresenter.init(); // Показать панель фильмов
       break;
     case MenuItem.STATS:
