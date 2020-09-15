@@ -8,8 +8,25 @@ import FilterModel from './model/filter.js';
 import StatisticsView from './view/statistics.js';
 import {generateFilmCard, exportFilmComments} from './mock/film-card.js';
 import {render, RenderPosition} from './utils/render.js';
+import {MenuItem} from './const.js';
 
 const CARDS_COUNT = 20;
+
+const handleNavigationMenuItemClick = (menuItem) => {
+  console.log(menuItem);
+  switch (menuItem) {
+    case MenuItem.FILMS:
+      // Сбросить активный пункт меню
+      // Скрыть статистику
+      // Показать панель фильмов
+      break;
+    case MenuItem.STATS:
+      // Сбросить активный пункт меню
+      // Скрыть панель фильмов
+      // Показать статистику
+      break;
+  }
+};
 
 const filmCards = new Array(CARDS_COUNT).fill().map(generateFilmCard);
 const comments = exportFilmComments(filmCards);
@@ -32,6 +49,7 @@ render(mainElement, navigationComponent, RenderPosition.BEFOREEND);
 const filmsPanelPresenter = new FilmsPanelPresenter(mainElement, filmsModel, commentsModel, filterModel);
 const filterPresenter = new FilterPresenter(navigationComponent, filterModel, filmsModel);
 
+navigationComponent.setMenuClickHandler(handleNavigationMenuItemClick);
 filmsPanelPresenter.init();
 filterPresenter.init();
 

@@ -9,7 +9,8 @@ const createFilterItemTemplate = (filter, currentFilterType) => {
   return (
     `<a href="#${type}"
         class="main-navigation__item ${isActive ? `main-navigation__item--active` : ``}"
-        data-filter-type="${type}">
+        data-filter-type="${type}"
+        data-page="FILMS">
       ${name}
       ${!isAllMovies ? `<span class="main-navigation__item-count">${count}</span>` : ``}
     </a>`
