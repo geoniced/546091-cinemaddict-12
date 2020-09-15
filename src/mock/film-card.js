@@ -1,7 +1,4 @@
-import {getRandomInteger, getRandomItem, getUniqueArray} from '../utils/common.js';
-
-// in production, I should use something better, i.e https://github.com/ai/nanoid
-const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
+import {getRandomInteger, getRandomItem, getUniqueArray, generateId} from '../utils/common.js';
 
 const getRandomSentences = () => {
   return [
@@ -108,7 +105,7 @@ const getEmotion = () => {
   return getRandomItem(emotions);
 };
 
-const getAuthor = () => {
+export const getAuthor = () => {
   const authors = [`John Doe`, `Tim Macoveev`, `Peter Parker`, `Tony Stark`];
 
   return getRandomItem(authors);
@@ -124,12 +121,15 @@ const generateDate = (gap = 7) => {
 };
 
 const getComment = () => {
+  const id = generateId();
   const text = generateText();
   const emotion = getEmotion();
   const author = getAuthor();
   const date = generateDate();
 
   return {
+    id,
+    filmId: null,
     text,
     emotion,
     author,
@@ -142,6 +142,28 @@ const getComments = () => {
   const comments = new Array(commentsCount)
     .fill()
     .map(getComment);
+
+  return comments;
+};
+
+export const exportFilmComments = (films) => {
+  let comments = [];
+  films.forEach((film) => {
+    film.comments.forEach((comment) => {
+      comment.filmId = film.id;
+    });
+
+    comments = comments.concat(film.comments);
+  });
+
+  return comments;
+};
+
+export const generateComments = (films) => {
+  let comments = [];
+  films.forEach((film) => {
+    comments = comments.concat(getComments(film.id));
+  });
 
   return comments;
 };

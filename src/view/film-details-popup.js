@@ -2,6 +2,7 @@ import SmartView from "../view/smart.js";
 import {humanizeDate, getDuration} from '../utils/common.js';
 import {EMOTIONS} from "../const.js";
 import moment from "moment";
+import he from "he";
 
 const formatDate = (date) => {
   let resultDate = moment(date).format(`YYYY/M/D H:mm`);
@@ -24,6 +25,7 @@ const createGenreItemTemplate = (genre) => {
 
 const createCommentItemTemplate = (comment) => {
   const {
+    id,
     emotion,
     text,
     author,
@@ -33,12 +35,12 @@ const createCommentItemTemplate = (comment) => {
   const dateFormatted = formatDate(date);
 
   return (
-    `<li class="film-details__comment">
+    `<li class="film-details__comment" data-comment-id="${id}">
       <span class="film-details__comment-emoji">
         <img src="./images/emoji/${emotion}.png" width="55" height="55" alt="emoji-${emotion}">
       </span>
       <div>
-        <p class="film-details__comment-text">${text}</p>
+        <p class="film-details__comment-text">${he.encode(text)}</p>
         <p class="film-details__comment-info">
           <span class="film-details__comment-author">${author}</span>
           <span class="film-details__comment-day">${dateFormatted}</span>
@@ -231,12 +233,27 @@ export default class FilmDetailsPopup extends SmartView {
     this._addToWatchlistClickHandler = this._addToWatchlistClickHandler.bind(this);
     this._alreadyWatchedClickHandler = this._alreadyWatchedClickHandler.bind(this);
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
+    this._deleteCommentClickHandler = this._deleteCommentClickHandler.bind(this);
 
     // inside
     this._emotionChangeHandler = this._emotionChangeHandler.bind(this);
     this._commentInputHandler = this._commentInputHandler.bind(this);
+    this._commentAddHandler = this._commentAddHandler.bind(this);
 
     this._setInnerHandlers();
+  }
+
+  reset(film) {
+    this.updateData(
+        Object.assign(
+            {},
+            film,
+            {
+              comment: ``,
+              emotion: ``
+            }
+        )
+    );
   }
 
   getTemplate() {
@@ -250,6 +267,8 @@ export default class FilmDetailsPopup extends SmartView {
     this.setAddToWatchListClickHandler(this._callback.addToWatchlistClick);
     this.setAlreadyWatchedClickHandler(this._callback.alreadyWatchedClick);
     this.setFavoriteClickHandler(this._callback.favoriteClick);
+    this.setDeleteCommentClickHandler(this._callback.deleteCommentClick);
+    this.setCommentAddSubmitHandler(this._callback.commentAdd);
   }
 
   _getPopupCloseButton() {
@@ -276,6 +295,14 @@ export default class FilmDetailsPopup extends SmartView {
     this._callback.favoriteClick();
   }
 
+  _deleteCommentClickHandler(evt) {
+    if (evt.target.classList.contains(`film-details__comment-delete`)) {
+      evt.preventDefault();
+      const commentListElement = evt.target.closest(`.film-details__comment`);
+      this._callback.deleteCommentClick(Number(commentListElement.dataset.commentId));
+    }
+  }
+
   _emotionChangeHandler(evt) {
     evt.preventDefault();
 
@@ -289,6 +316,12 @@ export default class FilmDetailsPopup extends SmartView {
     this.updateData({
       comment: evt.target.value
     }, true);
+  }
+
+  _commentAddHandler(evt) {
+    if (evt.ctrlKey && evt.key === `Enter` || evt.metaKey && evt.key === `Enter`) {
+      this._callback.commentAdd(this._data);
+    }
   }
 
   _setInnerHandlers() {
@@ -319,6 +352,16 @@ export default class FilmDetailsPopup extends SmartView {
   setFavoriteClickHandler(callback) {
     this._callback.favoriteClick = callback;
     this.getElement().querySelector(`.film-details__control-label--favorite`).addEventListener(`click`, this._favoriteClickHandler);
+  }
+
+  setDeleteCommentClickHandler(callback) {
+    this._callback.deleteCommentClick = callback;
+    this.getElement().querySelector(`.film-details__comments-list`).addEventListener(`click`, this._deleteCommentClickHandler);
+  }
+
+  setCommentAddSubmitHandler(callback) {
+    this._callback.commentAdd = callback;
+    this.getElement().querySelector(`form.film-details__inner`).addEventListener(`keydown`, this._commentAddHandler);
   }
 
   static parseFilmCardToData(filmCard) {

@@ -27,17 +27,5 @@ export const getDuration = (timeInMinutes) => {
   return `${hours > 0 ? `${hours}h ` : ``}${minutes}m`;
 };
 
-
-export const updateItem = (items, update) => {
-  const index = items.findIndex((item) => item.id === update.id);
-
-  if (index === -1) {
-    return items;
-  }
-
-  return [
-    ...items.slice(0, index),
-    update,
-    ...items.slice(index + 1)
-  ];
-};
+// in production, I should use something better, i.e https://github.com/ai/nanoid
+export const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
