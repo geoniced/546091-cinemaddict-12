@@ -2,7 +2,6 @@ import SmartView from "./smart.js";
 import {filter} from "../utils/filter.js";
 import {FilterType} from "../const.js";
 import {countFilmsDuration} from "../utils/film.js";
-import {getDuration} from "../utils/common.js";
 import moment from "moment";
 
 const createStatsTemplate = (data) => {
