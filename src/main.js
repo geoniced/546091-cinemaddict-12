@@ -1,5 +1,6 @@
 import UserScoreView from './view/user-score.js';
 import NavigationView from './view/navigation.js';
+import StatsView from './view/stats.js';
 import FilmsPanelPresenter from './presenter/films-panel.js';
 import FilterPresenter from './presenter/filter.js';
 import FilmsModel from './model/films.js';
@@ -13,7 +14,6 @@ import {MenuItem} from './const.js';
 const CARDS_COUNT = 20;
 
 const handleNavigationMenuItemClick = (menuItem) => {
-  console.log(menuItem);
   // Сбросить активный пункт меню
   switch (menuItem) {
     case MenuItem.FILMS:
@@ -51,8 +51,10 @@ const filmsPanelPresenter = new FilmsPanelPresenter(mainElement, filmsModel, com
 const filterPresenter = new FilterPresenter(navigationComponent, filterModel, filmsModel);
 
 navigationComponent.setMenuClickHandler(handleNavigationMenuItemClick);
-filmsPanelPresenter.init();
+// filmsPanelPresenter.init();
 filterPresenter.init();
+
+render(mainElement, new StatsView(filmsModel.getFilms()), RenderPosition.BEFOREEND);
 
 const footerElement = document.querySelector(`.footer`);
 const footerStatisticsElement = footerElement.querySelector(`.footer__statistics`);
