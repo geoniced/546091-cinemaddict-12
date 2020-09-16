@@ -1,4 +1,6 @@
 import SmartView from "./smart.js";
+import Chart from "chart.js";
+import ChartDataLabels from "chartjs-plugin-datalabels";
 import {filter} from "../utils/filter.js";
 import {FilterType} from "../const.js";
 import {countFilmsDuration} from "../utils/film.js";
@@ -27,8 +29,68 @@ const STATISTICS_FILTERS = [
   }
 ];
 
-const renderFilmsChart = (filmsChartCtx, films) => {
+const renderStatisticsChart = (statisticCtx, films) => {
+  const BAR_HEIGHT = 50;
 
+  // Обязательно рассчитайте высоту canvas, она зависит от количества элементов диаграммы
+  statisticCtx.height = BAR_HEIGHT * 5;
+
+  return new Chart(statisticCtx, {
+    plugins: [ChartDataLabels],
+    type: `horizontalBar`,
+    data: {
+      labels: [`Sci-Fi`, `Animation`, `Fantasy`, `Comedy`, `TV Series`], // genres from films
+      datasets: [{
+        data: [11, 8, 7, 4, 3], // amount of films per every genre
+        backgroundColor: `#ffe800`,
+        hoverBackgroundColor: `#ffe800`,
+        anchor: `start`
+      }]
+    },
+    options: {
+      plugins: {
+        datalabels: {
+          font: {
+            size: 20
+          },
+          color: `#ffffff`,
+          anchor: `start`,
+          align: `start`,
+          offset: 40,
+        }
+      },
+      scales: {
+        yAxes: [{
+          ticks: {
+            fontColor: `#ffffff`,
+            padding: 100,
+            fontSize: 20
+          },
+          gridLines: {
+            display: false,
+            drawBorder: false
+          },
+          barThickness: 24
+        }],
+        xAxes: [{
+          ticks: {
+            display: false,
+            beginAtZero: true
+          },
+          gridLines: {
+            display: false,
+            drawBorder: false
+          },
+        }],
+      },
+      legend: {
+        display: false
+      },
+      tooltips: {
+        enabled: false
+      }
+    }
+  });
 };
 
 const createStatisticsFilters = (currentFilter) => {
@@ -126,9 +188,9 @@ export default class Stats extends SmartView {
     }
 
     const {films} = this._data;
-    const filmsChartCtx = this.getElement().querySelector(`.statistic__chart`);
+    const statisticCtx = this.getElement().querySelector(`.statistic__chart`);
 
-    this._filmsChart = renderFilmsChart(filmsChartCtx, films);
+    this._filmsChart = renderStatisticsChart(statisticCtx, films);
   }
 
   _periodChangeHandler(evt) {
@@ -136,6 +198,5 @@ export default class Stats extends SmartView {
     this.updateData({
       statisticFilter: evt.target.value,
     });
-    console.log(evt.target.value);
   }
 }
