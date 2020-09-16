@@ -2,6 +2,7 @@ import SmartView from "./smart.js";
 import Chart from "chart.js";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 import {filter} from "../utils/filter.js";
+import {getFilmsStatistics, getTopGenre} from "../utils/stats.js";
 import {FilterType} from "../const.js";
 import {countFilmsDuration} from "../utils/film.js";
 import moment from "moment";
@@ -32,16 +33,17 @@ const STATISTICS_FILTERS = [
 const renderStatisticsChart = (statisticCtx, films) => {
   const BAR_HEIGHT = 50;
 
-  // Обязательно рассчитайте высоту canvas, она зависит от количества элементов диаграммы
-  statisticCtx.height = BAR_HEIGHT * 5;
+  const {genres, filmsByGenre} = getFilmsStatistics(films);
+
+  statisticCtx.height = BAR_HEIGHT * genres.length;
 
   return new Chart(statisticCtx, {
     plugins: [ChartDataLabels],
     type: `horizontalBar`,
     data: {
-      labels: [`Sci-Fi`, `Animation`, `Fantasy`, `Comedy`, `TV Series`], // genres from films
+      labels: genres,
       datasets: [{
-        data: [11, 8, 7, 4, 3], // amount of films per every genre
+        data: filmsByGenre,
         backgroundColor: `#ffe800`,
         hoverBackgroundColor: `#ffe800`,
         anchor: `start`
@@ -117,6 +119,9 @@ const createStatsTemplate = (data) => {
 
   const statisticsFiltersTemplate = createStatisticsFilters(statisticFilter);
 
+  const {filmsByGenre, genres} = getFilmsStatistics(films);
+  const topGenre = getTopGenre(filmsByGenre, genres);
+
   return (
     `<section class="statistic">
       <p class="statistic__rank">
@@ -142,7 +147,7 @@ const createStatsTemplate = (data) => {
         </li>
         <li class="statistic__text-item">
           <h4 class="statistic__item-title">Top genre</h4>
-          <p class="statistic__item-text">Sci-Fi</p>
+          <p class="statistic__item-text">${topGenre}</p>
         </li>
       </ul>
 
@@ -176,6 +181,7 @@ export default class Stats extends SmartView {
 
   restoreHandlers() {
     this._setStatisticsHandler();
+    this._setCharts();
   }
 
   _setStatisticsHandler() {
