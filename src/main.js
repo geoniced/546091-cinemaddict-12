@@ -8,7 +8,7 @@ import CommentsModel from './model/comments.js';
 import FilterModel from './model/filter.js';
 import StatisticsView from './view/statistics.js';
 import {generateFilmCard, exportFilmComments} from './mock/film-card.js';
-import {render, RenderPosition} from './utils/render.js';
+import {remove, render, RenderPosition} from './utils/render.js';
 import {MenuItem} from './const.js';
 
 const CARDS_COUNT = 20;
@@ -18,13 +18,15 @@ const handleNavigationMenuItemClick = (menuItem) => {
   switch (menuItem) {
     case MenuItem.FILMS:
       // Скрыть статистику
+      remove(statsComponent);
       filmsPanelPresenter.destroy();
       filmsPanelPresenter.init(); // Показать панель фильмов
       break;
     case MenuItem.STATS:
       // Поставить активный
       filmsPanelPresenter.destroy(); // Скрыть панель фильмов
-      // Показать статистику
+      statsComponent = new StatsView(filmsModel.getFilms()); // Показать статистику
+      render(mainElement, statsComponent, RenderPosition.BEFOREEND);
       break;
   }
 };
@@ -51,10 +53,10 @@ const filmsPanelPresenter = new FilmsPanelPresenter(mainElement, filmsModel, com
 const filterPresenter = new FilterPresenter(navigationComponent, filterModel, filmsModel);
 
 navigationComponent.setMenuClickHandler(handleNavigationMenuItemClick);
-// filmsPanelPresenter.init();
+filmsPanelPresenter.init();
 filterPresenter.init();
 
-render(mainElement, new StatsView(filmsModel.getFilms()), RenderPosition.BEFOREEND);
+let statsComponent = new StatsView(filmsModel.getFilms());
 
 const footerElement = document.querySelector(`.footer`);
 const footerStatisticsElement = footerElement.querySelector(`.footer__statistics`);
