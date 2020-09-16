@@ -94,7 +94,7 @@ export default class Stats extends SmartView {
 
     this._data = {
       films,
-      statisticFilter: StatisticsFilterType.ALL_TIME,
+      statisticFilter: STATISTICS_FILTERS[0].value,
     };
 
     this._periodChangeHandler = this._periodChangeHandler.bind(this);
