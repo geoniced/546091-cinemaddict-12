@@ -27,6 +27,10 @@ const STATISTICS_FILTERS = [
   }
 ];
 
+const renderFilmsChart = (filmsChartCtx, films) => {
+
+};
+
 const createStatisticsFilters = (currentFilter) => {
   return STATISTICS_FILTERS.map(({value, title} = {}) => {
     return (
@@ -96,10 +100,12 @@ export default class Stats extends SmartView {
       films,
       statisticFilter: STATISTICS_FILTERS[0].value,
     };
+    this._filmsChart = null;
 
     this._periodChangeHandler = this._periodChangeHandler.bind(this);
 
     this._setStatisticsHandler();
+    this._setCharts();
   }
 
   getTemplate() {
@@ -112,6 +118,17 @@ export default class Stats extends SmartView {
 
   _setStatisticsHandler() {
     this.getElement().addEventListener(`change`, this._periodChangeHandler);
+  }
+
+  _setCharts() {
+    if (this._filmsChart !== null) {
+      this._filmsChart = null;
+    }
+
+    const {films} = this._data;
+    const filmsChartCtx = this.getElement().querySelector(`.statistic__chart`);
+
+    this._filmsChart = renderFilmsChart(filmsChartCtx, films);
   }
 
   _periodChangeHandler(evt) {
