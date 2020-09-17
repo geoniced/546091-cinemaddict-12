@@ -1,5 +1,6 @@
 import UserScoreView from './view/user-score.js';
 import NavigationView from './view/navigation.js';
+import StatsView from './view/stats.js';
 import FilmsPanelPresenter from './presenter/films-panel.js';
 import FilterPresenter from './presenter/filter.js';
 import FilmsModel from './model/films.js';
@@ -7,9 +8,28 @@ import CommentsModel from './model/comments.js';
 import FilterModel from './model/filter.js';
 import StatisticsView from './view/statistics.js';
 import {generateFilmCard, exportFilmComments} from './mock/film-card.js';
-import {render, RenderPosition} from './utils/render.js';
+import {remove, render, RenderPosition} from './utils/render.js';
+import {MenuItem} from './const.js';
 
 const CARDS_COUNT = 20;
+
+const handleNavigationMenuItemClick = (menuItem) => {
+  // Сбросить активный пункт меню
+  switch (menuItem) {
+    case MenuItem.FILMS:
+      // Скрыть статистику
+      remove(statsComponent);
+      filmsPanelPresenter.destroy();
+      filmsPanelPresenter.init(); // Показать панель фильмов
+      break;
+    case MenuItem.STATS:
+      // Поставить активный
+      filmsPanelPresenter.destroy(); // Скрыть панель фильмов
+      statsComponent = new StatsView(filmsModel.getFilms()); // Показать статистику
+      render(mainElement, statsComponent, RenderPosition.BEFOREEND);
+      break;
+  }
+};
 
 const filmCards = new Array(CARDS_COUNT).fill().map(generateFilmCard);
 const comments = exportFilmComments(filmCards);
@@ -32,8 +52,11 @@ render(mainElement, navigationComponent, RenderPosition.BEFOREEND);
 const filmsPanelPresenter = new FilmsPanelPresenter(mainElement, filmsModel, commentsModel, filterModel);
 const filterPresenter = new FilterPresenter(navigationComponent, filterModel, filmsModel);
 
+navigationComponent.setMenuClickHandler(handleNavigationMenuItemClick);
 filmsPanelPresenter.init();
 filterPresenter.init();
+
+let statsComponent = new StatsView(filmsModel.getFilms());
 
 const footerElement = document.querySelector(`.footer`);
 const footerStatisticsElement = footerElement.querySelector(`.footer__statistics`);
