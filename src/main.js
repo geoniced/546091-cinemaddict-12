@@ -20,6 +20,8 @@ const api = new Api(END_POINT, AUTHORIZATION);
 
 api.getFilms()
   .then((response) => {
+    console.log(filmCards[0], Object.values(filmCards[0]).length);
+    console.log(response[0], Object.values(response[0]).length);
     console.log(response);
   });
 
