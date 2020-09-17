@@ -10,8 +10,18 @@ import StatisticsView from './view/statistics.js';
 import {generateFilmCard, exportFilmComments} from './mock/film-card.js';
 import {remove, render, RenderPosition} from './utils/render.js';
 import {MenuItem} from './const.js';
+import Api from './api.js';
 
 const CARDS_COUNT = 20;
+const AUTHORIZATION = `Basic saAShasdAAS77211`;
+const END_POINT = `https://12.ecmascript.pages.academy/cinemaddict`;
+
+const api = new Api(END_POINT, AUTHORIZATION);
+
+api.getFilms()
+  .then((response) => {
+    console.log(response);
+  });
 
 const handleNavigationMenuItemClick = (menuItem) => {
   // Сбросить активный пункт меню
