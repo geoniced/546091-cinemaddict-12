@@ -120,7 +120,7 @@ const createStatsTemplate = (data) => {
   const statisticsFiltersTemplate = createStatisticsFilters(statisticFilter);
 
   const {filmsByGenre, genres} = getFilmsStatistics(films);
-  const topGenre = getTopGenre(filmsByGenre, genres);
+  const {genre: topGenre} = getTopGenre(filmsByGenre, genres);
 
   return (
     `<section class="statistic">

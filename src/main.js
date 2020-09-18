@@ -12,18 +12,24 @@ import {remove, render, RenderPosition} from './utils/render.js';
 import {MenuItem} from './const.js';
 import Api from './api.js';
 
-const CARDS_COUNT = 20;
 const AUTHORIZATION = `Basic saAShasdAAS77211`;
 const END_POINT = `https://12.ecmascript.pages.academy/cinemaddict`;
 
-const api = new Api(END_POINT, AUTHORIZATION);
+const headerElement = document.querySelector(`.header`);
+const mainElement = document.querySelector(`.main`);
+const footerElement = document.querySelector(`.footer`);
+const footerStatisticsElement = footerElement.querySelector(`.footer__statistics`);
 
-api.getFilms()
-  .then((response) => {
-    console.log(filmCards[0], Object.values(filmCards[0]).length);
-    console.log(response[0], Object.values(response[0]).length);
-    console.log(response);
-  });
+const api = new Api(END_POINT, AUTHORIZATION);
+const filmsModel = new FilmsModel();
+const commentsModel = new CommentsModel();
+const filterModel = new FilterModel();
+
+const navigationComponent = new NavigationView();
+const filmsPanelPresenter = new FilmsPanelPresenter(mainElement, filmsModel, commentsModel, filterModel);
+const filterPresenter = new FilterPresenter(navigationComponent, filterModel, filmsModel);
+
+let statsComponent = new StatsView(filmsModel.getFilms());
 
 const handleNavigationMenuItemClick = (menuItem) => {
   // Сбросить активный пункт меню
@@ -43,33 +49,19 @@ const handleNavigationMenuItemClick = (menuItem) => {
   }
 };
 
-const filmCards = new Array(CARDS_COUNT).fill().map(generateFilmCard);
-const comments = exportFilmComments(filmCards);
-
-const filmsModel = new FilmsModel();
-filmsModel.setFilms(filmCards);
-
-const commentsModel = new CommentsModel();
-commentsModel.setComments(comments);
-
-const filterModel = new FilterModel();
-
-const headerElement = document.querySelector(`.header`);
-render(headerElement, new UserScoreView(), RenderPosition.BEFOREEND);
-
-const mainElement = document.querySelector(`.main`);
-const navigationComponent = new NavigationView();
-render(mainElement, navigationComponent, RenderPosition.BEFOREEND);
-
-const filmsPanelPresenter = new FilmsPanelPresenter(mainElement, filmsModel, commentsModel, filterModel);
-const filterPresenter = new FilterPresenter(navigationComponent, filterModel, filmsModel);
-
 navigationComponent.setMenuClickHandler(handleNavigationMenuItemClick);
+
+render(headerElement, new UserScoreView(), RenderPosition.BEFOREEND);
+render(mainElement, navigationComponent, RenderPosition.BEFOREEND);
+render(footerStatisticsElement, new StatisticsView(), RenderPosition.BEFOREEND);
+
 filmsPanelPresenter.init();
 filterPresenter.init();
 
-let statsComponent = new StatsView(filmsModel.getFilms());
+api.getFilms()
+  .then((films) => {
+    filmsModel.setFilms(films);
+    // const comments = exportFilmComments(filmCards);
 
-const footerElement = document.querySelector(`.footer`);
-const footerStatisticsElement = footerElement.querySelector(`.footer__statistics`);
-render(footerStatisticsElement, new StatisticsView(), RenderPosition.BEFOREEND);
+    // commentsModel.setComments(comments);
+  });
