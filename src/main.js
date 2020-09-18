@@ -9,7 +9,7 @@ import FilterModel from './model/filter.js';
 import StatisticsView from './view/statistics.js';
 import {generateFilmCard, exportFilmComments} from './mock/film-card.js';
 import {remove, render, RenderPosition} from './utils/render.js';
-import {MenuItem} from './const.js';
+import {MenuItem, UpdateType} from './const.js';
 import Api from './api.js';
 
 const AUTHORIZATION = `Basic saAShasdAAS77211`;
@@ -60,8 +60,11 @@ filterPresenter.init();
 
 api.getFilms()
   .then((films) => {
-    filmsModel.setFilms(films);
+    filmsModel.setFilms(UpdateType.INIT, films);
     // const comments = exportFilmComments(filmCards);
 
     // commentsModel.setComments(comments);
+  })
+  .catch(() => {
+    filmsModel.setFilms(UpdateType.INIT, []);
   });
