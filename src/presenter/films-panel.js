@@ -10,6 +10,7 @@ import {render, RenderPosition, remove} from '../utils/render.js';
 import {sortByDate, sortByRating, sortByComments} from '../utils/film.js';
 import {SortType, UserAction, UpdateType, FilmType} from '../const.js';
 import {filter} from '../utils/filter.js';
+import LoadingView from '../view/loading.js';
 
 const CARDS_PER_STEP = 5;
 const EXTRA_CARDS_COUNT = 2;
@@ -40,6 +41,7 @@ export default class FilmsPanel {
     this._currentSortType = SortType.DEFAULT;
     this._filmPresenter = {};
     this._openedPopup = null;
+    this._isLoading = true;
 
     this._topRatedPresenter = {};
     this._mostCommentedPresenter = {};
@@ -55,6 +57,7 @@ export default class FilmsPanel {
     this._noFilmsComponent = new NoFilmsView();
     this._filmsListComponent = new FilmsListView();
     this._filmsListContainerComponent = new FilmsListContainerView();
+    this._loadingComponent = new LoadingView();
 
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
@@ -136,6 +139,7 @@ export default class FilmsPanel {
 
     remove(this._sortingComponent);
     remove(this._noFilmsComponent);
+    remove(this._loadingComponent);
     remove(this._showMoreButtonComponent);
 
     // remove extra panels
@@ -154,6 +158,11 @@ export default class FilmsPanel {
   }
 
   _renderFilmsPanel() {
+    if (this._isLoading) {
+      this._renderLoading();
+      return;
+    }
+
     const films = this._getFilms();
     const filmCount = films.length;
 
@@ -197,6 +206,10 @@ export default class FilmsPanel {
     this._sortingComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
 
     render(this._filmsPanelComponent, this._sortingComponent, RenderPosition.BEFOREBEGIN);
+  }
+
+  _renderLoading() {
+    render(this._filmsPanelComponent, this._loadingComponent, RenderPosition.BEFOREEND);
   }
 
   _renderNoFilms() {
@@ -273,6 +286,10 @@ export default class FilmsPanel {
         this._clearFilmsPanel({resetRenderedCardsCount: true, resetSortType: true});
         this._renderFilmsPanel();
         break;
+      case UpdateType.INIT:
+        this._isLoading = false;
+        remove(this._loadingComponent);
+        this._renderFilmsPanel();
     }
   }
 
