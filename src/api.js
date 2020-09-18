@@ -22,6 +22,24 @@ export default class Api {
       .then((films) => films.map(FilmsModel.adaptToClient));
   }
 
+  getComments(films) {
+    const commentPromises = films.map((film) => this.getComment(film.id));
+    return Promise.all(commentPromises)
+      .then((commentsForEachFilm) => {
+        let commentsFlat = [];
+        commentsForEachFilm.forEach((filmComments) => {
+          commentsFlat = commentsFlat.concat(filmComments);
+        });
+
+        return commentsFlat;
+      });
+  }
+
+  getComment(filmId) {
+    return this._load({url: `comments/${filmId}`})
+      .then(Api.toJSON);
+  }
+
   updateFilm(film) {
     return this._load({
       url: `movies/${film.id}`,

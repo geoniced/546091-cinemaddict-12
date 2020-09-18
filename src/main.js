@@ -61,10 +61,13 @@ filterPresenter.init();
 api.getFilms()
   .then((films) => {
     filmsModel.setFilms(UpdateType.INIT, films);
-    // const comments = exportFilmComments(filmCards);
 
-    // commentsModel.setComments(comments);
+    return api.getComments(films);
+  })
+  .then((comments) => {
+    commentsModel.setComments(comments);
   })
   .catch(() => {
     filmsModel.setFilms(UpdateType.INIT, []);
   });
+
