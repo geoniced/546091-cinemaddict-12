@@ -31,11 +31,12 @@ const CardTypeBindings = {
 };
 
 export default class FilmsPanel {
-  constructor(mainElement, filmsModel, commentsModel, filterModel) {
+  constructor(mainElement, filmsModel, commentsModel, filterModel, api) {
     this._mainElement = mainElement;
     this._filmsModel = filmsModel;
     this._commentsModel = commentsModel;
     this._filterModel = filterModel;
+    this._api = api;
 
     this._renderedCardsCount = CARDS_PER_STEP;
     this._currentSortType = SortType.DEFAULT;
@@ -68,9 +69,6 @@ export default class FilmsPanel {
   }
 
   init() {
-    this._topRatedFilms = this._getExtraFilms(FilmType.TOP_RATED, sortByRating);
-    this._mostCommentedFilms = this._getExtraFilms(FilmType.MOST_COMMENTED, sortByComments);
-
     render(this._mainElement, this._filmsPanelComponent, RenderPosition.BEFOREEND);
 
     this._filmsModel.addObserver(this._handleModelEvent);
@@ -182,6 +180,8 @@ export default class FilmsPanel {
       this._renderShowMoreButton();
     }
 
+    this._topRatedFilms = this._getExtraFilms(FilmType.TOP_RATED, sortByRating);
+    this._mostCommentedFilms = this._getExtraFilms(FilmType.MOST_COMMENTED, sortByComments);
     this._renderExtraPanel(FilmType.TOP_RATED, `Top rated`, this._topRatedFilms);
     this._renderExtraPanel(FilmType.MOST_COMMENTED, `Most commented`, this._mostCommentedFilms);
   }
@@ -259,7 +259,9 @@ export default class FilmsPanel {
   _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
       case UserAction.UPDATE_FILM:
-        this._filmsModel.updateFilm(updateType, update);
+        this._api.updateFilm(update).then((response) => {
+          this._filmsModel.updateFilm(updateType, response);
+        });
         break;
       case UserAction.UPDATE_COMMENT:
         this._commentsModel.updateComment(updateType, update);

@@ -78,6 +78,7 @@ export default class Films extends Observer {
             "release_country": films.country,
             "date": films.releaseDate.toISOString(),
           },
+          "runtime": films.duration,
           "description": films.description,
           "director": films.director,
           "genre": films.genres,

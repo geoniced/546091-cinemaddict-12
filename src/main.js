@@ -7,7 +7,7 @@ import FilmsModel from './model/films.js';
 import CommentsModel from './model/comments.js';
 import FilterModel from './model/filter.js';
 import StatisticsView from './view/statistics.js';
-import {generateFilmCard, exportFilmComments} from './mock/film-card.js';
+import {exportFilmComments} from './mock/film-card.js';
 import {remove, render, RenderPosition} from './utils/render.js';
 import {MenuItem, UpdateType} from './const.js';
 import Api from './api.js';
@@ -26,7 +26,7 @@ const commentsModel = new CommentsModel();
 const filterModel = new FilterModel();
 
 const navigationComponent = new NavigationView();
-const filmsPanelPresenter = new FilmsPanelPresenter(mainElement, filmsModel, commentsModel, filterModel);
+const filmsPanelPresenter = new FilmsPanelPresenter(mainElement, filmsModel, commentsModel, filterModel, api);
 const filterPresenter = new FilterPresenter(navigationComponent, filterModel, filmsModel);
 
 let statsComponent = new StatsView(filmsModel.getFilms());
