@@ -231,9 +231,8 @@ export default class FilmsPanel {
   _renderFilmCard(card, container = this._filmsListContainerComponent) {
     const filmCardPresenter = new FilmCardPresenter(container, this._handleViewAction, this._handleModeChange);
 
-    // Берем комментарии из модели
-    // На самом деле это не особо надо, я переделал алгоритм получения моков, но на будущее придется делать так
-    card.comments = this._commentsModel.getCommentsByFilmId(card.id);
+    // Получаем комментарии из модели
+    card.comments = this._commentsModel.getCommentsByIds(card.commentsIds);
 
     // Примешиваю флаг того что карточка была открыта до перерисовки
     if (card.id === this._openedPopup) {

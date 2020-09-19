@@ -17,6 +17,7 @@ export const UpdateType = {
   MINOR: `MINOR`, // Действия над карточкой – перерисовка фильтров
   MAJOR: `MAJOR`, // Действия над комментариями – надо изменять экстра панель
   INIT: `INIT`,
+  SILENT: `SILENT`,
 };
 
 export const FilmType = {

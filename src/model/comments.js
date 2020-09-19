@@ -7,8 +7,10 @@ export default class Comments extends Observer {
     this._comments = [];
   }
 
-  setComments(comments) {
+  setComments(updateType, comments) {
     this._comments = comments.slice();
+
+    this._notify(updateType);
   }
 
   getComments() {
@@ -17,6 +19,15 @@ export default class Comments extends Observer {
 
   getCommentsByFilmId(filmId) {
     return this._comments.filter((comment) => comment.filmId === filmId);
+  }
+
+  getCommentsByIds(commentIds) {
+    return commentIds
+      .map((commentId) => {
+        return this._comments.find((comment) => {
+          return comment.id === commentId;
+        });
+      });
   }
 
   updateComment(updateType, update) {
@@ -57,5 +68,29 @@ export default class Comments extends Observer {
     ];
 
     this._notify(updateType);
+  }
+
+  static adaptToClient(comment) {
+    const adaptedComment = Object.assign(
+        comment,
+        {
+          text: comment.comment
+        }
+    );
+
+    delete adaptedComment.comment;
+    return adaptedComment;
+  }
+
+  static adaptToServer(comment) {
+    const adaptedComment = Object.assign(
+        comment,
+        {
+          comment: comment.text
+        }
+    );
+
+    delete adaptedComment.text;
+    return adaptedComment;
   }
 }

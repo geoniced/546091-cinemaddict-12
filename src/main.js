@@ -60,12 +60,12 @@ filterPresenter.init();
 
 api.getFilms()
   .then((films) => {
-    filmsModel.setFilms(UpdateType.INIT, films);
+    filmsModel.setFilms(UpdateType.SILENT, films);
 
     return api.getComments(films);
   })
   .then((comments) => {
-    commentsModel.setComments(comments);
+    commentsModel.setComments(UpdateType.INIT, comments);
   })
   .catch(() => {
     filmsModel.setFilms(UpdateType.INIT, []);

@@ -43,6 +43,7 @@ export default class Films extends Observer {
           actors: filmInfo.actors,
           ageLimit: filmInfo.age_rating,
           country: filmInfo.release.release_country,
+          commentsIds: films.comments, // should be ids
           description: filmInfo.description,
           director: filmInfo.director,
           duration: filmInfo.runtime,
@@ -104,11 +105,13 @@ export default class Films extends Observer {
         {},
         {
           "id": films.id,
-          "comments": films.comments,
+          "comments": films.commentsIds,
           "film_info": filmInfo,
           "user_details": userDetails
         }
     );
+
+    delete adaptedFilms.commentsIds;
 
     return adaptedFilms;
   }
