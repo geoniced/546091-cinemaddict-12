@@ -43,6 +43,7 @@ const handleNavigationMenuItemClick = (menuItem) => {
     case MenuItem.STATS:
       // Поставить активный
       filmsPanelPresenter.destroy(); // Скрыть панель фильмов
+      remove(statsComponent);
       statsComponent = new StatsView(filmsModel.getFilms()); // Показать статистику
       render(mainElement, statsComponent, RenderPosition.BEFOREEND);
       break;
