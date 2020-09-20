@@ -5,7 +5,7 @@ import FilmsListView from '../view/films-list.js';
 import FilmsListContainerView from '../view/films-list-container.js';
 import ShowMoreButtonView from '../view/show-more-button.js';
 import FilmsListExtraView from '../view/films-list-extra.js';
-import FilmCardPresenter from './film-card.js';
+import FilmCardPresenter, {State as FilmCardPresenterState} from './film-card.js';
 import {render, RenderPosition, remove} from '../utils/render.js';
 import {sortByDate, sortByRating, sortByComments} from '../utils/film.js';
 import {SortType, UserAction, UpdateType, FilmType} from '../const.js';
@@ -264,6 +264,7 @@ export default class FilmsPanel {
         });
         break;
       case UserAction.ADD_COMMENT:
+        this._filmPresenter[update.filmId].setViewState(FilmCardPresenterState.SUBMIT);
         this._api.addComment(update)
           .then((response) => {
             this._commentsModel.addComment(updateType, response.comments[response.comments.length - 1]);
@@ -274,6 +275,8 @@ export default class FilmsPanel {
           });
         break;
       case UserAction.DELETE_COMMENT:
+        const filmIdByCommentId = this._filmsModel.getFilmIdByCommentId(update);
+        this._filmPresenter[filmIdByCommentId].setViewState(FilmCardPresenterState.DELETING, {commentId: update});
         this._api.deleteComment(update)
           .then(() => {
             this._commentsModel.deleteComment(updateType, update);

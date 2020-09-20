@@ -34,6 +34,14 @@ export default class Films extends Observer {
     this._notify(updateType, update);
   }
 
+  getFilmIdByCommentId(commentId) {
+    const filmByComment = this._films.find((film) => {
+      return film.commentsIds.indexOf(commentId) !== -1;
+    });
+
+    return filmByComment.id;
+  }
+
   static adaptToClient(films) {
     const {film_info: filmInfo, user_details: userDetails} = films;
     const adaptedFilms = Object.assign(

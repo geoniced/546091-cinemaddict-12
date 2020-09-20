@@ -12,7 +12,7 @@ const Mode = {
   OPENED: `OPENED`
 };
 
-const State = {
+export const State = {
   DELETING: `DELETING`,
   SUBMIT: `SUBMIT`,
 };
