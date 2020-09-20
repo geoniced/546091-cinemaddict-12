@@ -12,6 +12,11 @@ const Mode = {
   OPENED: `OPENED`
 };
 
+const State = {
+  DELETING: `DELETING`,
+  SUBMIT: `SUBMIT`,
+};
+
 export default class FilmCard {
   constructor(container, changeData, changeMode) {
     this._filmCardsContainer = container;
@@ -202,5 +207,20 @@ export default class FilmCard {
     this._filmDetailsPopupComponent.setCommentAddSubmitHandler(this._handleCommentAddSubmitHandler);
 
     document.addEventListener(`keydown`, this._escKeyDownHandler);
+  }
+
+  setViewState(state, viewData) {
+    switch (state) {
+      case State.DELETING:
+        this._filmDetailsPopupComponent.updateData({
+          deletingComment: viewData.commentId,
+        });
+        break;
+      case State.SUBMIT:
+        this._filmDetailsPopupComponent.updateData({
+          isSubmitting: true,
+        });
+        break;
+    }
   }
 }
