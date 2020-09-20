@@ -22,6 +22,7 @@ export default class FilmCard {
     this._filmDetailsPopupComponent = null;
     this._mode = Mode.DEFAULT;
     this._footerElement = document.querySelector(`.footer`);
+    this.wasOpened = false;
 
     this._handlePopupCloseButtonClick = this._handlePopupCloseButtonClick.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
@@ -162,6 +163,7 @@ export default class FilmCard {
     remove(this._filmDetailsPopupComponent);
     document.removeEventListener(`keydown`, this._escKeyDownHandler);
     this._mode = Mode.DEFAULT;
+    this.wasOpened = false;
   }
 
   _handlePopupCloseButtonClick() {
