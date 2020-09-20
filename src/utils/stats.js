@@ -6,7 +6,9 @@ export const countFilmsByGenre = (films, genre) => {
 };
 
 export const getFilmsStatistics = (films) => {
-  const filmGenres = films.map((film) => film.genres[0]);
+  const filmGenres = films
+    .filter((film) => film.genres[0] !== undefined)
+    .map((film) => film.genres[0]);
   const uniqueGenres = getUniqueArray(filmGenres);
   const filmsByGenre = uniqueGenres.map((genre) => countFilmsByGenre(films, genre));
 
@@ -29,5 +31,15 @@ export const getTopGenre = (filmsByGenre, genres) => {
   const sorted = Object.entries(genresMap)
     .sort(sortByGenre);
 
-  return sorted[0][0];
+  const topGenre = {
+    genre: ``,
+    count: 0,
+  };
+
+  if (sorted.length) {
+    topGenre.genre = sorted[0][0];
+    topGenre.count = sorted[0][1];
+  }
+
+  return topGenre;
 };

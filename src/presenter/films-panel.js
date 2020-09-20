@@ -10,6 +10,7 @@ import {render, RenderPosition, remove} from '../utils/render.js';
 import {sortByDate, sortByRating, sortByComments} from '../utils/film.js';
 import {SortType, UserAction, UpdateType, FilmType} from '../const.js';
 import {filter} from '../utils/filter.js';
+import LoadingView from '../view/loading.js';
 
 const CARDS_PER_STEP = 5;
 const EXTRA_CARDS_COUNT = 2;
@@ -30,16 +31,18 @@ const CardTypeBindings = {
 };
 
 export default class FilmsPanel {
-  constructor(mainElement, filmsModel, commentsModel, filterModel) {
+  constructor(mainElement, filmsModel, commentsModel, filterModel, api) {
     this._mainElement = mainElement;
     this._filmsModel = filmsModel;
     this._commentsModel = commentsModel;
     this._filterModel = filterModel;
+    this._api = api;
 
     this._renderedCardsCount = CARDS_PER_STEP;
     this._currentSortType = SortType.DEFAULT;
     this._filmPresenter = {};
     this._openedPopup = null;
+    this._isLoading = true;
 
     this._topRatedPresenter = {};
     this._mostCommentedPresenter = {};
@@ -55,6 +58,7 @@ export default class FilmsPanel {
     this._noFilmsComponent = new NoFilmsView();
     this._filmsListComponent = new FilmsListView();
     this._filmsListContainerComponent = new FilmsListContainerView();
+    this._loadingComponent = new LoadingView();
 
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
@@ -65,9 +69,6 @@ export default class FilmsPanel {
   }
 
   init() {
-    this._topRatedFilms = this._getExtraFilms(FilmType.TOP_RATED, sortByRating);
-    this._mostCommentedFilms = this._getExtraFilms(FilmType.MOST_COMMENTED, sortByComments);
-
     render(this._mainElement, this._filmsPanelComponent, RenderPosition.BEFOREEND);
 
     this._filmsModel.addObserver(this._handleModelEvent);
@@ -136,6 +137,7 @@ export default class FilmsPanel {
 
     remove(this._sortingComponent);
     remove(this._noFilmsComponent);
+    remove(this._loadingComponent);
     remove(this._showMoreButtonComponent);
 
     // remove extra panels
@@ -154,6 +156,11 @@ export default class FilmsPanel {
   }
 
   _renderFilmsPanel() {
+    if (this._isLoading) {
+      this._renderLoading();
+      return;
+    }
+
     const films = this._getFilms();
     const filmCount = films.length;
 
@@ -173,6 +180,8 @@ export default class FilmsPanel {
       this._renderShowMoreButton();
     }
 
+    this._topRatedFilms = this._getExtraFilms(FilmType.TOP_RATED, sortByRating);
+    this._mostCommentedFilms = this._getExtraFilms(FilmType.MOST_COMMENTED, sortByComments);
     this._renderExtraPanel(FilmType.TOP_RATED, `Top rated`, this._topRatedFilms);
     this._renderExtraPanel(FilmType.MOST_COMMENTED, `Most commented`, this._mostCommentedFilms);
   }
@@ -199,6 +208,10 @@ export default class FilmsPanel {
     render(this._filmsPanelComponent, this._sortingComponent, RenderPosition.BEFOREBEGIN);
   }
 
+  _renderLoading() {
+    render(this._filmsPanelComponent, this._loadingComponent, RenderPosition.BEFOREEND);
+  }
+
   _renderNoFilms() {
     render(this._filmsPanelComponent, this._noFilmsComponent, RenderPosition.BEFOREEND);
   }
@@ -218,9 +231,8 @@ export default class FilmsPanel {
   _renderFilmCard(card, container = this._filmsListContainerComponent) {
     const filmCardPresenter = new FilmCardPresenter(container, this._handleViewAction, this._handleModeChange);
 
-    // Берем комментарии из модели
-    // На самом деле это не особо надо, я переделал алгоритм получения моков, но на будущее придется делать так
-    card.comments = this._commentsModel.getCommentsByFilmId(card.id);
+    // Получаем комментарии из модели
+    card.comments = this._commentsModel.getCommentsByIds(card.commentsIds);
 
     // Примешиваю флаг того что карточка была открыта до перерисовки
     if (card.id === this._openedPopup) {
@@ -246,7 +258,9 @@ export default class FilmsPanel {
   _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
       case UserAction.UPDATE_FILM:
-        this._filmsModel.updateFilm(updateType, update);
+        this._api.updateFilm(update).then((response) => {
+          this._filmsModel.updateFilm(updateType, response);
+        });
         break;
       case UserAction.UPDATE_COMMENT:
         this._commentsModel.updateComment(updateType, update);
@@ -273,6 +287,10 @@ export default class FilmsPanel {
         this._clearFilmsPanel({resetRenderedCardsCount: true, resetSortType: true});
         this._renderFilmsPanel();
         break;
+      case UpdateType.INIT:
+        this._isLoading = false;
+        remove(this._loadingComponent);
+        this._renderFilmsPanel();
     }
   }
 
