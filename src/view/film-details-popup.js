@@ -267,6 +267,14 @@ export default class FilmDetailsPopup extends SmartView {
     return createFilmDetailsPopupTemplate(this._data);
   }
 
+  getCommentItemById(commentId) {
+    return this.getElement().querySelector(`.film-details__comment[data-comment-id="${commentId}"]`);
+  }
+
+  getCommentAddForm() {
+    return this.getElement().querySelector(`.film-details__new-comment`);
+  }
+
   restoreHandlers() {
     this._setInnerHandlers();
 

@@ -60,6 +60,7 @@ export default class Comments extends Observer {
 
   static adaptToClient(comment) {
     const adaptedComment = Object.assign(
+        {},
         comment,
         {
           text: comment.comment
@@ -72,6 +73,7 @@ export default class Comments extends Observer {
 
   static adaptToServer(comment) {
     const adaptedComment = Object.assign(
+        {},
         comment,
         {
           comment: comment.text

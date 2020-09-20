@@ -15,6 +15,8 @@ const Mode = {
 export const State = {
   DELETING: `DELETING`,
   SUBMIT: `SUBMIT`,
+  ABORTING_DELETE: `ABORTING_DELETE`,
+  ABORTING_SUBMIT: `ABORTING_SUBMIT`,
 };
 
 export default class FilmCard {
@@ -210,6 +212,13 @@ export default class FilmCard {
   }
 
   setViewState(state, viewData) {
+    const resetCardViewState = () => {
+      this._filmDetailsPopupComponent.updateData({
+        deletingComment: ``,
+        isSubmitting: false,
+      });
+    };
+
     switch (state) {
       case State.DELETING:
         this._filmDetailsPopupComponent.updateData({
@@ -220,6 +229,14 @@ export default class FilmCard {
         this._filmDetailsPopupComponent.updateData({
           isSubmitting: true,
         });
+        break;
+      case State.ABORTING_DELETE:
+        this._filmDetailsPopupComponent
+          .shake(resetCardViewState, this._filmDetailsPopupComponent.getCommentItemById(viewData.commentId));
+        break;
+      case State.ABORTING_SUBMIT:
+        this._filmDetailsPopupComponent
+          .shake(resetCardViewState, this._filmDetailsPopupComponent.getCommentAddForm());
         break;
     }
   }

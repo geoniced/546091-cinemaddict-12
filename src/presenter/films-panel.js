@@ -272,14 +272,21 @@ export default class FilmsPanel {
           })
           .then((response) => {
             this._filmsModel.updateFilm(updateType, response.movie);
+          })
+          .catch(() => {
+            this._filmPresenter[update.filmId].setViewState(FilmCardPresenterState.ABORTING_SUBMIT);
           });
         break;
       case UserAction.DELETE_COMMENT:
         const filmIdByCommentId = this._filmsModel.getFilmIdByCommentId(update);
         this._filmPresenter[filmIdByCommentId].setViewState(FilmCardPresenterState.DELETING, {commentId: update});
+
         this._api.deleteComment(update)
           .then(() => {
             this._commentsModel.deleteComment(updateType, update);
+          })
+          .catch(() => {
+            this._filmPresenter[filmIdByCommentId].setViewState(FilmCardPresenterState.ABORTING_DELETE, {commentId: update});
           });
         break;
     }
