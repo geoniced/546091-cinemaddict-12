@@ -233,6 +233,7 @@ export default class FilmsPanel {
 
     // Получаем комментарии из модели
     card.comments = this._commentsModel.getCommentsByIds(card.commentsIds);
+    card.commentsIds = card.comments.slice().map((comment) => comment.id); // Обновляем список айдишников
 
     // Примешиваю флаг того что карточка была открыта до перерисовки
     if (card.id === this._openedPopup) {
@@ -273,7 +274,10 @@ export default class FilmsPanel {
           });
         break;
       case UserAction.DELETE_COMMENT:
-        this._commentsModel.deleteComment(updateType, update);
+        this._api.deleteComment(update)
+          .then(() => {
+            this._commentsModel.deleteComment(updateType, update);
+          });
         break;
     }
   }

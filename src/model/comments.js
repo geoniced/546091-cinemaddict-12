@@ -28,6 +28,9 @@ export default class Comments extends Observer {
         return this._comments.find((comment) => {
           return comment.id === commentId;
         });
+      })
+      .filter((comment) => {
+        return comment;
       });
   }
 
