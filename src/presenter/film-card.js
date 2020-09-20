@@ -49,6 +49,7 @@ export default class FilmCard {
 
       if (this._card.wasOpened) {
         this._openFilmDetailsPopup();
+        this._card.wasOpened = false;
       }
       return;
     }
@@ -163,7 +164,6 @@ export default class FilmCard {
     remove(this._filmDetailsPopupComponent);
     document.removeEventListener(`keydown`, this._escKeyDownHandler);
     this._mode = Mode.DEFAULT;
-    this.wasOpened = false;
   }
 
   _handlePopupCloseButtonClick() {
