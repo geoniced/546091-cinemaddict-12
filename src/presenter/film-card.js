@@ -148,6 +148,8 @@ export default class FilmCard {
         UpdateType.MINOR,
         newComment
     );
+
+    this._filmDetailsPopupComponent.reset(this._card);
   }
 
   _openFilmDetailsPopup() {
