@@ -2,8 +2,6 @@ import FilmCardView from '../view/film-card.js';
 import FilmDetailsPopupView from '../view/film-details-popup.js';
 import {render, RenderPosition, remove, replace} from '../utils/render.js';
 import {UserAction, UpdateType} from '../const.js';
-import {generateId} from '../utils/common.js';
-import {getAuthor} from '../mock/film-card.js';
 
 const POPUP_OPEN_CLASSES = new Set([`film-card__poster`, `film-card__title`, `film-card__comments`]);
 
