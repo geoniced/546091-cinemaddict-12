@@ -262,11 +262,15 @@ export default class FilmsPanel {
           this._filmsModel.updateFilm(updateType, response);
         });
         break;
-      case UserAction.UPDATE_COMMENT:
-        this._commentsModel.updateComment(updateType, update);
-        break;
       case UserAction.ADD_COMMENT:
-        this._commentsModel.addComment(updateType, update);
+        this._api.addComment(update)
+          .then((response) => {
+            this._commentsModel.addComment(updateType, response.comments[response.comments.length - 1]);
+            return response;
+          })
+          .then((response) => {
+            this._filmsModel.updateFilm(updateType, response.movie);
+          });
         break;
       case UserAction.DELETE_COMMENT:
         this._commentsModel.deleteComment(updateType, update);

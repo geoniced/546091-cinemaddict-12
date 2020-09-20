@@ -135,12 +135,10 @@ export default class FilmCard {
   _handleCommentAddSubmitHandler(commentData) {
     const {emotion, comment: text, id: filmId} = commentData;
     const newComment = {
-      id: generateId(),
       filmId,
       text,
       emotion,
-      author: getAuthor(), // ТЗ: генерируется на сервере, временное решение
-      date: Date.now(),
+      date: (new Date()).toISOString(),
     };
 
     this._changeData(
