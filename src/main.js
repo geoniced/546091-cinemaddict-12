@@ -71,3 +71,12 @@ api.getFilms()
     filmsModel.setFilms(UpdateType.INIT, []);
   });
 
+window.addEventListener(`load`, () => {
+  navigator.serviceWorker.register(`/sw.js`)
+    .then(() => {
+      console.log(`Service worker is available`); // eslint-disable-line
+    })
+    .catch(() => {
+      console.log(`Service worker is not available!`); // eslint-disable-line
+    });
+});
