@@ -9,7 +9,7 @@ import FilterModel from './model/filter.js';
 import StatisticsView from './view/statistics.js';
 import {remove, render, RenderPosition} from './utils/render.js';
 import {MenuItem, UpdateType} from './const.js';
-import Api from './api.js';
+import Api from './api/index.js';
 
 const AUTHORIZATION = `Basic saAShasdAAS77211`;
 const END_POINT = `https://12.ecmascript.pages.academy/cinemaddict`;
