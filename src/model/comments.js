@@ -5,6 +5,7 @@ export default class Comments extends Observer {
     super();
 
     this._comments = [];
+    // this._comments = {};
   }
 
   setComments(updateType, comments) {
@@ -27,23 +28,10 @@ export default class Comments extends Observer {
         return this._comments.find((comment) => {
           return comment.id === commentId;
         });
+      })
+      .filter((comment) => {
+        return comment;
       });
-  }
-
-  updateComment(updateType, update) {
-    const index = this._comments.findIndex((comment) => comment.id === update.id);
-
-    if (index === -1) {
-      throw new Error(`Can't update unexisting film`);
-    }
-
-    this._comments = [
-      ...this._comments.slice(0, index),
-      update,
-      ...this._comments.slice(index + 1)
-    ];
-
-    this._notify(updateType, update);
   }
 
   addComment(updateType, update) {
@@ -72,6 +60,7 @@ export default class Comments extends Observer {
 
   static adaptToClient(comment) {
     const adaptedComment = Object.assign(
+        {},
         comment,
         {
           text: comment.comment
@@ -84,6 +73,7 @@ export default class Comments extends Observer {
 
   static adaptToServer(comment) {
     const adaptedComment = Object.assign(
+        {},
         comment,
         {
           comment: comment.text
@@ -91,6 +81,8 @@ export default class Comments extends Observer {
     );
 
     delete adaptedComment.text;
+    delete adaptedComment.filmId;
+
     return adaptedComment;
   }
 }

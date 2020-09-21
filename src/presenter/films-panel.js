@@ -5,7 +5,7 @@ import FilmsListView from '../view/films-list.js';
 import FilmsListContainerView from '../view/films-list-container.js';
 import ShowMoreButtonView from '../view/show-more-button.js';
 import FilmsListExtraView from '../view/films-list-extra.js';
-import FilmCardPresenter from './film-card.js';
+import FilmCardPresenter, {State as FilmCardPresenterState} from './film-card.js';
 import {render, RenderPosition, remove} from '../utils/render.js';
 import {sortByDate, sortByRating, sortByComments} from '../utils/film.js';
 import {SortType, UserAction, UpdateType, FilmType} from '../const.js';
@@ -233,6 +233,7 @@ export default class FilmsPanel {
 
     // Получаем комментарии из модели
     card.comments = this._commentsModel.getCommentsByIds(card.commentsIds);
+    card.commentsIds = card.comments.slice().map((comment) => comment.id); // Обновляем список айдишников
 
     // Примешиваю флаг того что карточка была открыта до перерисовки
     if (card.id === this._openedPopup) {
@@ -262,14 +263,31 @@ export default class FilmsPanel {
           this._filmsModel.updateFilm(updateType, response);
         });
         break;
-      case UserAction.UPDATE_COMMENT:
-        this._commentsModel.updateComment(updateType, update);
-        break;
       case UserAction.ADD_COMMENT:
-        this._commentsModel.addComment(updateType, update);
+        this._filmPresenter[update.filmId].setViewState(FilmCardPresenterState.SUBMIT);
+        this._api.addComment(update)
+          .then((response) => {
+            this._commentsModel.addComment(updateType, response.comments[response.comments.length - 1]);
+            return response;
+          })
+          .then((response) => {
+            this._filmsModel.updateFilm(updateType, response.movie);
+          })
+          .catch(() => {
+            this._filmPresenter[update.filmId].setViewState(FilmCardPresenterState.ABORTING_SUBMIT);
+          });
         break;
       case UserAction.DELETE_COMMENT:
-        this._commentsModel.deleteComment(updateType, update);
+        const filmIdByCommentId = this._filmsModel.getFilmIdByCommentId(update);
+        this._filmPresenter[filmIdByCommentId].setViewState(FilmCardPresenterState.DELETING, {commentId: update});
+
+        this._api.deleteComment(update)
+          .then(() => {
+            this._commentsModel.deleteComment(updateType, update);
+          })
+          .catch(() => {
+            this._filmPresenter[filmIdByCommentId].setViewState(FilmCardPresenterState.ABORTING_DELETE, {commentId: update});
+          });
         break;
     }
   }

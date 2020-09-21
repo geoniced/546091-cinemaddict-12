@@ -23,7 +23,7 @@ const createGenreItemTemplate = (genre) => {
   );
 };
 
-const createCommentItemTemplate = (comment) => {
+const createCommentItemTemplate = (comment, isDeleting) => {
   const {
     id,
     emotion,
@@ -44,7 +44,7 @@ const createCommentItemTemplate = (comment) => {
         <p class="film-details__comment-info">
           <span class="film-details__comment-author">${author}</span>
           <span class="film-details__comment-day">${dateFormatted}</span>
-          <button class="film-details__comment-delete">Delete</button>
+          <button class="film-details__comment-delete" ${isDeleting ? `disabled` : ``}>${isDeleting ? `Deleting...` : `Delete`}</button>
         </p>
       </div>
     </li>`
@@ -73,7 +73,7 @@ const createCurrentEmojiTemplate = (emotion) => {
   return `<img src="images/emoji/${emotion}.png" width="55" height="55" alt="emoji-${emotion}">`;
 };
 
-const createNewCommentTemplate = (emotion, comment) => {
+const createNewCommentTemplate = (emotion, comment, isSubmitting) => {
   const emotionsListTemplate = createEmotionsListTemplate(emotion);
   const currentEmojiTemplate = createCurrentEmojiTemplate(emotion);
 
@@ -81,7 +81,10 @@ const createNewCommentTemplate = (emotion, comment) => {
     `<div for="add-emoji" class="film-details__add-emoji-label">${currentEmojiTemplate}</div>
 
       <label class="film-details__comment-label">
-        <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${comment}</textarea>
+        <textarea class="film-details__comment-input"
+          placeholder="Select reaction below and write comment here"
+          name="comment"
+          ${isSubmitting ? `disabled` : ``}>${comment}</textarea>
       </label>
 
       <div class="film-details__emoji-list">
@@ -112,6 +115,8 @@ const createFilmDetailsPopupTemplate = (data) => {
     isInWatchlist,
     emotion,
     comment,
+    isSubmitting,
+    deletingComment,
   } = data;
 
   const writersText = writers.join(`, `);
@@ -125,9 +130,11 @@ const createFilmDetailsPopupTemplate = (data) => {
   const genreItems = genres.map(createGenreItemTemplate).join(``);
 
   const commentsCount = comments.length;
-  const commentItems = comments.map(createCommentItemTemplate).join(``);
+  const commentItems = comments.map((commentItem) => {
+    return createCommentItemTemplate(commentItem, commentItem.id === deletingComment);
+  }).join(``);
 
-  const newCommentTemplate = createNewCommentTemplate(emotion, comment);
+  const newCommentTemplate = createNewCommentTemplate(emotion, comment, isSubmitting);
 
   return (
     `<section class="film-details">
@@ -260,6 +267,14 @@ export default class FilmDetailsPopup extends SmartView {
     return createFilmDetailsPopupTemplate(this._data);
   }
 
+  getCommentItemById(commentId) {
+    return this.getElement().querySelector(`.film-details__comment[data-comment-id="${commentId}"]`);
+  }
+
+  getCommentAddForm() {
+    return this.getElement().querySelector(`.film-details__new-comment`);
+  }
+
   restoreHandlers() {
     this._setInnerHandlers();
 
@@ -299,7 +314,7 @@ export default class FilmDetailsPopup extends SmartView {
     if (evt.target.classList.contains(`film-details__comment-delete`)) {
       evt.preventDefault();
       const commentListElement = evt.target.closest(`.film-details__comment`);
-      this._callback.deleteCommentClick(Number(commentListElement.dataset.commentId));
+      this._callback.deleteCommentClick(commentListElement.dataset.commentId);
     }
   }
 
@@ -371,6 +386,8 @@ export default class FilmDetailsPopup extends SmartView {
         {
           emotion: ``,
           comment: ``,
+          isSubmitting: false,
+          deletingComment: ``,
         }
     );
   }

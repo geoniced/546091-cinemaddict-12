@@ -2,14 +2,19 @@ import FilmCardView from '../view/film-card.js';
 import FilmDetailsPopupView from '../view/film-details-popup.js';
 import {render, RenderPosition, remove, replace} from '../utils/render.js';
 import {UserAction, UpdateType} from '../const.js';
-import {generateId} from '../utils/common.js';
-import {getAuthor} from '../mock/film-card.js';
 
 const POPUP_OPEN_CLASSES = new Set([`film-card__poster`, `film-card__title`, `film-card__comments`]);
 
 const Mode = {
   DEFAULT: `DEFAULT`,
   OPENED: `OPENED`
+};
+
+export const State = {
+  DELETING: `DELETING`,
+  SUBMIT: `SUBMIT`,
+  ABORTING_DELETE: `ABORTING_DELETE`,
+  ABORTING_SUBMIT: `ABORTING_SUBMIT`,
 };
 
 export default class FilmCard {
@@ -22,6 +27,7 @@ export default class FilmCard {
     this._filmDetailsPopupComponent = null;
     this._mode = Mode.DEFAULT;
     this._footerElement = document.querySelector(`.footer`);
+    this.wasOpened = false;
 
     this._handlePopupCloseButtonClick = this._handlePopupCloseButtonClick.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
@@ -48,6 +54,7 @@ export default class FilmCard {
 
       if (this._card.wasOpened) {
         this._openFilmDetailsPopup();
+        this._card.wasOpened = false;
       }
       return;
     }
@@ -135,12 +142,10 @@ export default class FilmCard {
   _handleCommentAddSubmitHandler(commentData) {
     const {emotion, comment: text, id: filmId} = commentData;
     const newComment = {
-      id: generateId(),
       filmId,
       text,
       emotion,
-      author: getAuthor(), // ТЗ: генерируется на сервере, временное решение
-      date: Date.now(),
+      date: (new Date()).toISOString(),
     };
 
     this._changeData(
@@ -148,6 +153,8 @@ export default class FilmCard {
         UpdateType.MINOR,
         newComment
     );
+
+    this._filmDetailsPopupComponent.reset(this._card);
   }
 
   _openFilmDetailsPopup() {
@@ -200,5 +207,35 @@ export default class FilmCard {
     this._filmDetailsPopupComponent.setCommentAddSubmitHandler(this._handleCommentAddSubmitHandler);
 
     document.addEventListener(`keydown`, this._escKeyDownHandler);
+  }
+
+  setViewState(state, viewData) {
+    const resetCardViewState = () => {
+      this._filmDetailsPopupComponent.updateData({
+        deletingComment: ``,
+        isSubmitting: false,
+      });
+    };
+
+    switch (state) {
+      case State.DELETING:
+        this._filmDetailsPopupComponent.updateData({
+          deletingComment: viewData.commentId,
+        });
+        break;
+      case State.SUBMIT:
+        this._filmDetailsPopupComponent.updateData({
+          isSubmitting: true,
+        });
+        break;
+      case State.ABORTING_DELETE:
+        this._filmDetailsPopupComponent
+          .shake(resetCardViewState, this._filmDetailsPopupComponent.getCommentItemById(viewData.commentId));
+        break;
+      case State.ABORTING_SUBMIT:
+        this._filmDetailsPopupComponent
+          .shake(resetCardViewState, this._filmDetailsPopupComponent.getCommentAddForm());
+        break;
+    }
   }
 }
