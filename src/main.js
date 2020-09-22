@@ -10,9 +10,14 @@ import StatisticsView from './view/statistics.js';
 import {remove, render, RenderPosition} from './utils/render.js';
 import {MenuItem, UpdateType} from './const.js';
 import Api from './api/index.js';
+import Store from './api/store.js';
+import Provider from './api/provider.js';
 
 const AUTHORIZATION = `Basic saAShasdAAS77211`;
 const END_POINT = `https://12.ecmascript.pages.academy/cinemaddict`;
+const STORE_PREFIX = `cinemaddict-localstorage`;
+const STORE_VER = `v12`;
+const STORE_NAME = `${STORE_PREFIX}-${STORE_VER}`;
 
 const headerElement = document.querySelector(`.header`);
 const mainElement = document.querySelector(`.main`);
@@ -20,12 +25,15 @@ const footerElement = document.querySelector(`.footer`);
 const footerStatisticsElement = footerElement.querySelector(`.footer__statistics`);
 
 const api = new Api(END_POINT, AUTHORIZATION);
+const store = new Store(STORE_NAME, window.localStorage);
+const apiWithProvider = new Provider(api, store);
+
 const filmsModel = new FilmsModel();
 const commentsModel = new CommentsModel();
 const filterModel = new FilterModel();
 
 const navigationComponent = new NavigationView();
-const filmsPanelPresenter = new FilmsPanelPresenter(mainElement, filmsModel, commentsModel, filterModel, api);
+const filmsPanelPresenter = new FilmsPanelPresenter(mainElement, filmsModel, commentsModel, filterModel, apiWithProvider);
 const filterPresenter = new FilterPresenter(navigationComponent, filterModel, filmsModel);
 
 let statsComponent = new StatsView(filmsModel.getFilms());
@@ -58,11 +66,11 @@ render(footerStatisticsElement, new StatisticsView(), RenderPosition.BEFOREEND);
 filmsPanelPresenter.init();
 filterPresenter.init();
 
-api.getFilms()
+apiWithProvider.getFilms()
   .then((films) => {
     filmsModel.setFilms(UpdateType.SILENT, films);
 
-    return api.getComments(films);
+    return apiWithProvider.getComments(films);
   })
   .then((comments) => {
     commentsModel.setComments(UpdateType.INIT, comments);
