@@ -56,8 +56,28 @@ export default class Provider {
     return Promise.resolve(film);
   }
 
+  addComment(comment) {
+    if (Provider.isOnline()) {
+      return this._api.addComment(comment);
+    }
+
+    return Promise.reject(new Error(`Comment creation cannot be done when offline`));
+  }
+
+  deleteComment(comment) {
+    if (Provider.isOnline()) {
+      return this._api.deleteComment(comment);
+    }
+
+    return Promise.reject(new Error(`Deletion cannot be done when offline`));
+  }
+
   sync(data) {
-    return this._api.sync(data);
+    if (Provider.isOnline()) {
+      return this._api.sync(data);
+    }
+
+    return Promise.reject(new Error(`Sync data failed`));
   }
 
   static isOnline() {
