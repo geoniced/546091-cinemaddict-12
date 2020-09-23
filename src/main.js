@@ -66,13 +66,22 @@ render(footerStatisticsElement, new StatisticsView(), RenderPosition.BEFOREEND);
 filmsPanelPresenter.init();
 filterPresenter.init();
 
-apiWithProvider.getFilms()
-  .then((films) => {
-    filmsModel.setFilms(UpdateType.SILENT, films);
+// apiWithProvider.getFilms()
+//   .then((films) => {
+//     filmsModel.setFilms(UpdateType.SILENT, films);
 
-    return apiWithProvider.getComments(films);
-  })
-  .then((comments) => {
+//     return apiWithProvider.getComments(films);
+//   })
+//   .then((comments) => {
+//     commentsModel.setComments(UpdateType.INIT, comments);
+//   })
+//   .catch(() => {
+//     filmsModel.setFilms(UpdateType.INIT, []);
+//   });
+
+apiWithProvider.getFilmsWithComments()
+  .then(({films, comments}) => {
+    filmsModel.setFilms(UpdateType.SILENT, films);
     commentsModel.setComments(UpdateType.INIT, comments);
   })
   .catch(() => {
