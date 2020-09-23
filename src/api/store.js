@@ -36,6 +36,21 @@ export default class Store {
     );
   }
 
+  setSubItem(subItemKey, key, value) {
+    const store = this.getItems();
+    const subItemValue = store[subItemKey];
+
+    const resultingSubItem = Object.assign(
+        {},
+        subItemValue,
+        {
+          [key]: value
+        }
+    );
+
+    this.setItem(subItemKey, resultingSubItem);
+  }
+
   removeItem(key) {
     const store = this.getItems();
 

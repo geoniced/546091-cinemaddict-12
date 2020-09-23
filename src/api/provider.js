@@ -43,15 +43,17 @@ export default class Provider {
   }
 
   updateFilm(film) {
-    return this._api.updateFilm(film);
-  }
+    if (Provider.isOnline()) {
+      return this._api.updateFilm(film)
+        .then((updatedFilm) => {
+          this._store.setSubItem(`films`, updatedFilm.id, updatedFilm);
+          return updatedFilm;
+        });
+    }
 
-  addComment(comment) {
-    return this._api.addComment(comment);
-  }
+    this._store.setSubItem(`films`, film.id, Object.assign({}, film));
 
-  deleteComment(comment) {
-    return this._api.deleteComment(comment);
+    return Promise.resolve(film);
   }
 
   sync(data) {
