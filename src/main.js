@@ -9,10 +9,15 @@ import FilterModel from './model/filter.js';
 import StatisticsView from './view/statistics.js';
 import {remove, render, RenderPosition} from './utils/render.js';
 import {MenuItem, UpdateType} from './const.js';
-import Api from './api.js';
+import Api from './api/index.js';
+import Store from './api/store.js';
+import Provider from './api/provider.js';
 
 const AUTHORIZATION = `Basic saAShasdAAS77211`;
 const END_POINT = `https://12.ecmascript.pages.academy/cinemaddict`;
+const STORE_PREFIX = `cinemaddict-localstorage`;
+const STORE_VER = `v12`;
+const STORE_NAME = `${STORE_PREFIX}-${STORE_VER}`;
 
 const headerElement = document.querySelector(`.header`);
 const mainElement = document.querySelector(`.main`);
@@ -20,12 +25,15 @@ const footerElement = document.querySelector(`.footer`);
 const footerStatisticsElement = footerElement.querySelector(`.footer__statistics`);
 
 const api = new Api(END_POINT, AUTHORIZATION);
+const store = new Store(STORE_NAME, window.localStorage);
+const apiWithProvider = new Provider(api, store);
+
 const filmsModel = new FilmsModel();
 const commentsModel = new CommentsModel();
 const filterModel = new FilterModel();
 
 const navigationComponent = new NavigationView();
-const filmsPanelPresenter = new FilmsPanelPresenter(mainElement, filmsModel, commentsModel, filterModel, api);
+const filmsPanelPresenter = new FilmsPanelPresenter(mainElement, filmsModel, commentsModel, filterModel, apiWithProvider);
 const filterPresenter = new FilterPresenter(navigationComponent, filterModel, filmsModel);
 
 let statsComponent = new StatsView(filmsModel.getFilms());
@@ -58,16 +66,30 @@ render(footerStatisticsElement, new StatisticsView(), RenderPosition.BEFOREEND);
 filmsPanelPresenter.init();
 filterPresenter.init();
 
-api.getFilms()
-  .then((films) => {
+apiWithProvider.getFilmsWithComments()
+  .then(({films, comments}) => {
     filmsModel.setFilms(UpdateType.SILENT, films);
-
-    return api.getComments(films);
-  })
-  .then((comments) => {
     commentsModel.setComments(UpdateType.INIT, comments);
   })
   .catch(() => {
     filmsModel.setFilms(UpdateType.INIT, []);
   });
 
+window.addEventListener(`load`, () => {
+  navigator.serviceWorker.register(`/sw.js`)
+    .then(() => {
+      console.log(`Service worker is available`); // eslint-disable-line
+    })
+    .catch(() => {
+      console.log(`Service worker is not available!`); // eslint-disable-line
+    });
+});
+
+window.addEventListener(`online`, () => {
+  document.title = document.title.replace(` [offline]`, ``);
+  apiWithProvider.sync();
+});
+
+window.addEventListener(`offline`, () => {
+  document.title += ` [offline]`;
+});

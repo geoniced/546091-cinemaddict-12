@@ -1,5 +1,5 @@
-import FilmsModel from "./model/films.js";
-import CommentsModel from "./model/comments.js";
+import FilmsModel from "../model/films.js";
+import CommentsModel from "../model/comments.js";
 
 const Method = {
   GET: `GET`,
@@ -19,14 +19,25 @@ export default class Api {
     this._authorization = authorization;
   }
 
-  getFilms() {
+  getFilmsWithComments() {
+    return this._getFilms().then((films) => {
+      return this._getComments(films).then((comments) => {
+        return {
+          comments,
+          films
+        };
+      });
+    });
+  }
+
+  _getFilms() {
     return this._load({url: `movies`})
       .then(Api.toJSON)
       .then((films) => films.map(FilmsModel.adaptToClient));
   }
 
-  getComments(films) {
-    const commentPromises = films.map((film) => this.getComment(film.id));
+  _getComments(films) {
+    const commentPromises = films.map((film) => this._getComment(film.id));
     return Promise.all(commentPromises)
       .then((commentsForEachFilm) => {
         let commentsFlat = [];
@@ -38,7 +49,7 @@ export default class Api {
       });
   }
 
-  getComment(filmId) {
+  _getComment(filmId) {
     return this._load({url: `comments/${filmId}`})
       .then(Api.toJSON)
       .then((comments) => comments.map(CommentsModel.adaptToClient));
@@ -75,6 +86,16 @@ export default class Api {
       url: `comments/${comment}`,
       method: Method.DELETE
     });
+  }
+
+  sync(data) {
+    return this._load({
+      url: `movies/sync`,
+      method: Method.POST,
+      body: JSON.stringify(data),
+      headers: new Headers({"Content-Type": `application/json`})
+    })
+      .then(Api.toJSON);
   }
 
   _load({

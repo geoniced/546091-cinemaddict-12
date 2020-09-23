@@ -85,7 +85,9 @@ export default class Films extends Observer {
           "age_rating": films.ageLimit,
           "release": {
             "release_country": films.country,
-            "date": films.releaseDate.toISOString(),
+            "date": films.releaseDate instanceof Date
+              ? films.releaseDate.toISOString()
+              : films.releaseDate,
           },
           "runtime": films.duration,
           "description": films.description,
@@ -105,7 +107,9 @@ export default class Films extends Observer {
           "favorite": films.isFavorite,
           "watchlist": films.isInWatchlist,
           "already_watched": films.isWatched,
-          "watching_date": films.watchingDate.toISOString(),
+          "watching_date": films.watchingDate instanceof Date
+            ? films.watchingDate.toISOString()
+            : films.watchingDate
         }
     );
 
