@@ -66,19 +66,6 @@ render(footerStatisticsElement, new StatisticsView(), RenderPosition.BEFOREEND);
 filmsPanelPresenter.init();
 filterPresenter.init();
 
-// apiWithProvider.getFilms()
-//   .then((films) => {
-//     filmsModel.setFilms(UpdateType.SILENT, films);
-
-//     return apiWithProvider.getComments(films);
-//   })
-//   .then((comments) => {
-//     commentsModel.setComments(UpdateType.INIT, comments);
-//   })
-//   .catch(() => {
-//     filmsModel.setFilms(UpdateType.INIT, []);
-//   });
-
 apiWithProvider.getFilmsWithComments()
   .then(({films, comments}) => {
     filmsModel.setFilms(UpdateType.SILENT, films);
@@ -96,4 +83,13 @@ window.addEventListener(`load`, () => {
     .catch(() => {
       console.log(`Service worker is not available!`); // eslint-disable-line
     });
+});
+
+window.addEventListener(`online`, () => {
+  document.title = document.title.replace(` [offline]`, ``);
+  apiWithProvider.sync();
+});
+
+window.addEventListener(`offline`, () => {
+  document.title += ` [offline]`;
 });
