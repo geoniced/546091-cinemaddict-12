@@ -7,10 +7,11 @@ import ShowMoreButtonView from '../view/show-more-button.js';
 import FilmsListExtraView from '../view/films-list-extra.js';
 import FilmCardPresenter, {State as FilmCardPresenterState} from './film-card.js';
 import {render, RenderPosition, remove} from '../utils/render.js';
-import {sortByDate, sortByRating, sortByComments} from '../utils/film.js';
+import {sortByDate, sortByRating, sortByComments, filterByEmptyRating, filterByEmptyComments} from '../utils/film.js';
 import {SortType, UserAction, UpdateType, FilmType} from '../const.js';
 import {filter} from '../utils/filter.js';
 import LoadingView from '../view/loading.js';
+import {getRandomizedItems} from '../utils/common.js';
 
 const CARDS_PER_STEP = 5;
 const EXTRA_CARDS_COUNT = 2;
@@ -107,9 +108,9 @@ export default class FilmsPanel {
     return this._commentsModel.getCommentsByFilmId(film.id);
   }
 
-  _getExtraFilms(type, sortingFunction) {
-    return this._getFilms()
-      .slice().sort(sortingFunction)
+  _getExtraFilms(sortedFilms, filteringFunction, type) {
+    return sortedFilms
+      .filter(filteringFunction)
       .slice(0, EXTRA_CARDS_COUNT)
       .map((card) => Object.assign(
           {},
@@ -120,7 +121,36 @@ export default class FilmsPanel {
       ));
   }
 
-  // TODO: Restore popup!!
+  _getTopRatedExtraFilms(options) {
+    const {type, sortingFunction, filteringFunction} = options;
+
+    let sortedFilms = this._getFilms()
+      .slice()
+      .sort(sortingFunction);
+
+    const sequenceStartNumber = sortedFilms[0].rating;
+    if (sortedFilms.every((film) => film.rating === sequenceStartNumber)) {
+      sortedFilms = getRandomizedItems(sortedFilms);
+    }
+
+    return this._getExtraFilms(sortedFilms, filteringFunction, type);
+  }
+
+  _getMostCommentedExtraFilms(options) {
+    const {type, sortingFunction, filteringFunction} = options;
+
+    let sortedFilms = this._getFilms()
+      .slice()
+      .sort(sortingFunction);
+
+    const sequenceStartNumber = sortedFilms[0].comments.length;
+    if (sortedFilms.every((film) => film.comments.length === sequenceStartNumber)) {
+      sortedFilms = getRandomizedItems(sortedFilms);
+    }
+
+    return this._getExtraFilms(sortedFilms, filteringFunction, type);
+  }
+
   _clearFilmsPanel({resetRenderedCardsCount = false, resetSortType = false} = {}) {
     const filmCount = this._getFilms().length;
 
@@ -180,8 +210,18 @@ export default class FilmsPanel {
       this._renderShowMoreButton();
     }
 
-    this._topRatedFilms = this._getExtraFilms(FilmType.TOP_RATED, sortByRating);
-    this._mostCommentedFilms = this._getExtraFilms(FilmType.MOST_COMMENTED, sortByComments);
+    this._topRatedFilms = this._getTopRatedExtraFilms({
+      type: FilmType.TOP_RATED,
+      sortingFunction: sortByRating,
+      filteringFunction: filterByEmptyRating,
+    });
+
+    this._mostCommentedFilms = this._getMostCommentedExtraFilms({
+      type: FilmType.MOST_COMMENTED,
+      sortingFunction: sortByComments,
+      filteringFunction: filterByEmptyComments,
+    });
+
     this._renderExtraPanel(FilmType.TOP_RATED, `Top rated`, this._topRatedFilms);
     this._renderExtraPanel(FilmType.MOST_COMMENTED, `Most commented`, this._mostCommentedFilms);
   }
@@ -360,14 +400,17 @@ export default class FilmsPanel {
   }
 
   _renderExtraPanel(type, panelTitle, films) {
-    const extraPanelComponent = new FilmsListExtraView(panelTitle);
-    CardTypeBindings[type].panelComponent = extraPanelComponent;
-    render(this._filmsPanelComponent, extraPanelComponent, RenderPosition.BEFOREEND);
+    if (films.length > 0) {
+      const extraPanelComponent = new FilmsListExtraView(panelTitle);
+      CardTypeBindings[type].panelComponent = extraPanelComponent;
+      render(this._filmsPanelComponent, extraPanelComponent, RenderPosition.BEFOREEND);
 
-    const extraPanelContainerComponent = new FilmsListContainerView();
-    render(extraPanelComponent, extraPanelContainerComponent, RenderPosition.BEFOREEND);
-    for (let i = 0; i < EXTRA_CARDS_COUNT; i++) {
-      this._renderFilmCard(films[i], extraPanelContainerComponent);
+      const extraPanelContainerComponent = new FilmsListContainerView();
+      render(extraPanelComponent, extraPanelContainerComponent, RenderPosition.BEFOREEND);
+
+      films.forEach((film) => {
+        this._renderFilmCard(film, extraPanelContainerComponent);
+      });
     }
   }
 }

@@ -15,6 +15,21 @@ export const getRandomItem = (collection) => {
   return collection[getRandomInteger(0, collection.length - 1)];
 };
 
+export const getRandomizedItems = (items) => {
+  const copyItems = items.slice();
+
+  const newItems = [];
+
+  while (copyItems.length > 0) {
+    const randomItem = getRandomItem(copyItems);
+    const randomItemIndex = copyItems.findIndex((copyItem) => copyItem === randomItem);
+    newItems.push(randomItem);
+    copyItems.splice(randomItemIndex, 1);
+  }
+
+  return newItems;
+};
+
 export const humanizeDate = (date) => {
   return moment(date).format(`DD MMMM YYYY`);
 };
