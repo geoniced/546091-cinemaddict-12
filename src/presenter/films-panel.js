@@ -148,7 +148,7 @@ export default class FilmsPanel {
       sortedFilms = getRandomizedItems(sortedFilms);
     }
 
-    return this._getExtraFilms(sortedFilms, filteringFunction, type);;
+    return this._getExtraFilms(sortedFilms, filteringFunction, type);
   }
 
   _clearFilmsPanel({resetRenderedCardsCount = false, resetSortType = false} = {}) {
