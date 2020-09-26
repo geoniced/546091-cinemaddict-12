@@ -61,7 +61,6 @@ navigationComponent.setMenuClickHandler(handleNavigationMenuItemClick);
 
 render(headerElement, new UserScoreView(), RenderPosition.BEFOREEND);
 render(mainElement, navigationComponent, RenderPosition.BEFOREEND);
-render(footerStatisticsElement, new StatisticsView(), RenderPosition.BEFOREEND);
 
 filmsPanelPresenter.init();
 filterPresenter.init();
@@ -73,6 +72,9 @@ apiWithProvider.getFilmsWithComments()
   })
   .catch(() => {
     filmsModel.setFilms(UpdateType.INIT, []);
+  })
+  .then(() => {
+    render(footerStatisticsElement, new StatisticsView(filmsModel.getFilms().length), RenderPosition.BEFOREEND);
   });
 
 window.addEventListener(`load`, () => {
