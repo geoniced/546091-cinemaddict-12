@@ -63,6 +63,7 @@ export default class FilmsPanel {
 
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
+    this._destroyPresenter = this._destroyPresenter.bind(this);
 
     this._handleModeChange = this._handleModeChange.bind(this);
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
@@ -156,13 +157,7 @@ export default class FilmsPanel {
 
     Object
       .values(this._filmPresenter)
-      .forEach((presenter) => {
-        if (presenter.isOpened()) {
-          this._openedPopup = presenter.getId();
-        }
-
-        presenter.destroy();
-      });
+      .forEach(this._destroyPresenter);
     this._filmPresenter = {};
 
     remove(this._sortingComponent);
@@ -297,6 +292,7 @@ export default class FilmsPanel {
   }
 
   _handleViewAction(actionType, updateType, update) {
+    const allPresenters = this._getAllPresenters();
     switch (actionType) {
       case UserAction.UPDATE_FILM:
         this._api.updateFilm(update).then((response) => {
@@ -304,7 +300,7 @@ export default class FilmsPanel {
         });
         break;
       case UserAction.ADD_COMMENT:
-        this._filmPresenter[update.filmId].setViewState(FilmCardPresenterState.SUBMIT);
+        allPresenters[update.filmId].setViewState(FilmCardPresenterState.SUBMIT);
         this._api.addComment(update)
           .then((response) => {
             this._commentsModel.addComment(updateType, response.comments[response.comments.length - 1]);
@@ -314,19 +310,19 @@ export default class FilmsPanel {
             this._filmsModel.updateFilm(updateType, response.movie);
           })
           .catch(() => {
-            this._filmPresenter[update.filmId].setViewState(FilmCardPresenterState.ABORTING_SUBMIT);
+            allPresenters[update.filmId].setViewState(FilmCardPresenterState.ABORTING_SUBMIT);
           });
         break;
       case UserAction.DELETE_COMMENT:
         const filmIdByCommentId = this._filmsModel.getFilmIdByCommentId(update);
-        this._filmPresenter[filmIdByCommentId].setViewState(FilmCardPresenterState.DELETING, {commentId: update});
+        allPresenters[filmIdByCommentId].setViewState(FilmCardPresenterState.DELETING, {commentId: update});
 
         this._api.deleteComment(update)
           .then(() => {
             this._commentsModel.deleteComment(updateType, update);
           })
           .catch(() => {
-            this._filmPresenter[filmIdByCommentId].setViewState(FilmCardPresenterState.ABORTING_DELETE, {commentId: update});
+            allPresenters[filmIdByCommentId].setViewState(FilmCardPresenterState.ABORTING_DELETE, {commentId: update});
           });
         break;
     }
@@ -355,12 +351,7 @@ export default class FilmsPanel {
   _handleModeChange() {
     // Здесь нужно пробежаться по абсолютно всем презентерам, потому
     // уже здесь понятно, что иметь несколько презентеров – плохая идея ;)
-    const allPresenters = Object.assign( // Решение временное – TODO: переделать на 1 презентер фильмов
-        {},
-        this._filmPresenter,
-        this._topRatedPresenter,
-        this._mostCommentedPresenter
-    );
+    const allPresenters = this._getAllPresenters();
 
     Object
       .values(allPresenters)
@@ -394,7 +385,7 @@ export default class FilmsPanel {
   _clearExtraPanels(type) {
     Object
       .values(CardTypeBindings[type].presenter)
-      .forEach((presenter) => presenter.destroy());
+      .forEach(this._destroyPresenter);
 
     remove(CardTypeBindings[type].panelComponent);
   }
@@ -412,5 +403,22 @@ export default class FilmsPanel {
         this._renderFilmCard(film, extraPanelContainerComponent);
       });
     }
+  }
+
+  _getAllPresenters() {
+    return Object.assign(
+        {},
+        this._filmPresenter,
+        this._topRatedPresenter,
+        this._mostCommentedPresenter
+    );
+  }
+
+  _destroyPresenter(presenter) {
+    if (presenter.isOpened()) {
+      this._openedPopup = presenter.getId();
+    }
+
+    presenter.destroy();
   }
 }
