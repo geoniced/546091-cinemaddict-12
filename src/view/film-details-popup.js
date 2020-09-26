@@ -94,7 +94,7 @@ const createNewCommentTemplate = (emotion, comment, isSubmitting) => {
 };
 
 
-const createFilmDetailsPopupTemplate = (data) => {
+const createFilmDetailsPopupTemplate = (popupData) => {
   const {
     posterFullSize,
     ageLimit,
@@ -117,7 +117,7 @@ const createFilmDetailsPopupTemplate = (data) => {
     comment,
     isSubmitting,
     deletingComment,
-  } = data;
+  } = popupData;
 
   const writersText = writers.join(`, `);
   const actorsText = actors.join(`, `);

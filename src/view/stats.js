@@ -109,8 +109,8 @@ const createStatisticsFilters = (currentFilter) => {
   }).join(``);
 };
 
-const createStatsTemplate = (data) => {
-  const {films, statisticFilter} = data;
+const createStatsTemplate = (statsInfo) => {
+  const {films, statisticFilter} = statsInfo;
   const watchedFilms = filter[FilterType.HISTORY](films);
   const watchedFilmsCount = watchedFilms.length;
   const totalDurationCount = watchedFilms.reduce(countFilmsDuration, 0);
