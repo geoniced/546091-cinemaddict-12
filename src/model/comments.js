@@ -5,7 +5,6 @@ export default class Comments extends Observer {
     super();
 
     this._comments = [];
-    // this._comments = {};
   }
 
   setComments(updateType, comments) {
