@@ -38,7 +38,13 @@ export const MenuItem = {
   STATS: `STATS`,
 };
 
-const ExtraPanelTitle = {
+export const ExtraPanelTitle = {
   TOP_RATED: `Top rated`,
   MOST_COMMENTED: `Most commented`,
+};
+
+export const UserScoreTitle = {
+  NOVICE: `Novice`,
+  FAN: `Fan`,
+  MOVIE_BUFF: `Movie buff`,
 };

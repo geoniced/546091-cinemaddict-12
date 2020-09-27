@@ -41,6 +41,3 @@ export const getDuration = (timeInMinutes) => {
 
   return `${hours > 0 ? `${hours}h ` : ``}${minutes}m`;
 };
-
-// in production, I should use something better, i.e https://github.com/ai/nanoid
-export const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);

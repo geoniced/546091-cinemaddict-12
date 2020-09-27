@@ -12,6 +12,7 @@ import {MenuItem, UpdateType} from './const.js';
 import Api from './api/index.js';
 import Store from './api/store.js';
 import Provider from './api/provider.js';
+import {getUserScore} from './utils/stats.js';
 
 const AUTHORIZATION = `Basic saAShasdAAS77211`;
 const END_POINT = `https://12.ecmascript.pages.academy/cinemaddict`;
@@ -59,7 +60,6 @@ const handleNavigationMenuItemClick = (menuItem) => {
 
 navigationComponent.setMenuClickHandler(handleNavigationMenuItemClick);
 
-render(headerElement, new UserScoreView(), RenderPosition.BEFOREEND);
 render(mainElement, navigationComponent, RenderPosition.BEFOREEND);
 
 filmsPanelPresenter.init();
@@ -74,7 +74,11 @@ apiWithProvider.getFilmsWithComments()
     filmsModel.setFilms(UpdateType.INIT, []);
   })
   .then(() => {
-    render(footerStatisticsElement, new StatisticsView(filmsModel.getFilms().length), RenderPosition.BEFOREEND);
+    const films = filmsModel.getFilms();
+    const userScore = getUserScore(films);
+
+    render(headerElement, new UserScoreView(userScore), RenderPosition.BEFOREEND);
+    render(footerStatisticsElement, new StatisticsView(films.length), RenderPosition.BEFOREEND);
   });
 
 window.addEventListener(`load`, () => {

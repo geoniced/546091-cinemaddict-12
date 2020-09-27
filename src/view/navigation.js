@@ -1,4 +1,3 @@
-import {MenuItem} from "../const.js";
 import AbstractView from "../view/abstract.js";
 
 const createNavigationTemplate = () => {

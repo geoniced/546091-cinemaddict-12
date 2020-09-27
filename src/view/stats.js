@@ -2,7 +2,7 @@ import SmartView from "./smart.js";
 import Chart from "chart.js";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 import {filter} from "../utils/filter.js";
-import {getFilmsStatistics, getTopGenre} from "../utils/stats.js";
+import {getFilmsStatistics, getTopGenre, getUserScore, getUserScoreTitle} from "../utils/stats.js";
 import {FilterType} from "../const.js";
 import {countFilmsDuration} from "../utils/film.js";
 import moment from "moment";
@@ -122,12 +122,14 @@ const createStatsTemplate = (statsInfo) => {
   const {filmsByGenre, genres} = getFilmsStatistics(films);
   const {genre: topGenre} = getTopGenre(filmsByGenre, genres);
 
+  const userScoreTitle = getUserScoreTitle(getUserScore(films));
+
   return (
     `<section class="statistic">
       <p class="statistic__rank">
         Your rank
         <img class="statistic__img" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
-        <span class="statistic__rank-label">Sci-Fighter</span>
+        ${userScoreTitle !== null ? `<span class="statistic__rank-label">${userScoreTitle}</span>` : ``}
       </p>
 
       <form action="https://echo.htmlacademy.ru/" method="get" class="statistic__filters">
