@@ -1,9 +1,7 @@
 import SmartView from "./smart.js";
 import Chart from "chart.js";
 import ChartDataLabels from "chartjs-plugin-datalabels";
-import {filter} from "../utils/filter.js";
-import {getFilmsStatistics, getTopGenre, getUserScore, getUserScoreTitle} from "../utils/stats.js";
-import {FilterType} from "../const.js";
+import {getFilmsStatistics, getTopGenre, getUserScore, getUserScoreTitle, getWatchedFilms} from "../utils/stats.js";
 import {countFilmsDuration} from "../utils/film.js";
 import moment from "moment";
 
@@ -32,8 +30,9 @@ const STATISTICS_FILTERS = [
 
 const renderStatisticsChart = (statisticCtx, films) => {
   const BAR_HEIGHT = 50;
+  const watchedFilms = getWatchedFilms(films);
 
-  const {genres, filmsByGenre} = getFilmsStatistics(films);
+  const {genres, filmsByGenre} = getFilmsStatistics(watchedFilms);
 
   statisticCtx.height = BAR_HEIGHT * genres.length;
 
@@ -111,7 +110,7 @@ const createStatisticsFilters = (currentFilter) => {
 
 const createStatsTemplate = (statsInfo) => {
   const {films, statisticFilter} = statsInfo;
-  const watchedFilms = filter[FilterType.HISTORY](films);
+  const watchedFilms = getWatchedFilms(films);
   const watchedFilmsCount = watchedFilms.length;
   const totalDurationCount = watchedFilms.reduce(countFilmsDuration, 0);
   const filmsTotalDuration = moment.duration(totalDurationCount, `m`);
@@ -119,8 +118,8 @@ const createStatsTemplate = (statsInfo) => {
 
   const statisticsFiltersTemplate = createStatisticsFilters(statisticFilter);
 
-  const {filmsByGenre, genres} = getFilmsStatistics(films);
-  const {genre: topGenre} = getTopGenre(filmsByGenre, genres);
+  const {filmsByGenre, genres} = getFilmsStatistics(watchedFilms);
+  const {genre: topGenre, count: topGenreCount} = getTopGenre(filmsByGenre, genres);
 
   const userScoreTitle = getUserScoreTitle(getUserScore(films));
 
@@ -147,10 +146,11 @@ const createStatsTemplate = (statsInfo) => {
           <h4 class="statistic__item-title">Total duration</h4>
           <p class="statistic__item-text">${filmsTotalDurationHours} <span class="statistic__item-description">h</span> ${filmsTotalDuration.minutes()} <span class="statistic__item-description">m</span></p>
         </li>
+        ${topGenreCount > 0 ? `
         <li class="statistic__text-item">
           <h4 class="statistic__item-title">Top genre</h4>
           <p class="statistic__item-text">${topGenre}</p>
-        </li>
+        </li>` : ``}
       </ul>
 
       <div class="statistic__chart-wrap">

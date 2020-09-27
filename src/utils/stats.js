@@ -3,13 +3,15 @@ import {filter} from '../utils/filter.js';
 import {FilterType, UserScoreTitle} from '../const.js';
 
 export const countFilmsByGenre = (films, genre) => {
-  return films.filter((film) => new Set(film.genres).has(genre)).length;
+  // Берем основной жанр
+  return films.filter((film) => film.genres[0] === genre).length;
 };
 
 export const getFilmsStatistics = (films) => {
   const filmGenres = films
     .filter((film) => film.genres[0] !== undefined)
     .map((film) => film.genres[0]);
+
   const uniqueGenres = getUniqueArray(filmGenres);
   const filmsByGenre = uniqueGenres.map((genre) => countFilmsByGenre(films, genre));
 
@@ -45,8 +47,12 @@ export const getTopGenre = (filmsByGenre, genres) => {
   return topGenre;
 };
 
+export const getWatchedFilms = (films) => {
+  return filter[FilterType.HISTORY](films);
+};
+
 export const getUserScore = (films) => {
-  return filter[FilterType.HISTORY](films).length;
+  return getWatchedFilms(films).length;
 };
 
 export const getUserScoreTitle = (userScore) => {
