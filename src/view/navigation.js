@@ -29,10 +29,4 @@ export default class Navigation extends AbstractView {
     this._callback.menuClick = callback;
     this.getElement().addEventListener(`click`, this._menuClickHandler);
   }
-
-  setMenuItem(menuItem) {
-    if (menuItem === MenuItem.STATS) {
-      this.getElement().querySelector(`[data-page="STATS"]`).classList.add(`main-navigation__item--active`);
-    }
-  }
 }

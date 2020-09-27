@@ -105,10 +105,6 @@ export default class FilmsPanel {
     return filteredFilms;
   }
 
-  _getFilmComments(film) {
-    return this._commentsModel.getCommentsByFilmId(film.id);
-  }
-
   _getExtraFilms(sortedFilms, filteringFunction, type) {
     return sortedFilms
       .filter(filteringFunction)

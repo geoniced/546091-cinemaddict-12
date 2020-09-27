@@ -13,10 +13,6 @@ export default class Comments extends Observer {
     this._notify(updateType);
   }
 
-  getComments() {
-    return this._comments;
-  }
-
   getCommentsByFilmId(filmId) {
     return this._comments.filter((comment) => comment.filmId === filmId);
   }
