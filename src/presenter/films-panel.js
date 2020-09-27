@@ -8,7 +8,7 @@ import FilmsListExtraView from '../view/films-list-extra.js';
 import FilmCardPresenter, {State as FilmCardPresenterState} from './film-card.js';
 import {render, RenderPosition, remove} from '../utils/render.js';
 import {sortByDate, sortByRating, sortByComments, filterByEmptyRating, filterByEmptyComments} from '../utils/film.js';
-import {SortType, UserAction, UpdateType, FilmType} from '../const.js';
+import {SortType, UserAction, UpdateType, FilmType, ExtraPanelTitle} from '../const.js';
 import {filter} from '../utils/filter.js';
 import LoadingView from '../view/loading.js';
 import {getRandomizedItems} from '../utils/common.js';
@@ -213,8 +213,8 @@ export default class FilmsPanel {
       filteringFunction: filterByEmptyComments,
     });
 
-    this._renderExtraPanel(FilmType.TOP_RATED, `Top rated`, this._topRatedFilms);
-    this._renderExtraPanel(FilmType.MOST_COMMENTED, `Most commented`, this._mostCommentedFilms);
+    this._renderExtraPanel(FilmType.TOP_RATED, ExtraPanelTitle.TOP_RATED, this._topRatedFilms);
+    this._renderExtraPanel(FilmType.MOST_COMMENTED, ExtraPanelTitle.MOST_COMMENTED, this._mostCommentedFilms);
   }
 
   _handleSortTypeChange(sortType) {

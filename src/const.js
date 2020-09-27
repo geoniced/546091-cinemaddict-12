@@ -37,3 +37,8 @@ export const MenuItem = {
   FILMS: `FILMS`,
   STATS: `STATS`,
 };
+
+const ExtraPanelTitle = {
+  TOP_RATED: `Top rated`,
+  MOST_COMMENTED: `Most commented`,
+};
