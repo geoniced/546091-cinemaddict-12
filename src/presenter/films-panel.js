@@ -340,8 +340,17 @@ export default class FilmsPanel {
       case UpdateType.INIT:
         this._isLoading = false;
         remove(this._loadingComponent);
+        this._updateFilmsComments();
         this._renderFilmsPanel();
     }
+  }
+
+  _updateFilmsComments() {
+    const films = this._getFilms();
+    films.forEach((film) => {
+      const comments = this._commentsModel.getCommentsByIds(film.commentsIds);
+      this._filmsModel.updateFilmCommentsPresentation(film.id, comments);
+    });
   }
 
   _handleModeChange() {
