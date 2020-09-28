@@ -89,6 +89,36 @@ export default class FilmCard {
     return this._card.id;
   }
 
+  setViewState(state, viewData) {
+    const resetCardViewState = () => {
+      this._filmDetailsPopupComponent.updateData({
+        deletingComment: ``,
+        isSubmitting: false,
+      });
+    };
+
+    switch (state) {
+      case State.DELETING:
+        this._filmDetailsPopupComponent.updateData({
+          deletingComment: viewData.commentId,
+        });
+        break;
+      case State.SUBMIT:
+        this._filmDetailsPopupComponent.updateData({
+          isSubmitting: true,
+        });
+        break;
+      case State.ABORTING_DELETE:
+        this._filmDetailsPopupComponent
+          .shake(resetCardViewState, this._filmDetailsPopupComponent.getCommentItemById(viewData.commentId));
+        break;
+      case State.ABORTING_SUBMIT:
+        this._filmDetailsPopupComponent
+          .shake(resetCardViewState, this._filmDetailsPopupComponent.getCommentAddForm());
+        break;
+    }
+  }
+
   _handleFavoriteClick() {
     this._changeData(
         UserAction.UPDATE_FILM,
@@ -183,14 +213,6 @@ export default class FilmCard {
     }
   }
 
-  _escKeyDownHandler(evt) {
-    if (evt.key === `Escape` || evt.key === `Esc`) {
-      evt.preventDefault();
-      this._filmDetailsPopupComponent.reset(this._card);
-      this._closeFilmDetailsPopup();
-    }
-  }
-
   _setFilmCardHandlers() {
     this._filmCardComponent.setClickHandler(this._handleCardClick);
     this._filmCardComponent.setAddToWatchListClickHandler(this._handleAddToWatchlistClick);
@@ -209,33 +231,11 @@ export default class FilmCard {
     document.addEventListener(`keydown`, this._escKeyDownHandler);
   }
 
-  setViewState(state, viewData) {
-    const resetCardViewState = () => {
-      this._filmDetailsPopupComponent.updateData({
-        deletingComment: ``,
-        isSubmitting: false,
-      });
-    };
-
-    switch (state) {
-      case State.DELETING:
-        this._filmDetailsPopupComponent.updateData({
-          deletingComment: viewData.commentId,
-        });
-        break;
-      case State.SUBMIT:
-        this._filmDetailsPopupComponent.updateData({
-          isSubmitting: true,
-        });
-        break;
-      case State.ABORTING_DELETE:
-        this._filmDetailsPopupComponent
-          .shake(resetCardViewState, this._filmDetailsPopupComponent.getCommentItemById(viewData.commentId));
-        break;
-      case State.ABORTING_SUBMIT:
-        this._filmDetailsPopupComponent
-          .shake(resetCardViewState, this._filmDetailsPopupComponent.getCommentAddForm());
-        break;
+  _escKeyDownHandler(evt) {
+    if (evt.key === `Escape` || evt.key === `Esc`) {
+      evt.preventDefault();
+      this._filmDetailsPopupComponent.reset(this._card);
+      this._closeFilmDetailsPopup();
     }
   }
 }
