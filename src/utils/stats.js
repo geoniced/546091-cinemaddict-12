@@ -1,14 +1,18 @@
-
 import {getUniqueArray} from "../utils/common.js";
+import {filter} from '../utils/filter.js';
+import {FilterType, UserScoreTitle, StatsFilterType} from '../const.js';
+import moment from "moment";
 
 export const countFilmsByGenre = (films, genre) => {
-  return films.filter((film) => new Set(film.genres).has(genre)).length;
+  // Берем основной жанр
+  return films.filter((film) => film.genres[0] === genre).length;
 };
 
 export const getFilmsStatistics = (films) => {
   const filmGenres = films
     .filter((film) => film.genres[0] !== undefined)
     .map((film) => film.genres[0]);
+
   const uniqueGenres = getUniqueArray(filmGenres);
   const filmsByGenre = uniqueGenres.map((genre) => countFilmsByGenre(films, genre));
 
@@ -42,4 +46,66 @@ export const getTopGenre = (filmsByGenre, genres) => {
   }
 
   return topGenre;
+};
+
+export const getWatchedFilms = (films) => {
+  return filter[FilterType.HISTORY](films);
+};
+
+export const getUserScore = (films) => {
+  return getWatchedFilms(films).length;
+};
+
+export const getUserScoreTitle = (userScore) => {
+  let scoreTitle = null;
+
+  if (userScore > 0 && userScore <= 10) {
+    scoreTitle = UserScoreTitle.NOVICE;
+  } else if (userScore >= 11 && userScore <= 20) {
+    scoreTitle = UserScoreTitle.FAN;
+  } else if (userScore >= 21) {
+    scoreTitle = UserScoreTitle.MOVIE_BUFF;
+  }
+
+  return scoreTitle;
+};
+
+const isWatchedToday = (film) => {
+  return moment(film.watchingDate).isBetween(
+      moment().startOf(`day`),
+      moment()
+  );
+};
+
+const isWatchedByWeek = (film) => {
+  return moment(film.watchingDate).isBetween(
+      moment().startOf(`day`).subtract(1, `week`),
+      moment().startOf(`day`)
+  );
+};
+
+const isWatchedByMonth = (film) => {
+  return moment(film.watchingDate).isBetween(
+      moment().startOf(`day`).subtract(1, `month`),
+      moment().startOf(`day`)
+  );
+};
+
+const isWatchedByYear = (film) => {
+  return moment(film.watchingDate).isBetween(
+      moment().startOf(`day`).subtract(1, `year`),
+      moment().startOf(`day`)
+  );
+};
+
+export const statsFilter = {
+  [StatsFilterType.ALL_TIME]: (films) => films,
+  [StatsFilterType.TODAY]: (films) => films.filter(isWatchedToday),
+  [StatsFilterType.WEEK]: (films) => films.filter(isWatchedByWeek),
+  [StatsFilterType.MONTH]: (films) => films.filter(isWatchedByMonth),
+  [StatsFilterType.YEAR]: (films) => films.filter(isWatchedByYear),
+};
+
+export const getFilmsByFilter = (films, currentFilter) => {
+  return statsFilter[currentFilter](films);
 };

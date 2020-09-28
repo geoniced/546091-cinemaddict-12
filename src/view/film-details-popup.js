@@ -286,8 +286,48 @@ export default class FilmDetailsPopup extends SmartView {
     this.setCommentAddSubmitHandler(this._callback.commentAdd);
   }
 
+  setPopupCloseButtonClickHandler(callback) {
+    this._callback.popupCloseClick = callback;
+    this._getPopupCloseButton().addEventListener(`click`, this._popupCloseButtonClickHandler);
+  }
+
+  setAddToWatchListClickHandler(callback) {
+    this._callback.addToWatchlistClick = callback;
+    this.getElement().querySelector(`.film-details__control-label--watchlist`).addEventListener(`click`, this._addToWatchlistClickHandler);
+  }
+
+  setAlreadyWatchedClickHandler(callback) {
+    this._callback.alreadyWatchedClick = callback;
+    this.getElement().querySelector(`.film-details__control-label--watched`).addEventListener(`click`, this._alreadyWatchedClickHandler);
+  }
+
+  setFavoriteClickHandler(callback) {
+    this._callback.favoriteClick = callback;
+    this.getElement().querySelector(`.film-details__control-label--favorite`).addEventListener(`click`, this._favoriteClickHandler);
+  }
+
+  setDeleteCommentClickHandler(callback) {
+    this._callback.deleteCommentClick = callback;
+    this.getElement().querySelector(`.film-details__comments-list`).addEventListener(`click`, this._deleteCommentClickHandler);
+  }
+
+  setCommentAddSubmitHandler(callback) {
+    this._callback.commentAdd = callback;
+    this.getElement().querySelector(`form.film-details__inner`).addEventListener(`keydown`, this._commentAddHandler);
+  }
+
   _getPopupCloseButton() {
     return this.getElement().querySelector(`.film-details__close-btn`);
+  }
+
+  _setInnerHandlers() {
+    this.getElement()
+      .querySelector(`.film-details__emoji-list`)
+      .addEventListener(`change`, this._emotionChangeHandler);
+
+    this.getElement()
+      .querySelector(`.film-details__comment-input`)
+      .addEventListener(`input`, this._commentInputHandler);
   }
 
   _popupCloseButtonClickHandler(evt) {
@@ -337,46 +377,6 @@ export default class FilmDetailsPopup extends SmartView {
     if (evt.ctrlKey && evt.key === `Enter` || evt.metaKey && evt.key === `Enter`) {
       this._callback.commentAdd(this._data);
     }
-  }
-
-  _setInnerHandlers() {
-    this.getElement()
-      .querySelector(`.film-details__emoji-list`)
-      .addEventListener(`change`, this._emotionChangeHandler);
-
-    this.getElement()
-      .querySelector(`.film-details__comment-input`)
-      .addEventListener(`input`, this._commentInputHandler);
-  }
-
-  setPopupCloseButtonClickHandler(callback) {
-    this._callback.popupCloseClick = callback;
-    this._getPopupCloseButton().addEventListener(`click`, this._popupCloseButtonClickHandler);
-  }
-
-  setAddToWatchListClickHandler(callback) {
-    this._callback.addToWatchlistClick = callback;
-    this.getElement().querySelector(`.film-details__control-label--watchlist`).addEventListener(`click`, this._addToWatchlistClickHandler);
-  }
-
-  setAlreadyWatchedClickHandler(callback) {
-    this._callback.alreadyWatchedClick = callback;
-    this.getElement().querySelector(`.film-details__control-label--watched`).addEventListener(`click`, this._alreadyWatchedClickHandler);
-  }
-
-  setFavoriteClickHandler(callback) {
-    this._callback.favoriteClick = callback;
-    this.getElement().querySelector(`.film-details__control-label--favorite`).addEventListener(`click`, this._favoriteClickHandler);
-  }
-
-  setDeleteCommentClickHandler(callback) {
-    this._callback.deleteCommentClick = callback;
-    this.getElement().querySelector(`.film-details__comments-list`).addEventListener(`click`, this._deleteCommentClickHandler);
-  }
-
-  setCommentAddSubmitHandler(callback) {
-    this._callback.commentAdd = callback;
-    this.getElement().querySelector(`form.film-details__inner`).addEventListener(`keydown`, this._commentAddHandler);
   }
 
   static parseFilmCardToData(filmCard) {

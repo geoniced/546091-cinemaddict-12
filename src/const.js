@@ -37,3 +37,22 @@ export const MenuItem = {
   FILMS: `FILMS`,
   STATS: `STATS`,
 };
+
+export const ExtraPanelTitle = {
+  TOP_RATED: `Top rated`,
+  MOST_COMMENTED: `Most commented`,
+};
+
+export const UserScoreTitle = {
+  NOVICE: `Novice`,
+  FAN: `Fan`,
+  MOVIE_BUFF: `Movie buff`,
+};
+
+export const StatsFilterType = {
+  ALL_TIME: `all-time`,
+  TODAY: `today`,
+  WEEK: `week`,
+  MONTH: `month`,
+  YEAR: `year`,
+};

@@ -51,7 +51,7 @@ const createFilmCardTemplate = (film) => {
       <p class="film-card__info">
         <span class="film-card__year">${year}</span>
         <span class="film-card__duration">${durationFormatted}</span>
-        <span class="film-card__genre">${genre}</span>
+        ${genre !== undefined ? `<span class="film-card__genre">${genre}</span>` : ``}
       </p>
       <img src="${poster}" alt="" class="film-card__poster">
       <p class="film-card__description">${formattedDescription}</p>
@@ -80,26 +80,6 @@ export default class FilmCard extends AbstractView {
     return createFilmCardTemplate(this._film);
   }
 
-  _cardClickHandler(evt) {
-    evt.preventDefault();
-    this._callback.cardClick(evt);
-  }
-
-  _addToWatchlistClickHandler(evt) {
-    evt.preventDefault();
-    this._callback.addToWatchlistClick();
-  }
-
-  _alreadyWatchedClickHandler(evt) {
-    evt.preventDefault();
-    this._callback.alreadyWatchedClick();
-  }
-
-  _favoriteClickHandler(evt) {
-    evt.preventDefault();
-    this._callback.favoriteClick();
-  }
-
   setClickHandler(callback) {
     this._callback.cardClick = callback;
     this.getElement().addEventListener(`click`, this._cardClickHandler);
@@ -118,5 +98,25 @@ export default class FilmCard extends AbstractView {
   setFavoriteClickHandler(callback) {
     this._callback.favoriteClick = callback;
     this.getElement().querySelector(`.film-card__controls-item--favorite`).addEventListener(`click`, this._favoriteClickHandler);
+  }
+
+  _cardClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.cardClick(evt);
+  }
+
+  _addToWatchlistClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.addToWatchlistClick();
+  }
+
+  _alreadyWatchedClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.alreadyWatchedClick();
+  }
+
+  _favoriteClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.favoriteClick();
   }
 }
