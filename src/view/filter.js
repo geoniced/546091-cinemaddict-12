@@ -42,14 +42,14 @@ export default class Filter extends AbstractView {
     return createFilterTemplate(this._filters, this._currentFilterType);
   }
 
+  setFilterTypeChangeHandler(callback) {
+    this._callback.filterTypeChange = callback;
+    this.getElement().addEventListener(`click`, this._filterTypeChangeHandler);
+  }
+
   _filterTypeChangeHandler(evt) {
     if (evt.target.tagName === `A`) {
       this._callback.filterTypeChange(evt.target.dataset.filterType);
     }
-  }
-
-  setFilterTypeChangeHandler(callback) {
-    this._callback.filterTypeChange = callback;
-    this.getElement().addEventListener(`click`, this._filterTypeChangeHandler);
   }
 }
