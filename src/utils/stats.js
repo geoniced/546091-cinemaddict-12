@@ -106,6 +106,6 @@ export const statsFilter = {
   [StatsFilterType.YEAR]: (films) => films.filter(isWatchedByYear),
 };
 
-export const getFilmsByFilter = (films, filter) => {
-  return statsFilter[filter](films);
+export const getFilmsByFilter = (films, currentFilter) => {
+  return statsFilter[currentFilter](films);
 };
