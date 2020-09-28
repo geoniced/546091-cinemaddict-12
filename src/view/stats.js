@@ -1,38 +1,47 @@
 import SmartView from "./smart.js";
 import Chart from "chart.js";
 import ChartDataLabels from "chartjs-plugin-datalabels";
-import {getFilmsStatistics, getTopGenre, getUserScore, getUserScoreTitle, getWatchedFilms} from "../utils/stats.js";
+import {
+  getFilmsStatistics,
+  getTopGenre,
+  getUserScore,
+  getUserScoreTitle,
+  getWatchedFilms,
+  getFilmsByFilter,
+} from "../utils/stats.js";
 import {countFilmsDuration} from "../utils/film.js";
+import {StatsFilterType} from "../const.js";
 import moment from "moment";
 
 const STATISTICS_FILTERS = [
   {
     title: `All time`,
-    value: `all-time`,
+    value: StatsFilterType.ALL_TIME,
   },
   {
     title: `Today`,
-    value: `today`,
+    value: StatsFilterType.TODAY,
   },
   {
     title: `Week`,
-    value: `week`,
+    value: StatsFilterType.WEEK,
   },
   {
     title: `Month`,
-    value: `month`,
+    value: StatsFilterType.MONTH,
   },
   {
     title: `Year`,
-    value: `year`,
+    value: StatsFilterType.YEAR,
   }
 ];
 
-const renderStatisticsChart = (statisticCtx, films) => {
+const renderStatisticsChart = (statisticCtx, films, statisticFilter) => {
   const BAR_HEIGHT = 50;
   const watchedFilms = getWatchedFilms(films);
+  const filteredFilms = getFilmsByFilter(watchedFilms, statisticFilter);
 
-  const {genres, filmsByGenre} = getFilmsStatistics(watchedFilms);
+  const {genres, filmsByGenre} = getFilmsStatistics(filteredFilms);
 
   statisticCtx.height = BAR_HEIGHT * genres.length;
 
@@ -111,14 +120,17 @@ const createStatisticsFilters = (currentFilter) => {
 const createStatsTemplate = (statsInfo) => {
   const {films, statisticFilter} = statsInfo;
   const watchedFilms = getWatchedFilms(films);
-  const watchedFilmsCount = watchedFilms.length;
-  const totalDurationCount = watchedFilms.reduce(countFilmsDuration, 0);
+
+  const filteredFilms = getFilmsByFilter(watchedFilms, statisticFilter);
+
+  const watchedFilmsCount = filteredFilms.length;
+  const totalDurationCount = filteredFilms.reduce(countFilmsDuration, 0);
   const filmsTotalDuration = moment.duration(totalDurationCount, `m`);
   const filmsTotalDurationHours = Math.floor(filmsTotalDuration.asHours());
 
   const statisticsFiltersTemplate = createStatisticsFilters(statisticFilter);
 
-  const {filmsByGenre, genres} = getFilmsStatistics(watchedFilms);
+  const {filmsByGenre, genres} = getFilmsStatistics(filteredFilms);
   const {genre: topGenre, count: topGenreCount} = getTopGenre(filmsByGenre, genres);
 
   const userScoreTitle = getUserScoreTitle(getUserScore(films));
@@ -195,10 +207,10 @@ export default class Stats extends SmartView {
       this._filmsChart = null;
     }
 
-    const {films} = this._data;
+    const {films, statisticFilter} = this._data;
     const statisticCtx = this.getElement().querySelector(`.statistic__chart`);
 
-    this._filmsChart = renderStatisticsChart(statisticCtx, films);
+    this._filmsChart = renderStatisticsChart(statisticCtx, films, statisticFilter);
   }
 
   _periodChangeHandler(evt) {

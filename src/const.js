@@ -48,3 +48,11 @@ export const UserScoreTitle = {
   FAN: `Fan`,
   MOVIE_BUFF: `Movie buff`,
 };
+
+export const StatsFilterType = {
+  ALL_TIME: `all-time`,
+  TODAY: `today`,
+  WEEK: `week`,
+  MONTH: `month`,
+  YEAR: `year`,
+};

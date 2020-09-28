@@ -1,6 +1,7 @@
 import {getUniqueArray} from "../utils/common.js";
 import {filter} from '../utils/filter.js';
-import {FilterType, UserScoreTitle} from '../const.js';
+import {FilterType, UserScoreTitle, StatsFilterType} from '../const.js';
+import moment from "moment";
 
 export const countFilmsByGenre = (films, genre) => {
   // Берем основной жанр
@@ -69,3 +70,42 @@ export const getUserScoreTitle = (userScore) => {
   return scoreTitle;
 };
 
+const isWatchedToday = (film) => {
+  return moment(film.watchingDate).isBetween(
+      moment().startOf(`day`),
+      moment()
+  );
+};
+
+const isWatchedByWeek = (film) => {
+  return moment(film.watchingDate).isBetween(
+      moment().startOf(`day`).subtract(1, `week`),
+      moment().startOf(`day`)
+  );
+};
+
+const isWatchedByMonth = (film) => {
+  return moment(film.watchingDate).isBetween(
+      moment().startOf(`day`).subtract(1, `month`),
+      moment().startOf(`day`)
+  );
+};
+
+const isWatchedByYear = (film) => {
+  return moment(film.watchingDate).isBetween(
+      moment().startOf(`day`).subtract(1, `year`),
+      moment().startOf(`day`)
+  );
+};
+
+export const statsFilter = {
+  [StatsFilterType.ALL_TIME]: (films) => films,
+  [StatsFilterType.TODAY]: (films) => films.filter(isWatchedToday),
+  [StatsFilterType.WEEK]: (films) => films.filter(isWatchedByWeek),
+  [StatsFilterType.MONTH]: (films) => films.filter(isWatchedByMonth),
+  [StatsFilterType.YEAR]: (films) => films.filter(isWatchedByYear),
+};
+
+export const getFilmsByFilter = (films, filter) => {
+  return statsFilter[filter](films);
+};
