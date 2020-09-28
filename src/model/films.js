@@ -14,6 +14,11 @@ export default class Films extends Observer {
     this._notify(updateType);
   }
 
+  updateFilmCommentsPresentation(filmId, comments) {
+    const filmIndex = this._films.findIndex((film) => film.id === filmId);
+    this._films[filmIndex].comments = comments;
+  }
+
   getFilms() {
     return this._films;
   }
