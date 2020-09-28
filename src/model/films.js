@@ -73,6 +73,7 @@ export default class Films extends Observer {
 
     delete adaptedFilms.film_info;
     delete adaptedFilms.user_details;
+    adaptedFilms.comments = [];
 
     return adaptedFilms;
   }
