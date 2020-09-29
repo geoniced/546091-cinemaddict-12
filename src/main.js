@@ -12,7 +12,7 @@ import Api from './api/index.js';
 import Store from './api/store.js';
 import Provider from './api/provider.js';
 
-const AUTHORIZATION = `Basic saAShasdAAS77211`;
+const AUTHORIZATION = `Basic saAShasdAAS7sosSOSZ11`;
 const END_POINT = `https://12.ecmascript.pages.academy/cinemaddict`;
 const STORE_PREFIX = `cinemaddict-localstorage`;
 const STORE_VER = `v12`;

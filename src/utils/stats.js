@@ -80,21 +80,21 @@ const isWatchedToday = (film) => {
 const isWatchedByWeek = (film) => {
   return moment(film.watchingDate).isBetween(
       moment().startOf(`day`).subtract(1, `week`),
-      moment().startOf(`day`)
+      moment()
   );
 };
 
 const isWatchedByMonth = (film) => {
   return moment(film.watchingDate).isBetween(
       moment().startOf(`day`).subtract(1, `month`),
-      moment().startOf(`day`)
+      moment()
   );
 };
 
 const isWatchedByYear = (film) => {
   return moment(film.watchingDate).isBetween(
       moment().startOf(`day`).subtract(1, `year`),
-      moment().startOf(`day`)
+      moment()
   );
 };
 
