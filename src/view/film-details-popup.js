@@ -250,6 +250,21 @@ export default class FilmDetailsPopup extends SmartView {
     this._setInnerHandlers();
   }
 
+  getTemplate() {
+    return createFilmDetailsPopupTemplate(this._data);
+  }
+
+  restoreHandlers() {
+    this._setInnerHandlers();
+
+    this.setPopupCloseButtonClickHandler(this._callback.popupCloseClick);
+    this.setAddToWatchListClickHandler(this._callback.addToWatchlistClick);
+    this.setAlreadyWatchedClickHandler(this._callback.alreadyWatchedClick);
+    this.setFavoriteClickHandler(this._callback.favoriteClick);
+    this.setDeleteCommentClickHandler(this._callback.deleteCommentClick);
+    this.setCommentAddSubmitHandler(this._callback.commentAdd);
+  }
+
   reset(film) {
     this.updateData(
         Object.assign(
@@ -263,27 +278,12 @@ export default class FilmDetailsPopup extends SmartView {
     );
   }
 
-  getTemplate() {
-    return createFilmDetailsPopupTemplate(this._data);
-  }
-
   getCommentItemById(commentId) {
     return this.getElement().querySelector(`.film-details__comment[data-comment-id="${commentId}"]`);
   }
 
   getCommentAddForm() {
     return this.getElement().querySelector(`.film-details__new-comment`);
-  }
-
-  restoreHandlers() {
-    this._setInnerHandlers();
-
-    this.setPopupCloseButtonClickHandler(this._callback.popupCloseClick);
-    this.setAddToWatchListClickHandler(this._callback.addToWatchlistClick);
-    this.setAlreadyWatchedClickHandler(this._callback.alreadyWatchedClick);
-    this.setFavoriteClickHandler(this._callback.favoriteClick);
-    this.setDeleteCommentClickHandler(this._callback.deleteCommentClick);
-    this.setCommentAddSubmitHandler(this._callback.commentAdd);
   }
 
   setPopupCloseButtonClickHandler(callback) {
