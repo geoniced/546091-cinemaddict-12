@@ -1,3 +1,4 @@
+import UserScoreView from '../view/user-score.js';
 import SortingView from '../view/sorting.js';
 import FilmsPanelView from '../view/films-panel.js';
 import NoFilmsView from '../view/no-films.js';
@@ -10,6 +11,7 @@ import {render, RenderPosition, remove} from '../utils/render.js';
 import {sortByDate, sortByRating, sortByComments, filterByEmptyRating, filterByEmptyComments} from '../utils/film.js';
 import {SortType, UserAction, UpdateType, FilmType, ExtraPanelTitle} from '../const.js';
 import {filter} from '../utils/filter.js';
+import {getUserScore} from '../utils/stats.js';
 import LoadingView from '../view/loading.js';
 import {getRandomizedItems} from '../utils/common.js';
 
@@ -32,8 +34,9 @@ const CardTypeBindings = {
 };
 
 export default class FilmsPanel {
-  constructor(mainElement, filmsModel, commentsModel, filterModel, api) {
+  constructor(mainElement, headerElement, filmsModel, commentsModel, filterModel, api) {
     this._mainElement = mainElement;
+    this._headerElement = headerElement;
     this._filmsModel = filmsModel;
     this._commentsModel = commentsModel;
     this._filterModel = filterModel;
@@ -60,6 +63,7 @@ export default class FilmsPanel {
     this._filmsListComponent = new FilmsListView();
     this._filmsListContainerComponent = new FilmsListContainerView();
     this._loadingComponent = new LoadingView();
+    this._userScoreComponent = null;
 
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
@@ -177,6 +181,8 @@ export default class FilmsPanel {
   }
 
   _renderFilmsPanel() {
+    this._renderUserScore();
+
     if (this._isLoading) {
       this._renderLoading();
       return;
@@ -226,6 +232,17 @@ export default class FilmsPanel {
 
     this._clearFilmsPanel({resetRenderedCardsCount: true});
     this._renderFilmsPanel();
+  }
+
+  _renderUserScore() {
+    const userScore = getUserScore(this._filmsModel.getFilms());
+
+    if (this._userScoreComponent !== null) {
+      remove(this._userScoreComponent);
+    }
+
+    this._userScoreComponent = new UserScoreView(userScore);
+    render(this._headerElement, this._userScoreComponent, RenderPosition.BEFOREEND);
   }
 
   _renderSorting() {

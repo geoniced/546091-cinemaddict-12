@@ -1,4 +1,3 @@
-import UserScoreView from './view/user-score.js';
 import NavigationView from './view/navigation.js';
 import StatsView from './view/stats.js';
 import FilmsPanelPresenter from './presenter/films-panel.js';
@@ -12,7 +11,6 @@ import {MenuItem, UpdateType} from './const.js';
 import Api from './api/index.js';
 import Store from './api/store.js';
 import Provider from './api/provider.js';
-import {getUserScore} from './utils/stats.js';
 
 const AUTHORIZATION = `Basic saAShasdAAS77211`;
 const END_POINT = `https://12.ecmascript.pages.academy/cinemaddict`;
@@ -34,7 +32,7 @@ const commentsModel = new CommentsModel();
 const filterModel = new FilterModel();
 
 const navigationComponent = new NavigationView();
-const filmsPanelPresenter = new FilmsPanelPresenter(mainElement, filmsModel, commentsModel, filterModel, apiWithProvider);
+const filmsPanelPresenter = new FilmsPanelPresenter(mainElement, headerElement, filmsModel, commentsModel, filterModel, apiWithProvider);
 const filterPresenter = new FilterPresenter(navigationComponent, filterModel, filmsModel);
 
 let statsComponent = new StatsView(filmsModel.getFilms());
@@ -75,9 +73,6 @@ apiWithProvider.getFilmsWithComments()
   })
   .then(() => {
     const films = filmsModel.getFilms();
-    const userScore = getUserScore(films);
-
-    render(headerElement, new UserScoreView(userScore), RenderPosition.BEFOREEND);
     render(footerStatisticsElement, new StatisticsView(films.length), RenderPosition.BEFOREEND);
   });
 
